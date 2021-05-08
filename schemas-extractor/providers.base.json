@@ -23,13 +23,28 @@
 
   "archive": {
   },
+  "boundary": {
+    "repository": "github.com/hashicorp/terraform-provider-__NAME__"
+  },
   "cloudinit": {
+    "repository": "github.com/hashicorp/terraform-provider-__NAME__"
+  },
+  "corner": {
     "repository": "github.com/hashicorp/terraform-provider-__NAME__"
   },
   "dns": {
     "repository": "github.com/hashicorp/terraform-provider-__NAME__"
   },
   "external": {
+  },
+  "fakewebservices": {
+    "repository": "github.com/hashicorp/terraform-provider-__NAME__"
+  },
+  "hcp": {
+    "repository": "github.com/hashicorp/terraform-provider-__NAME__"
+  },
+  "hcs": {
+    "repository": "github.com/hashicorp/terraform-provider-__NAME__"
   },
   "http": {
   },
@@ -39,6 +54,9 @@
     "repository": "github.com/hashicorp/terraform-provider-__NAME__"
   },
   "random": {
+    "repository": "github.com/hashicorp/terraform-provider-__NAME__"
+  },
+  "scaffolding-goreleaser": {
     "repository": "github.com/hashicorp/terraform-provider-__NAME__"
   },
   "template": {
