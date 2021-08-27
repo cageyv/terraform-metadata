@@ -45,7 +45,10 @@
   "azuredevops": {
     "repository": "github.com/microsoft/terraform-provider-__NAME__"
   },
-  "azurerm": {},
+  "azurerm": {
+    "provider_func_name": "AzureProvider",
+    "pkg_name": "internal/provider"
+  },
   "azurestack": {},
   "baiducloud": {},
   "bigip": {},
