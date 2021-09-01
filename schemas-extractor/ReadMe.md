@@ -24,10 +24,10 @@ Flags and Parameters
   - `make backends ONLY="consul atlas"`
 
 ### Environment Variables - General
-- `UPDATE_SKIP=1` - This skips the Git update process for all repositories (See ~line 45 in common.sh)
-- `UPDATE_PARALLEL=1` - Causes the update_or_clone function to be called in parrallel via & (See ~Line 70 in common.sh)
-- `GENERATE_PARALLEL=1` - Causes the schema generation to be called in parralel via & (See ~line 157 in build-providers.sh for example)
-- `RESET_REPOS=1` - Script will force a git reset and git clean on the repository if it is not clear
+- `UPDATE_SKIP=1` - This skips the Git update process for all repositories ([See here](https://github.com/cageyv/terraform-metadata/blob/master/schemas-extractor/common.sh#L45))
+- `UPDATE_PARALLEL=1` - Causes the update_or_clone function to be called in parrallel via & ([See here](https://github.com/cageyv/terraform-metadata/blob/master/schemas-extractor/common.sh#L70-L76))
+- `GENERATE_PARALLEL=1` - Causes the schema generation to be called in parralel via & ([See here](https://github.com/cageyv/terraform-metadata/blob/master/schemas-extractor/build-providers.sh#L157-L163))
+- `RESET_REPOS=1` - Script will force a git reset and git clean on the repository if it is not clear ([See here](https://github.com/cageyv/terraform-metadata/blob/master/schemas-extractor/build-providers.sh#L52-L60))
 
 ### Environment Variables - CI script only
-- `KILL_CPU=1` - Causes the schema generation to run in parrallel via &. Same as `GENERATE_PARALLEL` above.
+- `KILL_CPU=1` - Causes the schema generation to run in parrallel via &. Same as `GENERATE_PARALLEL` above. ([See here](https://github.com/cageyv/terraform-metadata/blob/master/schemas-extractor/build-ci.sh#L145-L151))
