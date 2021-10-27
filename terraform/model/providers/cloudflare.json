@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.1.0",
+  "version": "v3.3.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -175,9 +175,21 @@
           "Value": "false"
         }
       },
+      "http_only_cookie_attribute": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "same_site_cookie_attribute": {
+        "Type": "String",
+        "Optional": true
       },
       "session_duration": {
         "Type": "String",
@@ -1145,6 +1157,10 @@
           }
         }
       },
+      "approval_required": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "decision": {
         "Type": "String",
         "Required": true
@@ -2061,6 +2077,10 @@
       "account_id": {
         "Type": "String",
         "Required": true
+      },
+      "cname": {
+        "Type": "String",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -3326,6 +3346,25 @@
         "Type": "String",
         "Optional": true
       },
+      "origin_steering": {
+        "Type": "Set",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "policy": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "random"
+              }
+            }
+          }
+        }
+      },
       "origins": {
         "Type": "Set",
         "Required": true,
@@ -3630,7 +3669,8 @@
       },
       "requested_validity": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       }
     },
     "cloudflare_page_rule": {
@@ -4588,6 +4628,10 @@
                     "Elem": {
                       "Type": "SchemaInfo",
                       "Info": {
+                        "action": {
+                          "Type": "String",
+                          "Optional": true
+                        },
                         "categories": {
                           "Type": "List",
                           "Optional": true,
@@ -4956,6 +5000,43 @@
       "zone_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "cloudflare_split_tunnel": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "mode": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The mode of the split tunnel policy. Either 'include' or 'exclude'."
+      },
+      "tunnels": {
+        "Type": "List",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The address for the tunnel."
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A description for the tunnel."
+            },
+            "host": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The domain name for the tunnel."
+            }
+          }
+        }
       }
     },
     "cloudflare_static_route": {
@@ -5794,6 +5875,11 @@
               "Optional": true,
               "Computed": true
             },
+            "binary_ast": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "brotli": {
               "Type": "String",
               "Optional": true,
@@ -5819,6 +5905,16 @@
               "Optional": true,
               "Computed": true
             },
+            "ciphers": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "cname_flattening": {
               "Type": "String",
               "Optional": true,
@@ -5830,6 +5926,11 @@
               "Computed": true
             },
             "email_obfuscation": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "filter_logs_to_cloudflare": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -5865,6 +5966,11 @@
               "Computed": true
             },
             "ipv6": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "log_to_cloudflare": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -5946,6 +6052,11 @@
               "Optional": true,
               "Computed": true
             },
+            "orange_to_orange": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "origin_error_page_pass_thru": {
               "Type": "String",
               "Optional": true,
@@ -5962,6 +6073,11 @@
               "Computed": true
             },
             "privacy_pass": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "proxy_read_timeout": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -6062,6 +6178,11 @@
               "Computed": true
             },
             "universal_ssl": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "visitor_ip": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -6127,6 +6248,11 @@
               "Optional": true,
               "Computed": true
             },
+            "binary_ast": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "brotli": {
               "Type": "String",
               "Optional": true,
@@ -6152,6 +6278,16 @@
               "Optional": true,
               "Computed": true
             },
+            "ciphers": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "cname_flattening": {
               "Type": "String",
               "Optional": true,
@@ -6163,6 +6299,11 @@
               "Computed": true
             },
             "email_obfuscation": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "filter_logs_to_cloudflare": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -6198,6 +6339,11 @@
               "Computed": true
             },
             "ipv6": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "log_to_cloudflare": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -6279,6 +6425,11 @@
               "Optional": true,
               "Computed": true
             },
+            "orange_to_orange": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "origin_error_page_pass_thru": {
               "Type": "String",
               "Optional": true,
@@ -6295,6 +6446,11 @@
               "Computed": true
             },
             "privacy_pass": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "proxy_read_timeout": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -6399,6 +6555,11 @@
               "Optional": true,
               "Computed": true
             },
+            "visitor_ip": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "waf": {
               "Type": "String",
               "Optional": true,
@@ -6437,6 +6598,35 @@
     }
   },
   "data-sources": {
+    "cloudflare_account_roles": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "roles": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      }
+    },
     "cloudflare_api_token_permission_groups": {
       "permissions": {
         "Type": "Map",
@@ -6722,6 +6912,53 @@
       "zone_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "cloudflare_zone": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name_servers": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "paused": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "plan": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vanity_name_servers": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     },
     "cloudflare_zone_dnssec": {

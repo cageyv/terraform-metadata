@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.4.0",
+  "version": "v2.7.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -304,6 +304,42 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "Specifies whether the application is a public client. Appropriate for apps using token grant flows that don't use a redirect URI"
+      },
+      "feature_tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Block of features to configure for this application using tags",
+        "Computed": true,
+        "ConflictsWith": [
+          "tags"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "custom_single_sign_on": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application represents a custom SAML application for linked service principals"
+            },
+            "enterprise": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application represents an Enterprise Application for linked service principals"
+            },
+            "gallery": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application represents a gallery application for linked service principals"
+            },
+            "hide": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application is invisible to users in My Apps and Office 365 Launcher"
+            }
+          }
+        }
       },
       "group_membership_claims": {
         "Type": "Set",
@@ -615,6 +651,20 @@
         "Type": "String",
         "Optional": true,
         "Description": "URL of the application's support page"
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A set of tags to apply to the application",
+        "Computed": true,
+        "ConflictsWith": [
+          "feature_tags"
+        ],
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "template_id": {
         "Type": "String",
@@ -1605,14 +1655,53 @@
         "Description": "The display name of the application associated with this service principal",
         "Computed": true
       },
+      "feature_tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Block of features to configure for this service principal using tags",
+        "Computed": true,
+        "ConflictsWith": [
+          "features",
+          "tags"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "custom_single_sign_on": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this service principal represents a custom SAML application"
+            },
+            "enterprise": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this service principal represents an Enterprise Application"
+            },
+            "gallery": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this service principal represents a gallery application"
+            },
+            "hide": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this app is invisible to users in My Apps and Office 365 Launcher"
+            }
+          }
+        }
+      },
       "features": {
         "Type": "List",
         "Optional": true,
         "Description": "Block of features to configure for this service principal using tags",
         "Computed": true,
         "ConflictsWith": [
+          "feature_tags",
           "tags"
         ],
+        "Deprecated": "This block has been renamed to `feature_tags` and will be removed in version 3.0 of the provider",
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -1810,7 +1899,8 @@
         "Description": "A set of tags to apply to the service principal",
         "Computed": true,
         "ConflictsWith": [
-          "features"
+          "features",
+          "feature_tags"
         ],
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -1990,6 +2080,11 @@
         "Optional": true,
         "Description": "Whether consent has been obtained for minors"
       },
+      "cost_center": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The cost center associated with the user."
+      },
       "country": {
         "Type": "String",
         "Optional": true,
@@ -2028,10 +2123,20 @@
         "Required": true,
         "Description": "The name to display in the address book for the user"
       },
+      "division": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the division in which the user works."
+      },
       "employee_id": {
         "Type": "String",
         "Optional": true,
         "Description": "The employee identifier assigned to the user by the organisation"
+      },
+      "employee_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Captures enterprise worker type. For example, Employee, Contractor, Consultant, or Vendor."
       },
       "external_user_state": {
         "Type": "String",
@@ -2083,6 +2188,11 @@
         "Optional": true,
         "Description": "The mail alias for the user. Defaults to the user name part of the user principal name (UPN)",
         "Computed": true
+      },
+      "manager_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The object ID of the user's manager"
       },
       "mobile_phone": {
         "Type": "String",
@@ -2384,6 +2494,42 @@
         "Description": "The fallback application type as public client, such as an installed application running on a mobile device",
         "Computed": true
       },
+      "feature_tags": {
+        "Type": "List",
+        "Description": "Block of features configured for this application using tags",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "custom_single_sign_on": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application principal represents a custom SAML application for linked service principals"
+            },
+            "enterprise": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application represents an Enterprise Application for linked service principals"
+            },
+            "gallery": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this application represents a gallery application for linked service principals"
+            },
+            "hide": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this app is invisible to users in My Apps and Office 365 Launcher",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
       "group_membership_claims": {
         "Type": "List",
         "Description": "The `groups` claim issued in a user or OAuth 2.0 access token that the app expects",
@@ -2675,6 +2821,16 @@
         "Type": "String",
         "Description": "URL of the application's support page",
         "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Description": "A set of tags applied to the application",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "terms_of_service_url": {
         "Type": "String",
@@ -3108,6 +3264,15 @@
           "ElementsType": "String"
         }
       },
+      "mail_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Whether the groups are mail-enabled",
+        "Computed": true,
+        "ConflictsWith": [
+          "object_ids"
+        ]
+      },
       "object_ids": {
         "Type": "List",
         "Optional": true,
@@ -3123,6 +3288,15 @@
         "Type": "Bool",
         "Optional": true,
         "Description": "Retrieve all groups with no filter"
+      },
+      "security_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Whether the groups are security-enabled",
+        "Computed": true,
+        "ConflictsWith": [
+          "object_ids"
+        ]
       }
     },
     "azuread_service_principal": {
@@ -3227,10 +3401,43 @@
         "Description": "The display name of the application associated with this service principal",
         "Computed": true
       },
+      "feature_tags": {
+        "Type": "List",
+        "Description": "Block of features configured for this service principal using tags",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "custom_single_sign_on": {
+              "Type": "Bool",
+              "Description": "Whether this service principal represents a custom SAML application",
+              "Computed": true
+            },
+            "enterprise": {
+              "Type": "Bool",
+              "Description": "Whether this service principal represents an Enterprise Application",
+              "Computed": true
+            },
+            "gallery": {
+              "Type": "Bool",
+              "Description": "Whether this service principal represents a gallery application",
+              "Computed": true
+            },
+            "hide": {
+              "Type": "Bool",
+              "Description": "Whether this app is invisible to users in My Apps and Office 365 Launcher",
+              "Computed": true
+            }
+          }
+        }
+      },
       "features": {
         "Type": "List",
         "Description": "Block of features configured for this service principal using tags",
         "Computed": true,
+        "Deprecated": "This block has been renamed to `feature_tags` and will be removed in version 3.0 of the provider",
         "IsBlock": true,
         "ConfigImplicitMode": "ComputedBlock",
         "Elem": {
@@ -3602,6 +3809,11 @@
         "Description": "Whether consent has been obtained for minors",
         "Computed": true
       },
+      "cost_center": {
+        "Type": "String",
+        "Description": "The cost center associated with the user.",
+        "Computed": true
+      },
       "country": {
         "Type": "String",
         "Description": "The country/region in which the user is located, e.g. `US` or `UK`",
@@ -3622,9 +3834,19 @@
         "Description": "The display name of the user",
         "Computed": true
       },
+      "division": {
+        "Type": "String",
+        "Description": "The name of the division in which the user works.",
+        "Computed": true
+      },
       "employee_id": {
         "Type": "String",
         "Description": "The employee identifier assigned to the user by the organisation",
+        "Computed": true
+      },
+      "employee_type": {
+        "Type": "String",
+        "Description": "Captures enterprise worker type. For example, Employee, Contractor, Consultant, or Vendor.",
         "Computed": true
       },
       "external_user_state": {
@@ -3666,6 +3888,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "The email alias of the user",
+        "Computed": true
+      },
+      "manager_id": {
+        "Type": "String",
+        "Description": "The object ID of the user's manager",
         "Computed": true
       },
       "mobile_phone": {

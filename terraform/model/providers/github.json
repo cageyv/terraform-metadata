@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.15.1",
+  "version": "v4.17.0",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -72,6 +72,15 @@
       "Optional": true,
       "Description": "The OAuth token used to connect to GitHub. Anonymous mode is enabled if both `token` and `app_auth` are not set.",
       "DefaultFunc": "ENV(GITHUB_TOKEN)"
+    },
+    "write_delay_ms": {
+      "Type": "Int",
+      "Optional": true,
+      "Description": "Amount of time in milliseconds to sleep in between writes to GitHub API. Defaults to 1000ms or 1s if not set.",
+      "Default": {
+        "Type": "int",
+        "Value": "1000"
+      }
     }
   },
   "resources": {
@@ -760,6 +769,14 @@
       }
     },
     "github_repository": {
+      "allow_auto_merge": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "allow_merge_commit": {
         "Type": "Bool",
         "Optional": true,
@@ -993,6 +1010,27 @@
       "vulnerability_alerts": {
         "Type": "Bool",
         "Optional": true
+      }
+    },
+    "github_repository_autolink_reference": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "key_prefix": {
+        "Type": "String",
+        "Required": true,
+        "Description": "This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit"
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The repository name"
+      },
+      "target_url_template": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The template of the target URL used for the links; must be a valid URL and contain `\u003cnum\u003e` for the reference number"
       }
     },
     "github_repository_collaborator": {
@@ -2090,6 +2128,10 @@
       }
     },
     "github_repository": {
+      "allow_auto_merge": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "allow_merge_commit": {
         "Type": "Bool",
         "Computed": true
@@ -2265,6 +2307,57 @@
       },
       "visibility": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "github_repository_file": {
+      "branch": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The branch name, defaults to \"main\"",
+        "Default": {
+          "Type": "string",
+          "Value": "main"
+        }
+      },
+      "commit_author": {
+        "Type": "String",
+        "Description": "The commit author name, defaults to the authenticated user's name",
+        "Computed": true
+      },
+      "commit_email": {
+        "Type": "String",
+        "Description": "The commit author email address, defaults to the authenticated user's email address",
+        "Computed": true
+      },
+      "commit_message": {
+        "Type": "String",
+        "Description": "The commit message when creating or updating the file",
+        "Computed": true
+      },
+      "commit_sha": {
+        "Type": "String",
+        "Description": "The SHA of the commit that modified the file",
+        "Computed": true
+      },
+      "content": {
+        "Type": "String",
+        "Description": "The file's content",
+        "Computed": true
+      },
+      "file": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The file path to manage"
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The repository name"
+      },
+      "sha": {
+        "Type": "String",
+        "Description": "The blob SHA of the file",
         "Computed": true
       }
     },
@@ -2638,6 +2731,44 @@
       "username": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "github_users": {
+      "logins": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "node_ids": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "unknown_logins": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "usernames": {
+        "Type": "List",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     }
   }
