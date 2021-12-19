@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.3.0",
+  "version": "v3.5.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -11,11 +11,23 @@
       "Description": "Configure API client to always use that account",
       "DefaultFunc": "ENV(CLOUDFLARE_ACCOUNT_ID)"
     },
+    "api_base_path": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Configure the base path used by the API client",
+      "DefaultFunc": "ENV(CLOUDFLARE_API_BASE_PATH)"
+    },
     "api_client_logging": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Whether to print logs from the API client (using the default log library logger)",
       "DefaultFunc": "ENV(CLOUDFLARE_API_CLIENT_LOGGING)"
+    },
+    "api_hostname": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Configure the hostname used by the API client",
+      "DefaultFunc": "ENV(CLOUDFLARE_API_HOSTNAME)"
     },
     "api_key": {
       "Type": "String",
@@ -83,6 +95,14 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "app_launcher_visible": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       },
       "aud": {
@@ -183,6 +203,10 @@
           "Value": "false"
         }
       },
+      "logo_url": {
+        "Type": "String",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -197,6 +221,14 @@
         "Default": {
           "Type": "string",
           "Value": "24h"
+        }
+      },
+      "skip_interstitial": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
         }
       },
       "type": {
@@ -2281,6 +2313,10 @@
                       "Type": "SchemaElements",
                       "ElementsType": "String"
                     }
+                  },
+                  "early_hints": {
+                    "Type": "String",
+                    "Optional": true
                   },
                   "http2": {
                     "Type": "String",
@@ -4796,6 +4832,26 @@
               "Type": "Bool",
               "Optional": true
             },
+            "exposed_credential_check": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "password_expression": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "username_expression": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
             "expression": {
               "Type": "String",
               "Required": true
@@ -5167,7 +5223,7 @@
         "Optional": true
       },
       "items": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -5925,6 +5981,11 @@
               "Optional": true,
               "Computed": true
             },
+            "early_hints": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "email_obfuscation": {
               "Type": "String",
               "Optional": true,
@@ -6298,6 +6359,11 @@
               "Optional": true,
               "Computed": true
             },
+            "early_hints": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "email_obfuscation": {
               "Type": "String",
               "Optional": true,
@@ -6598,6 +6664,24 @@
     }
   },
   "data-sources": {
+    "cloudflare_access_identity_provider": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "cloudflare_account_roles": {
       "account_id": {
         "Type": "String",
