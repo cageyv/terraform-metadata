@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.0.1",
+  "version": "v3.1.1",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -114,7 +114,7 @@
     "max_lease_ttl_seconds": {
       "Type": "Int",
       "Optional": true,
-      "Description": "Maximum TTL for secret leases requested by this provider",
+      "Description": "Maximum TTL for secret leases requested by this provider.",
       "DefaultFunc": "ENV(TERRAFORM_VAULT_MAX_TTL)"
     },
     "max_retries": {
@@ -123,11 +123,23 @@
       "Description": "Maximum number of retries when a 5xx error code is encountered.",
       "DefaultFunc": "ENV(VAULT_MAX_RETRIES)"
     },
+    "max_retries_ccc": {
+      "Type": "Int",
+      "Optional": true,
+      "Description": "Maximum number of retries for Client Controlled Consistency related operations",
+      "DefaultFunc": "ENV(VAULT_MAX_RETRIES_CCC)"
+    },
     "namespace": {
       "Type": "String",
       "Optional": true,
-      "Description": "The namespace to use. Available only for Vault Enterprise",
+      "Description": "The namespace to use. Available only for Vault Enterprise.",
       "DefaultFunc": "ENV(VAULT_NAMESPACE)"
+    },
+    "skip_child_token": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Set this to true to prevent the creation of ephemeral child token used by this provider.",
+      "DefaultFunc": "ENV(TERRAFORM_VAULT_SKIP_CHILD_TOKEN)"
     },
     "skip_tls_verify": {
       "Type": "Bool",
@@ -2088,16 +2100,18 @@
         "Description": "Connection parameters for the cassandra-database-plugin plugin.",
         "MaxItems": 1,
         "ConflictsWith": [
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2196,12 +2210,14 @@
         "ConflictsWith": [
           "cassandra",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
           "snowflake"
@@ -2236,15 +2252,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
-          "mongodb",
+          "elasticsearch",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2279,6 +2297,100 @@
           }
         }
       },
+      "influxdb": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the influxdb-database-plugin plugin.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cassandra",
+          "elasticsearch",
+          "hana",
+          "mssql",
+          "mongodb",
+          "mongodbatlas",
+          "mysql",
+          "mysql_aurora",
+          "mysql_legacy",
+          "mysql_rds",
+          "postgresql",
+          "oracle",
+          "snowflake"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connect_timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of seconds to use as a connection timeout.",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
+            },
+            "host": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Influxdb host to connect to."
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the password corresponding to the given username."
+            },
+            "pem_bundle": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Concatenated PEM blocks containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "pem_json": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies JSON containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The transport port to use to connect to Influxdb.",
+              "Default": {
+                "Type": "int",
+                "Value": "8086"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to use TLS when connecting to Influxdb.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the username to use for superuser access."
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            }
+          }
+        }
+      },
       "mongodb": {
         "Type": "List",
         "Optional": true,
@@ -2286,15 +2398,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
+          "influxdb",
           "mssql",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2341,16 +2455,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2383,15 +2498,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
+          "influxdb",
           "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2403,6 +2520,11 @@
               "Type": "String",
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
+            },
+            "contained_db": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Set to true when the target is a Contained Database, e.g. AzureSQL."
             },
             "max_connection_lifetime": {
               "Type": "Int",
@@ -2438,15 +2560,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
-          "mysql_rds",
+          "mongodb",
+          "mongodbatlas",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2503,15 +2627,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2558,15 +2684,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
+          "mysql_rds",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2613,15 +2741,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
           "mysql_aurora",
           "mysql_legacy",
           "postgresql",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2673,15 +2803,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2728,15 +2860,17 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "oracle",
-          "elasticsearch",
           "snowflake"
         ],
         "IsBlock": true,
@@ -2793,16 +2927,18 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "elasticsearch",
           "hana",
-          "mongodb",
+          "influxdb",
           "mssql",
+          "mongodb",
+          "mongodbatlas",
           "mysql",
-          "mysql_rds",
           "mysql_aurora",
           "mysql_legacy",
+          "mysql_rds",
           "postgresql",
-          "oracle",
-          "elasticsearch"
+          "oracle"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -3431,6 +3567,15 @@
         "Required": true,
         "Description": "JSON-encoded secret data to write."
       },
+      "delete_all_versions": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Only applicable for kv-v2 stores. If set, permanently deletes all versions for the specified key.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "disable_read": {
         "Type": "Bool",
         "Optional": true,
@@ -3710,6 +3855,16 @@
         "Type": "String",
         "Required": true,
         "Description": "ID of the entity to which this is an alias."
+      },
+      "custom_metadata": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Custom metadata to be associated with this alias.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "mount_accessor": {
         "Type": "String",
@@ -4072,6 +4227,15 @@
           "Value": "false"
         }
       },
+      "namespace_in_state": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Pass namespace in the OIDC state parameter instead of as a separate query parameter. With this setting, the allowed redirect URL(s) in Vault and on the provider side should not contain a namespace query parameter. This means only one redirect URL entry needs to be maintained on the OIDC provider side for all vault namespaces that will be authenticating against it. Defaults to true for new configs.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "oidc_client_id": {
         "Type": "String",
         "Optional": true,
@@ -4095,6 +4259,21 @@
           "jwks_url",
           "jwt_validation_pubkeys"
         ]
+      },
+      "oidc_response_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The response mode to be used in the OAuth2 request. Allowed values are 'query' and 'form_post'. Defaults to 'query'. If using Vault namespaces, and oidc_response_mode is 'form_post', then 'namespace_in_state' should be set to false."
+      },
+      "oidc_response_types": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The response types to request. Allowed values are 'code' and 'id_token'. Defaults to 'code'. Note: 'id_token' may only be used if 'oidc_response_mode' is set to 'form_post'.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "path": {
         "Type": "String",
