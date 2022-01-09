@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.13.0",
+  "version": "v2.14.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -858,6 +858,54 @@
         "Type": "String",
         "Required": true,
         "Description": "The certificate data, which can be PEM encoded, base64 encoded DER or hexadecimal encoded DER. See also the `encoding` argumen"
+      }
+    },
+    "azuread_application_federated_identity_credential": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "application_object_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The object ID of the application for which this federated identity credential should be created"
+      },
+      "audiences": {
+        "Type": "List",
+        "Required": true,
+        "Description": "List of audiences that can appear in the external token. This specifies what should be accepted in the `aud` claim of incoming tokens.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "credential_id": {
+        "Type": "String",
+        "Description": "A UUID used to uniquely identify this federated identity credential",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A description for the federated identity credential"
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A unique display name for the federated identity credential"
+      },
+      "issuer": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The URL of the external identity provider, which must match the issuer claim of the external token being exchanged. The combination of the values of issuer and subject must be unique on the app."
+      },
+      "subject": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The identifier of the external software workload within the external identity provider. The combination of issuer and subject must be unique on the app."
       }
     },
     "azuread_application_password": {
@@ -2153,13 +2201,26 @@
       ],
       "display_name": {
         "Type": "String",
-        "Description": "The display name for the password",
+        "Optional": true,
+        "Description": "A display name for the password",
         "Computed": true
       },
       "end_date": {
         "Type": "String",
+        "Optional": true,
         "Description": "The end date until which the password is valid, formatted as an RFC3339 date string (e.g. `2018-01-01T01:02:03Z`)",
-        "Computed": true
+        "Computed": true,
+        "ConflictsWith": [
+          "end_date_relative"
+        ]
+      },
+      "end_date_relative": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A relative duration for which the password is valid until, for example `240h` (10 days) or `2400h30m`. Changing this field forces a new resource to be created",
+        "ConflictsWith": [
+          "end_date"
+        ]
       },
       "key_id": {
         "Type": "String",
@@ -2183,7 +2244,8 @@
       },
       "start_date": {
         "Type": "String",
-        "Description": "The start date from which the password is valid, formatted as an RFC3339 date string (e.g. `2018-01-01T01:02:03Z`)",
+        "Optional": true,
+        "Description": "The start date from which the password is valid, formatted as an RFC3339 date string (e.g. `2018-01-01T01:02:03Z`). If this isn't specified, the current date is used",
         "Computed": true
       },
       "value": {
