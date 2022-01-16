@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v2.91.0",
+  "version": "v2.92.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -314,8 +314,9 @@
       },
       "country_code": {
         "Type": "String",
-        "Required": true,
-        "Description": "Country code of the B2C tenant. See https://aka.ms/B2CDataResidency for valid country codes."
+        "Optional": true,
+        "Description": "Country code of the B2C tenant. See https://aka.ms/B2CDataResidency for valid country codes.",
+        "Computed": true
       },
       "data_residency_location": {
         "Type": "String",
@@ -324,8 +325,9 @@
       },
       "display_name": {
         "Type": "String",
-        "Required": true,
-        "Description": "The initial display name of the B2C tenant."
+        "Optional": true,
+        "Description": "The initial display name of the B2C tenant.",
+        "Computed": true
       },
       "domain_name": {
         "Type": "String",
@@ -2719,6 +2721,21 @@
         "Required": true
       }
     },
+    "azurerm_api_management_api_tag": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "api_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_api_management_api_version_set": {
       "__timeouts__": [
         "create",
@@ -3319,6 +3336,7 @@
       "proxy": {
         "Type": "List",
         "Optional": true,
+        "Deprecated": "`proxy` is deprecated and will be renamed to `gateway` in version 3.0 of the AzureRM provider",
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -25972,6 +25990,21 @@
         }
       }
     },
+    "azurerm_disk_pool_managed_disk_attachment": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "disk_pool_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "managed_disk_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_dns_a_record": {
       "__timeouts__": [
         "create",
@@ -26594,6 +26627,22 @@
         "update",
         "delete"
       ],
+      "auto_create_topic_with_first_subscription": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "auto_delete_topic_with_last_subscription": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "endpoint": {
         "Type": "String",
         "Computed": true
@@ -26720,6 +26769,14 @@
         "Default": {
           "Type": "string",
           "Value": "EventGridSchema"
+        }
+      },
+      "local_auth_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       },
       "location": {
@@ -28609,6 +28666,14 @@
         "Default": {
           "Type": "string",
           "Value": "EventGridSchema"
+        }
+      },
+      "local_auth_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       },
       "location": {
@@ -39347,6 +39412,10 @@
         "Type": "String",
         "Computed": true
       },
+      "event_hub_events_namespace": {
+        "Type": "String",
+        "Computed": true
+      },
       "event_hub_events_path": {
         "Type": "String",
         "Computed": true
@@ -46399,9 +46468,22 @@
         "Type": "String",
         "Computed": true
       },
+      "reservation_capacity_in_gb_per_day": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "reservation_capcity_in_gb_per_day"
+        ]
+      },
       "reservation_capcity_in_gb_per_day": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "reservation_capacity_in_gb_per_day"
+        ],
+        "Deprecated": "As this property name contained a typo originally, please switch to using 'reservation_capacity_in_gb_per_day' instead."
       },
       "resource_group_name": {
         "Type": "String",
@@ -51475,6 +51557,34 @@
           "Value": "true"
         }
       },
+      "event_hub_receiver": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "event_hub_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "use_common_alert_schema": {
+              "Type": "Bool",
+              "Optional": true
+            }
+          }
+        }
+      },
       "itsm_receiver": {
         "Type": "List",
         "Optional": true,
@@ -53723,6 +53833,10 @@
               "Type": "Bool",
               "Optional": true
             },
+            "storage_account_subscription_id": {
+              "Type": "String",
+              "Optional": true
+            },
             "storage_endpoint": {
               "Type": "String",
               "Optional": true
@@ -54377,6 +54491,10 @@
               "Type": "Bool",
               "Optional": true
             },
+            "storage_account_subscription_id": {
+              "Type": "String",
+              "Optional": true
+            },
             "storage_endpoint": {
               "Type": "String",
               "Optional": true
@@ -54512,6 +54630,10 @@
           "Type": "bool",
           "Value": "false"
         }
+      },
+      "storage_account_subscription_id": {
+        "Type": "String",
+        "Optional": true
       },
       "storage_endpoint": {
         "Type": "String",
@@ -60964,6 +61086,29 @@
         "Optional": true,
         "Computed": true
       },
+      "managed_resources": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "event_hub_namespace_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "resource_group_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "storage_account_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -61006,6 +61151,34 @@
         "update",
         "delete"
       ],
+      "encryption": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "infrastructure_encryption_enabled": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "key_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "use_system_assigned_identity": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
       "identity": {
         "Type": "List",
         "Optional": true,
@@ -68766,6 +68939,14 @@
               "Required": true
             }
           }
+        }
+      },
+      "infrastructure_encryption_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
         }
       },
       "is_hns_enabled": {
@@ -88964,6 +89145,34 @@
         "Type": "Bool",
         "Computed": true
       },
+      "event_hub_receiver": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "event_hub_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "use_common_alert_schema": {
+              "Type": "Bool",
+              "Optional": true
+            }
+          }
+        }
+      },
       "itsm_receiver": {
         "Type": "List",
         "Computed": true,
@@ -93754,6 +93963,10 @@
         }
       },
       "enable_https_traffic_only": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "infrastructure_encryption_enabled": {
         "Type": "Bool",
         "Computed": true
       },

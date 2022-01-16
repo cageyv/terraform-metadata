@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.6.0",
+  "version": "v3.7.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -2497,6 +2497,59 @@
         "Required": true
       }
     },
+    "cloudflare_device_posture_integration": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "config": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "api_url": {
+              "Type": "String",
+              "Optional": true
+            },
+            "auth_url": {
+              "Type": "String",
+              "Optional": true
+            },
+            "client_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "client_secret": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "identifier": {
+        "Type": "String",
+        "Optional": true
+      },
+      "interval": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "cloudflare_device_posture_rule": {
       "account_id": {
         "Type": "String",
@@ -2515,6 +2568,16 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "compliance_status": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The workspace one device compliance status."
+            },
+            "connection_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The workspace one connection id."
+            },
             "domain": {
               "Type": "String",
               "Optional": true,
@@ -2603,6 +2666,43 @@
       "type": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "cloudflare_fallback_domain": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "domains": {
+        "Type": "List",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A description of the fallback domain, displayed in the client UI."
+            },
+            "dns_server": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of IP addresses to handle domain resolution.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "suffix": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The domain suffix to match when resolving locally."
+            }
+          }
+        }
       }
     },
     "cloudflare_filter": {
@@ -3477,6 +3577,10 @@
       }
     },
     "cloudflare_logpush_job": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "dataset": {
         "Type": "String",
         "Required": true
@@ -3503,10 +3607,14 @@
       },
       "zone_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "cloudflare_logpush_ownership_challenge": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "destination_conf": {
         "Type": "String",
         "Required": true
@@ -3517,7 +3625,7 @@
       },
       "zone_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "cloudflare_magic_firewall_ruleset": {

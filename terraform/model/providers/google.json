@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.5.0",
+  "version": "v4.6.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -340,6 +340,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_MONITORING_CUSTOM_ENDPOINT)"
+    },
+    "network_connectivity_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_NETWORK_CONNECTIVITY_CUSTOM_ENDPOINT)"
     },
     "network_management_custom_endpoint": {
       "Type": "String",
@@ -11516,6 +11521,50 @@
               "Description": "The Cloud Storage prefix of the DAGs for this environment. Although Cloud Storage objects reside in a flat namespace, a hierarchical file tree can be simulated using '/'-delimited object name prefixes. DAG objects for this environment reside in a simulated directory with this prefix.",
               "Computed": true
             },
+            "database_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The configuration of Cloud SQL instance that is used by the Apache Airflow software. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "machine_type": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Optional. Cloud SQL machine type used by Airflow database. It has to be one of: db-n1-standard-2, db-n1-standard-4, db-n1-standard-8 or db-n1-standard-16. If not specified, db-n1-standard-2 will be used."
+                  }
+                }
+              }
+            },
+            "encryption_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The encryption options for the Composer environment and its dependencies. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kms_key_name": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Optional. Customer-managed Encryption Key available through Google's Key Management Service. Cannot be updated."
+                  }
+                }
+              }
+            },
+            "environment_size": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The size of the Cloud Composer environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+              "Computed": true
+            },
             "gke_cluster": {
               "Type": "String",
               "Description": "The Kubernetes Engine cluster used to run this environment.",
@@ -11658,6 +11707,12 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "cloud_composer_network_ipv4_cidr_block": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The CIDR block from which IP range for Cloud Composer Network in tenant project will be reserved. Needs to be disjoint from private_cluster_config.master_ipv4_cidr_block and cloud_sql_ipv4_cidr_block. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+                    "Computed": true
+                  },
                   "cloud_sql_ipv4_cidr_block": {
                     "Type": "String",
                     "Optional": true,
@@ -11746,6 +11801,175 @@
                     "Optional": true,
                     "Description": "The number of schedulers for Airflow. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-2.*.*.",
                     "Computed": true
+                  }
+                }
+              }
+            },
+            "web_server_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The configuration settings for the Airflow web server App Engine instance. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "machine_type": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Optional. Machine type on which Airflow web server is running. It has to be one of: composer-n1-webserver-2, composer-n1-webserver-4 or composer-n1-webserver-8. If not specified, composer-n1-webserver-2 will be used. Value custom is returned only in response, if Airflow web server parameters were manually changed to a non-standard values."
+                  }
+                }
+              }
+            },
+            "web_server_network_access_control": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The network-level access control policy for the Airflow web server. If unspecified, no network-level access restrictions will be applied. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allowed_ip_range": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Description": "A collection of allowed IP ranges with descriptions.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "description": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "A description of this ip range."
+                        },
+                        "value": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "IP address or range, defined using CIDR notation, of requests that this rule applies to. Examples: 192.168.1.1 or 192.168.0.0/16 or 2001:db8::/32 or 2001:0db8:0000:0042:0000:8a2e:0370:7334. IP range prefixes should be properly truncated. For example, 1.2.3.4/24 should be truncated to 1.2.3.0/24. Similarly, for IPv6, 2001:db8::1/32 should be truncated to 2001:db8::/32."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "workloads_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The workloads configuration settings for the GKE cluster associated with the Cloud Composer environment. Supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "scheduler": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Configuration for resources used by Airflow schedulers.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "The number of schedulers."
+                        },
+                        "cpu": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "CPU request and limit for a single Airflow scheduler replica"
+                        },
+                        "memory_gb": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "Memory (GB) request and limit for a single Airflow scheduler replica."
+                        },
+                        "storage_gb": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "Storage (GB) request and limit for a single Airflow scheduler replica."
+                        }
+                      }
+                    }
+                  },
+                  "web_server": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Configuration for resources used by Airflow web server.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cpu": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "CPU request and limit for Airflow web server."
+                        },
+                        "memory_gb": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "Memory (GB) request and limit for Airflow web server."
+                        },
+                        "storage_gb": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "Storage (GB) request and limit for Airflow web server."
+                        }
+                      }
+                    }
+                  },
+                  "worker": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Configuration for resources used by Airflow workers.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cpu": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "CPU request and limit for a single Airflow worker replica."
+                        },
+                        "max_count": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Maximum number of workers for autoscaling."
+                        },
+                        "memory_gb": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "Memory (GB) request and limit for a single Airflow worker replica."
+                        },
+                        "min_count": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Minimum number of workers for autoscaling."
+                        },
+                        "storage_gb": {
+                          "Type": "Float",
+                          "Optional": true,
+                          "Description": "Storage (GB) request and limit for a single Airflow worker replica."
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -13584,7 +13808,7 @@
       "source_ranges": {
         "Type": "Set",
         "Optional": true,
-        "Description": "If source ranges are specified, the firewall will apply only to\ntraffic that has source IP address in these ranges. These ranges must\nbe expressed in CIDR format. One or both of sourceRanges and\nsourceTags may be set. If both properties are set, the firewall will\napply to traffic that has source IP address within sourceRanges OR the\nsource IP that belongs to a tag listed in the sourceTags property. The\nconnection does not need to match both properties for the firewall to\napply. Only IPv4 is supported.",
+        "Description": "If source ranges are specified, the firewall will apply only to\ntraffic that has source IP address in these ranges. These ranges must\nbe expressed in CIDR format. One or both of sourceRanges and\nsourceTags may be set. If both properties are set, the firewall will\napply to traffic that has source IP address within sourceRanges OR the\nsource IP that belongs to a tag listed in the sourceTags property. The\nconnection does not need to match both properties for the firewall to\napply. Only IPv4 is supported. For INGRESS traffic, one of 'source_ranges',\n'source_tags' or 'source_service_accounts' is required.",
         "ConflictsWith": [
           "destination_ranges"
         ],
@@ -13597,7 +13821,7 @@
       "source_service_accounts": {
         "Type": "Set",
         "Optional": true,
-        "Description": "If source service accounts are specified, the firewall will apply only\nto traffic originating from an instance with a service account in this\nlist. Source service accounts cannot be used to control traffic to an\ninstance's external IP address because service accounts are associated\nwith an instance, not an IP address. sourceRanges can be set at the\nsame time as sourceServiceAccounts. If both are set, the firewall will\napply to traffic that has source IP address within sourceRanges OR the\nsource IP belongs to an instance with service account listed in\nsourceServiceAccount. The connection does not need to match both\nproperties for the firewall to apply. sourceServiceAccounts cannot be\nused at the same time as sourceTags or targetTags.",
+        "Description": "If source service accounts are specified, the firewall will apply only\nto traffic originating from an instance with a service account in this\nlist. Source service accounts cannot be used to control traffic to an\ninstance's external IP address because service accounts are associated\nwith an instance, not an IP address. sourceRanges can be set at the\nsame time as sourceServiceAccounts. If both are set, the firewall will\napply to traffic that has source IP address within sourceRanges OR the\nsource IP belongs to an instance with service account listed in\nsourceServiceAccount. The connection does not need to match both\nproperties for the firewall to apply. sourceServiceAccounts cannot be\nused at the same time as sourceTags or targetTags. For INGRESS traffic,\none of 'source_ranges', 'source_tags' or 'source_service_accounts' is required.",
         "MaxItems": 10,
         "ConflictsWith": [
           "source_tags",
@@ -13612,7 +13836,7 @@
       "source_tags": {
         "Type": "Set",
         "Optional": true,
-        "Description": "If source tags are specified, the firewall will apply only to traffic\nwith source IP that belongs to a tag listed in source tags. Source\ntags cannot be used to control traffic to an instance's external IP\naddress. Because tags are associated with an instance, not an IP\naddress. One or both of sourceRanges and sourceTags may be set. If\nboth properties are set, the firewall will apply to traffic that has\nsource IP address within sourceRanges OR the source IP that belongs to\na tag listed in the sourceTags property. The connection does not need\nto match both properties for the firewall to apply.",
+        "Description": "If source tags are specified, the firewall will apply only to traffic\nwith source IP that belongs to a tag listed in source tags. Source\ntags cannot be used to control traffic to an instance's external IP\naddress. Because tags are associated with an instance, not an IP\naddress. One or both of sourceRanges and sourceTags may be set. If\nboth properties are set, the firewall will apply to traffic that has\nsource IP address within sourceRanges OR the source IP that belongs to\na tag listed in the sourceTags property. The connection does not need\nto match both properties for the firewall to apply. For INGRESS traffic,\none of 'source_ranges', 'source_tags' or 'source_service_accounts' is required.",
         "ConflictsWith": [
           "destination_ranges",
           "source_service_accounts",
@@ -29895,6 +30119,11 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "boot_disk_kms_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool."
+            },
             "disk_size_gb": {
               "Type": "Int",
               "Optional": true,
@@ -30253,6 +30482,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "boot_disk_kms_key": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool."
+                  },
                   "disk_size_gb": {
                     "Type": "Int",
                     "Optional": true,
@@ -30887,6 +31121,11 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "boot_disk_kms_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool."
+            },
             "disk_size_gb": {
               "Type": "Int",
               "Optional": true,
@@ -46259,6 +46498,76 @@
         "Computed": true
       }
     },
+    "google_network_connectivity_hub": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. The time the hub was created.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "An optional description of the hub."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Optional labels in key:value format. For more information about labels, see [Requirements for labels](https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements).",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Immutable. The name of the hub. Hub names must be unique. They use the following form: `projects/{project_number}/locations/global/hubs/{hub_id}`"
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "routing_vpcs": {
+        "Type": "List",
+        "Description": "The VPC network associated with this hub's spokes. All of the VPN tunnels, VLAN attachments, and router appliance instances referenced by this hub's spokes must belong to this VPC network. This field is read-only. Network Connectivity Center automatically populates it based on the set of spokes attached to the hub.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "uri": {
+              "Type": "String",
+              "Description": "The URI of the VPC network.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "state": {
+        "Type": "String",
+        "Description": "Output only. The current lifecycle state of this hub. Possible values: STATE_UNSPECIFIED, CREATING, ACTIVE, DELETING",
+        "Computed": true
+      },
+      "unique_id": {
+        "Type": "String",
+        "Description": "Output only. The Google-generated UUID for the hub. This value is unique across all hub resources. If a hub is deleted and another with the same name is created, the new hub is assigned a different unique_id.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. The time the hub was last updated.",
+        "Computed": true
+      }
+    },
     "google_network_management_connectivity_test": {
       "__timeouts__": [
         "create",
@@ -54223,7 +54532,6 @@
     "google_pubsub_schema": {
       "__timeouts__": [
         "create",
-        "update",
         "delete"
       ],
       "definition": {
@@ -57173,6 +57481,11 @@
       }
     },
     "google_storage_bucket": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update"
+      ],
       "cors": {
         "Type": "List",
         "Optional": true,
@@ -60215,6 +60528,45 @@
               "Description": "The Cloud Storage prefix of the DAGs for this environment. Although Cloud Storage objects reside in a flat namespace, a hierarchical file tree can be simulated using '/'-delimited object name prefixes. DAG objects for this environment reside in a simulated directory with this prefix.",
               "Computed": true
             },
+            "database_config": {
+              "Type": "List",
+              "Description": "The configuration of Cloud SQL instance that is used by the Apache Airflow software. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "machine_type": {
+                    "Type": "String",
+                    "Description": "Optional. Cloud SQL machine type used by Airflow database. It has to be one of: db-n1-standard-2, db-n1-standard-4, db-n1-standard-8 or db-n1-standard-16. If not specified, db-n1-standard-2 will be used.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "encryption_config": {
+              "Type": "List",
+              "Description": "The encryption options for the Composer environment and its dependencies. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kms_key_name": {
+                    "Type": "String",
+                    "Description": "Optional. Customer-managed Encryption Key available through Google's Key Management Service. Cannot be updated.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "environment_size": {
+              "Type": "String",
+              "Description": "The size of the Cloud Composer environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+              "Computed": true
+            },
             "gke_cluster": {
               "Type": "String",
               "Description": "The Kubernetes Engine cluster used to run this environment.",
@@ -60333,6 +60685,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "cloud_composer_network_ipv4_cidr_block": {
+                    "Type": "String",
+                    "Description": "The CIDR block from which IP range for Cloud Composer Network in tenant project will be reserved. Needs to be disjoint from private_cluster_config.master_ipv4_cidr_block and cloud_sql_ipv4_cidr_block. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+                    "Computed": true
+                  },
                   "cloud_sql_ipv4_cidr_block": {
                     "Type": "String",
                     "Description": "The CIDR block from which IP range in tenant project will be reserved for Cloud SQL. Needs to be disjoint from web_server_ipv4_cidr_block.",
@@ -60409,6 +60766,165 @@
                     "Type": "Int",
                     "Description": "The number of schedulers for Airflow. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-2.*.*.",
                     "Computed": true
+                  }
+                }
+              }
+            },
+            "web_server_config": {
+              "Type": "List",
+              "Description": "The configuration settings for the Airflow web server App Engine instance. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "machine_type": {
+                    "Type": "String",
+                    "Description": "Optional. Machine type on which Airflow web server is running. It has to be one of: composer-n1-webserver-2, composer-n1-webserver-4 or composer-n1-webserver-8. If not specified, composer-n1-webserver-2 will be used. Value custom is returned only in response, if Airflow web server parameters were manually changed to a non-standard values.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "web_server_network_access_control": {
+              "Type": "List",
+              "Description": "The network-level access control policy for the Airflow web server. If unspecified, no network-level access restrictions will be applied. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allowed_ip_range": {
+                    "Type": "Set",
+                    "Description": "A collection of allowed IP ranges with descriptions.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "description": {
+                          "Type": "String",
+                          "Description": "A description of this ip range.",
+                          "Computed": true
+                        },
+                        "value": {
+                          "Type": "String",
+                          "Description": "IP address or range, defined using CIDR notation, of requests that this rule applies to. Examples: 192.168.1.1 or 192.168.0.0/16 or 2001:db8::/32 or 2001:0db8:0000:0042:0000:8a2e:0370:7334. IP range prefixes should be properly truncated. For example, 1.2.3.4/24 should be truncated to 1.2.3.0/24. Similarly, for IPv6, 2001:db8::1/32 should be truncated to 2001:db8::/32.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "workloads_config": {
+              "Type": "List",
+              "Description": "The workloads configuration settings for the GKE cluster associated with the Cloud Composer environment. Supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "scheduler": {
+                    "Type": "List",
+                    "Description": "Configuration for resources used by Airflow schedulers.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Description": "The number of schedulers.",
+                          "Computed": true
+                        },
+                        "cpu": {
+                          "Type": "Float",
+                          "Description": "CPU request and limit for a single Airflow scheduler replica",
+                          "Computed": true
+                        },
+                        "memory_gb": {
+                          "Type": "Float",
+                          "Description": "Memory (GB) request and limit for a single Airflow scheduler replica.",
+                          "Computed": true
+                        },
+                        "storage_gb": {
+                          "Type": "Float",
+                          "Description": "Storage (GB) request and limit for a single Airflow scheduler replica.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "web_server": {
+                    "Type": "List",
+                    "Description": "Configuration for resources used by Airflow web server.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cpu": {
+                          "Type": "Float",
+                          "Description": "CPU request and limit for Airflow web server.",
+                          "Computed": true
+                        },
+                        "memory_gb": {
+                          "Type": "Float",
+                          "Description": "Memory (GB) request and limit for Airflow web server.",
+                          "Computed": true
+                        },
+                        "storage_gb": {
+                          "Type": "Float",
+                          "Description": "Storage (GB) request and limit for Airflow web server.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "worker": {
+                    "Type": "List",
+                    "Description": "Configuration for resources used by Airflow workers.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cpu": {
+                          "Type": "Float",
+                          "Description": "CPU request and limit for a single Airflow worker replica.",
+                          "Computed": true
+                        },
+                        "max_count": {
+                          "Type": "Int",
+                          "Description": "Maximum number of workers for autoscaling.",
+                          "Computed": true
+                        },
+                        "memory_gb": {
+                          "Type": "Float",
+                          "Description": "Memory (GB) request and limit for a single Airflow worker replica.",
+                          "Computed": true
+                        },
+                        "min_count": {
+                          "Type": "Int",
+                          "Description": "Minimum number of workers for autoscaling.",
+                          "Computed": true
+                        },
+                        "storage_gb": {
+                          "Type": "Float",
+                          "Description": "Storage (GB) request and limit for a single Airflow worker replica.",
+                          "Computed": true
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -64916,6 +65432,11 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "boot_disk_kms_key": {
+              "Type": "String",
+              "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.",
+              "Computed": true
+            },
             "disk_size_gb": {
               "Type": "Int",
               "Description": "Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB.",
@@ -65226,6 +65747,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "boot_disk_kms_key": {
+                    "Type": "String",
+                    "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.",
+                    "Computed": true
+                  },
                   "disk_size_gb": {
                     "Type": "Int",
                     "Description": "Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB.",

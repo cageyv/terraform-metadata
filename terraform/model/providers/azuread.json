@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.14.0",
+  "version": "v2.15.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -3540,6 +3540,12 @@
       "__timeouts__": [
         "read"
       ],
+      "display_name_prefix": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Common display name prefix of the groups",
+        "Computed": true
+      },
       "display_names": {
         "Type": "List",
         "Optional": true,
