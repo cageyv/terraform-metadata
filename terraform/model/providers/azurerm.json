@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v2.92.0",
+  "version": "v2.93.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -11117,9 +11117,25 @@
         "update",
         "delete"
       ],
+      "copy_paste_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "dns_name": {
         "Type": "String",
         "Computed": true
+      },
+      "file_copy_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ip_configuration": {
         "Type": "List",
@@ -11145,6 +11161,14 @@
           }
         }
       },
+      "ip_connect_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "location": {
         "Type": "String",
         "Required": true
@@ -11156,6 +11180,22 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "scale_units": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
+      },
+      "shareable_link_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "sku": {
         "Type": "String",
@@ -11172,6 +11212,14 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "tunneling_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
         }
       }
     },
@@ -39324,6 +39372,14 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "authentication_type": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "keyBased"
+              }
+            },
             "batch_frequency_in_seconds": {
               "Type": "Int",
               "Optional": true,
@@ -39334,7 +39390,7 @@
             },
             "connection_string": {
               "Type": "String",
-              "Required": true
+              "Optional": true
             },
             "container_name": {
               "Type": "String",
@@ -39348,6 +39404,14 @@
                 "Value": "Avro"
               }
             },
+            "endpoint_uri": {
+              "Type": "String",
+              "Optional": true
+            },
+            "entity_path": {
+              "Type": "String",
+              "Optional": true
+            },
             "file_name_format": {
               "Type": "String",
               "Optional": true,
@@ -39355,6 +39419,10 @@
                 "Type": "string",
                 "Value": "{iothub}/{partition}/{YYYY}/{MM}/{DD}/{HH}/{mm}"
               }
+            },
+            "identity_id": {
+              "Type": "String",
+              "Optional": true
             },
             "max_chunk_size_in_bytes": {
               "Type": "Int",
@@ -39953,9 +40021,35 @@
         "update",
         "delete"
       ],
+      "authentication_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "keyBased"
+        }
+      },
       "connection_string": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "ConflictsWith": [
+          "identity_id"
+        ]
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Optional": true
+      },
+      "entity_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "identity_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "connection_string"
+        ]
       },
       "iothub_id": {
         "Type": "String",
@@ -39990,9 +40084,35 @@
         "update",
         "delete"
       ],
+      "authentication_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "keyBased"
+        }
+      },
       "connection_string": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "ConflictsWith": [
+          "identity_id"
+        ]
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Optional": true
+      },
+      "entity_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "identity_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "connection_string"
+        ]
       },
       "iothub_id": {
         "Type": "String",
@@ -40027,9 +40147,35 @@
         "update",
         "delete"
       ],
+      "authentication_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "keyBased"
+        }
+      },
       "connection_string": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "ConflictsWith": [
+          "identity_id"
+        ]
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Optional": true
+      },
+      "entity_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "identity_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "connection_string"
+        ]
       },
       "iothub_id": {
         "Type": "String",
@@ -40064,6 +40210,14 @@
         "update",
         "delete"
       ],
+      "authentication_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "keyBased"
+        }
+      },
       "batch_frequency_in_seconds": {
         "Type": "Int",
         "Optional": true,
@@ -40074,7 +40228,10 @@
       },
       "connection_string": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "ConflictsWith": [
+          "identity_id"
+        ]
       },
       "container_name": {
         "Type": "String",
@@ -40088,6 +40245,10 @@
           "Value": "Avro"
         }
       },
+      "endpoint_uri": {
+        "Type": "String",
+        "Optional": true
+      },
       "file_name_format": {
         "Type": "String",
         "Optional": true,
@@ -40095,6 +40256,13 @@
           "Type": "string",
           "Value": "{iothub}/{partition}/{YYYY}/{MM}/{DD}/{HH}/{mm}"
         }
+      },
+      "identity_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "connection_string"
+        ]
       },
       "iothub_id": {
         "Type": "String",
@@ -65183,6 +65351,14 @@
           }
         }
       },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "resource_group_name": {
         "Type": "String",
         "Optional": true,
@@ -68583,6 +68759,39 @@
         "Type": "String",
         "Computed": true
       },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "location": {
         "Type": "String",
         "Required": true
@@ -70527,6 +70736,10 @@
       "content_encoding": {
         "Type": "String",
         "Optional": true
+      },
+      "content_length": {
+        "Type": "Int",
+        "Computed": true
       },
       "content_md5": {
         "Type": "String",
@@ -88581,6 +88794,38 @@
           "ElementsType": "String"
         }
       },
+      "identity": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "location": {
         "Type": "String",
         "Computed": true
@@ -89866,6 +90111,149 @@
         }
       },
       "version": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azurerm_mysql_flexible_server": {
+      "__timeouts__": [
+        "read"
+      ],
+      "administrator_login": {
+        "Type": "String",
+        "Computed": true
+      },
+      "backup_retention_days": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "delegated_subnet_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "fqdn": {
+        "Type": "String",
+        "Computed": true
+      },
+      "geo_redundant_backup_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "high_availability": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mode": {
+              "Type": "String",
+              "Computed": true
+            },
+            "standby_availability_zone": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "maintenance_window": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day_of_week": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "start_hour": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "start_minute": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "private_dns_zone_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "replica_capacity": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "replication_role": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "restore_point_in_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "sku_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "storage": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_grow_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "iops": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "size_gb": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "zone": {
         "Type": "String",
         "Computed": true
       }

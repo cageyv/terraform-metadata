@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.1.1",
+  "version": "v3.2.1",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -1422,6 +1422,12 @@
         "Type": "String",
         "Optional": true,
         "Description": "Specifies a custom HTTP STS endpoint to use."
+      },
+      "username_template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Template describing how dynamic usernames are generated.",
+        "Computed": true
       }
     },
     "vault_aws_secret_backend_role": {
@@ -2100,6 +2106,7 @@
         "Description": "Connection parameters for the cassandra-database-plugin plugin.",
         "MaxItems": 1,
         "ConflictsWith": [
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2112,7 +2119,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2197,6 +2205,89 @@
           }
         }
       },
+      "couchbase": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the couchbase-database-plugin plugin.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cassandra",
+          "elasticsearch",
+          "hana",
+          "influxdb",
+          "mssql",
+          "mongodb",
+          "mongodbatlas",
+          "mysql",
+          "mysql_aurora",
+          "mysql_legacy",
+          "mysql_rds",
+          "postgresql",
+          "oracle",
+          "snowflake",
+          "redshift"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "base64_pem": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required if `tls` is `true`. Specifies the certificate authority of the Couchbase server, as a PEM certificate that has been base64 encoded."
+            },
+            "bucket_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required for Couchbase versions prior to 6.5.0. This is only used to verify vault's connection to the server."
+            },
+            "hosts": {
+              "Type": "List",
+              "Required": true,
+              "Description": "A set of Couchbase URIs to connect to. Must use `couchbases://` scheme if `tls` is `true`.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": " Specifies whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the password corresponding to the given username."
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies whether to use TLS when connecting to Couchbase.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the username for Vault to use."
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            }
+          }
+        }
+      },
       "data": {
         "Type": "Map",
         "Optional": true,
@@ -2209,6 +2300,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "hana",
           "influxdb",
           "mssql",
@@ -2220,7 +2312,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2252,6 +2345,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "influxdb",
           "mssql",
@@ -2263,7 +2357,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2304,6 +2399,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "mssql",
@@ -2315,7 +2411,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2398,6 +2495,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2409,7 +2507,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2455,6 +2554,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2466,7 +2566,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2498,6 +2599,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2509,7 +2611,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2560,6 +2663,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2571,7 +2675,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2627,6 +2732,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2638,7 +2744,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2684,6 +2791,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2695,7 +2803,8 @@
           "mysql_rds",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2741,6 +2850,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2752,7 +2862,8 @@
           "mysql_legacy",
           "postgresql",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2803,6 +2914,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2814,7 +2926,8 @@
           "mysql_legacy",
           "mysql_rds",
           "postgresql",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2860,6 +2973,7 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2871,7 +2985,8 @@
           "mysql_legacy",
           "mysql_rds",
           "oracle",
-          "snowflake"
+          "snowflake",
+          "redshift"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2910,23 +3025,14 @@
           }
         }
       },
-      "root_rotation_statements": {
+      "redshift": {
         "Type": "List",
         "Optional": true,
-        "Description": "A list of database statements to be executed to rotate the root user's credentials.",
-        "ConfigImplicitMode": "Attr",
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "snowflake": {
-        "Type": "List",
-        "Optional": true,
-        "Description": "Connection parameters for the snowflake-database-plugin plugin.",
+        "Description": "Connection parameters for the redshift-database-plugin plugin.",
         "MaxItems": 1,
         "ConflictsWith": [
           "cassandra",
+          "couchbase",
           "elasticsearch",
           "hana",
           "influxdb",
@@ -2938,7 +3044,8 @@
           "mysql_legacy",
           "mysql_rds",
           "postgresql",
-          "oracle"
+          "oracle",
+          "snowflake"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -2972,12 +3079,91 @@
             "password": {
               "Type": "String",
               "Optional": true,
-              "Description": "The password with the provided user"
+              "Description": "The root credential password used in the connection URL"
             },
             "username": {
               "Type": "String",
               "Optional": true,
-              "Description": "The AccountAdmin level user using to connect to snowflake"
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            }
+          }
+        }
+      },
+      "root_rotation_statements": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "snowflake": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the snowflake-database-plugin plugin.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cassandra",
+          "couchbase",
+          "elasticsearch",
+          "hana",
+          "influxdb",
+          "mssql",
+          "mongodb",
+          "mongodbatlas",
+          "mysql",
+          "mysql_aurora",
+          "mysql_legacy",
+          "mysql_rds",
+          "postgresql",
+          "oracle",
+          "redshift"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -5008,6 +5194,28 @@
         "Description": "Accessor of the mount",
         "Computed": true
       },
+      "audit_non_hmac_request_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the request data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "audit_non_hmac_response_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the response data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "default_lease_ttl_seconds": {
         "Type": "Int",
         "Optional": true,
@@ -6678,6 +6886,50 @@
               "Type": "String",
               "Required": true,
               "Description": "The write permissions for this vhost."
+            }
+          }
+        }
+      },
+      "vhost_topic": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies a map of virtual hosts and exchanges to topic permissions. This option requires RabbitMQ 3.7.0 or later.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "host": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The vhost to set permissions for."
+            },
+            "vhost": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Specifies a map of virtual hosts to permissions.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "read": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The read permissions for this vhost."
+                  },
+                  "topic": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The vhost to set permissions for."
+                  },
+                  "write": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The write permissions for this vhost."
+                  }
+                }
+              }
             }
           }
         }
