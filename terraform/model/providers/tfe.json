@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.27.0",
+  "version": "v0.27.1",
   "provider": {
     "hostname": {
       "Type": "String",

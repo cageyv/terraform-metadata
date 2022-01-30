@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.7.0",
+  "version": "v3.8.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -2981,6 +2981,32 @@
         "Required": true
       }
     },
+    "cloudflare_ipsec_tunnel": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cloudflare_endpoint": {
+        "Type": "String",
+        "Required": true
+      },
+      "customer_endpoint": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "interface_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "cloudflare_load_balancer": {
       "created_on": {
         "Type": "String",
@@ -4677,7 +4703,7 @@
       },
       "description": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "kind": {
         "Type": "String",
@@ -4835,6 +4861,15 @@
                           }
                         }
                       }
+                    }
+                  },
+                  "phases": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "products": {
@@ -5316,7 +5351,135 @@
           }
         }
       },
+      "fips": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "tls": {
+              "Type": "Bool",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "logging": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "redact_pii": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "settings_by_rule_type": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "dns": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "log_all": {
+                          "Type": "Bool",
+                          "Required": true
+                        },
+                        "log_blocks": {
+                          "Type": "Bool",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "http": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "log_all": {
+                          "Type": "Bool",
+                          "Required": true
+                        },
+                        "log_blocks": {
+                          "Type": "Bool",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "l4": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "log_all": {
+                          "Type": "Bool",
+                          "Required": true
+                        },
+                        "log_blocks": {
+                          "Type": "Bool",
+                          "Required": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "proxy": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "tcp": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "udp": {
+              "Type": "Bool",
+              "Required": true
+            }
+          }
+        }
+      },
       "tls_decrypt_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "url_browser_isolation_enabled": {
         "Type": "Bool",
         "Optional": true
       }
@@ -5457,6 +5620,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "add_headers": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "biso_admin_controls": {
               "Type": "List",
               "Optional": true,
@@ -5470,7 +5642,19 @@
                     "Type": "Bool",
                     "Optional": true
                   },
+                  "disable_download": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "disable_keyboard": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
                   "disable_printing": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "disable_upload": {
                     "Type": "Bool",
                     "Optional": true
                   }
@@ -5484,6 +5668,26 @@
             "block_page_reason": {
               "Type": "String",
               "Optional": true
+            },
+            "check_session": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "duration": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "enforce": {
+                    "Type": "Bool",
+                    "Required": true
+                  }
+                }
+              }
             },
             "l4override": {
               "Type": "List",
@@ -7213,6 +7417,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "account_id": {
+              "Type": "String",
+              "Optional": true
+            },
             "lookup_type": {
               "Type": "String",
               "Optional": true,

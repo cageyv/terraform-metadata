@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.15.0",
+  "version": "v2.16.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -1385,6 +1385,11 @@
         "Optional": true,
         "Description": "Indicates whether this group can be assigned to an Azure Active Directory role. This property can only be `true` for security-enabled groups."
       },
+      "auto_subscribe_new_members": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether new members added to the group will be auto-subscribed to receive email notifications."
+      },
       "behaviors": {
         "Type": "Set",
         "Optional": true,
@@ -1429,6 +1434,21 @@
             }
           }
         }
+      },
+      "external_senders_allowed": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether people external to the organization can send messages to the group."
+      },
+      "hide_from_address_lists": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether the group is displayed in certain parts of the Outlook user interface: in the Address Book, in address lists for selecting message recipients, and in the Browse Groups dialog for searching groups."
+      },
+      "hide_from_outlook_clients": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether the group is displayed in Outlook clients, such as Outlook for Windows and Outlook on the web."
       },
       "mail": {
         "Type": "String",
@@ -3375,6 +3395,11 @@
         "Description": "Indicates whether this group can be assigned to an Azure Active Directory role",
         "Computed": true
       },
+      "auto_subscribe_new_members": {
+        "Type": "Bool",
+        "Description": "Indicates whether new members added to the group will be auto-subscribed to receive email notifications.",
+        "Computed": true
+      },
       "behaviors": {
         "Type": "List",
         "Description": "The group behaviors for a Microsoft 365 group",
@@ -3416,6 +3441,21 @@
             }
           }
         }
+      },
+      "external_senders_allowed": {
+        "Type": "Bool",
+        "Description": "Indicates whether people external to the organization can send messages to the group.",
+        "Computed": true
+      },
+      "hide_from_address_lists": {
+        "Type": "Bool",
+        "Description": "Indicates whether the group is displayed in certain parts of the Outlook user interface: in the Address Book, in address lists for selecting message recipients, and in the Browse Groups dialog for searching groups.",
+        "Computed": true
+      },
+      "hide_from_outlook_clients": {
+        "Type": "Bool",
+        "Description": "Indicates whether the group is displayed in Outlook clients, such as Outlook for Windows and Outlook on the web.",
+        "Computed": true
       },
       "mail": {
         "Type": "String",

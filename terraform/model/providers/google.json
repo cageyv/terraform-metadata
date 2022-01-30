@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.7.0",
+  "version": "v4.8.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -2843,6 +2843,11 @@
         "Description": "Output only. Hostname or IP address of the exposed Apigee endpoint used by clients to connect to the service.",
         "Computed": true
       },
+      "ip_range": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "IP range represents the customer-provided CIDR block of length 22 that will be used for\nthe Apigee instance creation. This optional range, if provided, should be freely\navailable as part of larger named range the customer has allocated to the Service\nNetworking peering. If this is not provided, Apigee will automatically request for any\navailable /22 CIDR block from Service Networking. The customer should use this CIDR block\nfor configuring their firewall needs to allow traffic from Apigee.\nInput format: \"a.b.c.d/22\""
+      },
       "location": {
         "Type": "String",
         "Required": true,
@@ -2861,7 +2866,8 @@
       "peering_cidr_range": {
         "Type": "String",
         "Optional": true,
-        "Description": "The size of the CIDR block range that will be reserved by the instance. For valid values, \nsee [CidrRange](https://cloud.google.com/apigee/docs/reference/apis/apigee/rest/v1/organizations.instances#CidrRange) on the documentation."
+        "Description": "The size of the CIDR block range that will be reserved by the instance. For valid values, \nsee [CidrRange](https://cloud.google.com/apigee/docs/reference/apis/apigee/rest/v1/organizations.instances#CidrRange) on the documentation.",
+        "Computed": true
       },
       "port": {
         "Type": "String",
@@ -4094,7 +4100,7 @@
       "runtime_api_version": {
         "Type": "String",
         "Optional": true,
-        "Description": "The version of the API in the given runtime environment.\nPlease see the app.yaml reference for valid values at https://cloud.google.com/appengine/docs/standard//config/appref",
+        "Description": "The version of the API in the given runtime environment.\nPlease see the app.yaml reference for valid values at 'https://cloud.google.com/appengine/docs/standard/\u003clanguage\u003e/config/appref'\\\nSubstitute '\u003clanguage\u003e' with 'python', 'java', 'php', 'ruby', 'go' or 'nodejs'.",
         "Computed": true
       },
       "runtime_channel": {
@@ -4639,7 +4645,7 @@
       "runtime_api_version": {
         "Type": "String",
         "Optional": true,
-        "Description": "The version of the API in the given runtime environment.\nPlease see the app.yaml reference for valid values at https://cloud.google.com/appengine/docs/standard//config/appref"
+        "Description": "The version of the API in the given runtime environment.\nPlease see the app.yaml reference for valid values at 'https://cloud.google.com/appengine/docs/standard/\u003clanguage\u003e/config/appref'\\\nSubstitute '\u003clanguage\u003e' with 'python', 'java', 'php', 'ruby', 'go' or 'nodejs'."
       },
       "service": {
         "Type": "String",
@@ -4870,7 +4876,7 @@
       "params": {
         "Type": "Map",
         "Required": true,
-        "Description": "These parameters are specific to each data source.",
+        "Description": "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer'\nsection for each data source. For example the parameters for Cloud Storage transfers are listed here:\nhttps://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -9271,7 +9277,8 @@
                   "service_account_name": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Email address of the IAM service account associated with the revision of the\nservice. The service account represents the identity of the running revision,\nand determines what permissions the revision has. If not provided, the revision\nwill use the project's default service account."
+                    "Description": "Email address of the IAM service account associated with the revision of the\nservice. The service account represents the identity of the running revision,\nand determines what permissions the revision has. If not provided, the revision\nwill use the project's default service account.",
+                    "Computed": true
                   },
                   "serving_state": {
                     "Type": "String",
@@ -9309,6 +9316,11 @@
                           "Elem": {
                             "Type": "SchemaInfo",
                             "Info": {
+                              "default_mode": {
+                                "Type": "Int",
+                                "Optional": true,
+                                "Description": "Mode bits to use on created files by default. Must be a value between 0000\nand 0777. Defaults to 0644. Directories within the path are not affected by\nthis setting. This might be in conflict with other options that affect the\nfile mode, like fsGroup, and the result can be other mode bits set."
+                              },
                               "items": {
                                 "Type": "List",
                                 "Optional": true,
@@ -9322,6 +9334,11 @@
                                       "Type": "String",
                                       "Required": true,
                                       "Description": "The Cloud Secret Manager secret version.\nCan be 'latest' for the latest value or an integer for a specific version."
+                                    },
+                                    "mode": {
+                                      "Type": "Int",
+                                      "Optional": true,
+                                      "Description": "Mode bits to use on this file, must be a value between 0000 and 0777. If\nnot specified, the volume defaultMode will be used. This might be in\nconflict with other options that affect the file mode, like fsGroup, and\nthe result can be other mode bits set."
                                     },
                                     "path": {
                                       "Type": "String",
@@ -10489,7 +10506,7 @@
             "pull_request": {
               "Type": "List",
               "Optional": true,
-              "Description": "filter to match changes in pull requests.  Specify only one of pullRequest or push.",
+              "Description": "filter to match changes in pull requests. Specify only one of 'pull_request' or 'push'.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -10517,7 +10534,7 @@
             "push": {
               "Type": "List",
               "Optional": true,
-              "Description": "filter to match changes in refs, like branches or tags.  Specify only one of pullRequest or push.",
+              "Description": "filter to match changes in refs, like branches or tags. Specify only one of 'pull_request' or 'push'.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -14159,7 +14176,7 @@
       "load_balancing_scheme": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL",
+        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n*   `EXTERNAL_MANAGED` is used for:\n    *   Global external HTTP(S) load balancers \n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL, EXTERNAL_MANAGED",
         "Default": {
           "Type": "string",
           "Value": "EXTERNAL"
@@ -14348,7 +14365,7 @@
       "load_balancing_scheme": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL",
+        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n*   `EXTERNAL_MANAGED` is used for:\n    *   Global external HTTP(S) load balancers \n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL, EXTERNAL_MANAGED",
         "Default": {
           "Type": "string",
           "Value": "EXTERNAL"
@@ -22975,6 +22992,47 @@
         "Type": "String",
         "Computed": true
       },
+      "share_settings": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The share setting for reservations.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "project_map": {
+              "Type": "Set",
+              "Optional": true,
+              "Description": "A map of project number and project config. This is only valid when shareType's value is SPECIFIC_PROJECTS.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "project_id": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The project id/number, should be same as the key of this project config in the project map."
+                  }
+                }
+              }
+            },
+            "share_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Type of sharing for this shared-reservation Possible values: [\"LOCAL\", \"SPECIFIC_PROJECTS\"]",
+              "Computed": true
+            }
+          }
+        }
+      },
       "specific_reservation": {
         "Type": "List",
         "Required": true,
@@ -24654,7 +24712,7 @@
       "purpose": {
         "Type": "String",
         "Optional": true,
-        "Description": "The purpose of the resource. A subnetwork with purpose set to\nINTERNAL_HTTPS_LOAD_BALANCER is a user-created subnetwork that is\nreserved for Internal HTTP(S) Load Balancing. \n\nIf set to INTERNAL_HTTPS_LOAD_BALANCER you must also set the 'role' field.",
+        "Description": "The purpose of the resource. A subnetwork with purpose set to\nINTERNAL_HTTPS_LOAD_BALANCER is a user-created subnetwork that is\nreserved for Internal HTTP(S) Load Balancing.\n\nIf set to INTERNAL_HTTPS_LOAD_BALANCER you must also set the 'role' field.",
         "Computed": true
       },
       "region": {
@@ -32247,7 +32305,7 @@
                                       "Elem": {
                                         "Type": "SchemaInfo",
                                         "Info": {
-                                          "character_to_skip": {
+                                          "characters_to_skip": {
                                             "Type": "String",
                                             "Optional": true,
                                             "Description": "Characters to not transform when masking."
@@ -46668,6 +46726,177 @@
         "Computed": true
       }
     },
+    "google_network_connectivity_spoke": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. The time the spoke was created.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "An optional description of the spoke."
+      },
+      "hub": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Immutable. The URI of the hub that this spoke is attached to."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Optional labels in key:value format. For more information about labels, see [Requirements for labels](https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements).",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "linked_interconnect_attachments": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A collection of VLAN attachment resources. These resources should be redundant attachments that all advertise the same prefixes to Google Cloud. Alternatively, in active/passive configurations, all attachments should be capable of advertising the same prefixes.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "linked_vpn_tunnels",
+          "linked_router_appliance_instances"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "site_to_site_data_transfer": {
+              "Type": "Bool",
+              "Required": true,
+              "Description": "A value that controls whether site-to-site data transfer is enabled for these resources. Note that data transfer is available only in supported locations."
+            },
+            "uris": {
+              "Type": "List",
+              "Required": true,
+              "Description": "The URIs of linked interconnect attachment resources",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "linked_router_appliance_instances": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The URIs of linked Router appliance resources",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "linked_vpn_tunnels",
+          "linked_interconnect_attachments"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "instances": {
+              "Type": "List",
+              "Required": true,
+              "Description": "The list of router appliance instances",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip_address": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The IP address on the VM to use for peering."
+                  },
+                  "virtual_machine": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The URI of the virtual machine resource"
+                  }
+                }
+              }
+            },
+            "site_to_site_data_transfer": {
+              "Type": "Bool",
+              "Required": true,
+              "Description": "A value that controls whether site-to-site data transfer is enabled for these resources. Note that data transfer is available only in supported locations."
+            }
+          }
+        }
+      },
+      "linked_vpn_tunnels": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The URIs of linked VPN tunnel resources",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "linked_interconnect_attachments",
+          "linked_router_appliance_instances"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "site_to_site_data_transfer": {
+              "Type": "Bool",
+              "Required": true,
+              "Description": "A value that controls whether site-to-site data transfer is enabled for these resources. Note that data transfer is available only in supported locations."
+            },
+            "uris": {
+              "Type": "List",
+              "Required": true,
+              "Description": "The URIs of linked VPN tunnel resources.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location for the resource"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Immutable. The name of the spoke. Spoke names must be unique."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "Output only. The current lifecycle state of this spoke. Possible values: STATE_UNSPECIFIED, CREATING, ACTIVE, DELETING",
+        "Computed": true
+      },
+      "unique_id": {
+        "Type": "String",
+        "Description": "Output only. The Google-generated UUID for the spoke. This value is unique across all spoke resources. If a spoke is deleted and another with the same name is created, the new spoke is assigned a different unique_id.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. The time the spoke was last updated.",
+        "Computed": true
+      }
+    },
     "google_network_management_connectivity_test": {
       "__timeouts__": [
         "create",
@@ -49563,7 +49792,7 @@
                               "enforce": {
                                 "Type": "List",
                                 "Optional": true,
-                                "Description": "Required. What to run to validate this resource is in the desired state. An exit code of 100 indicates \"in desired state\", and exit code of 101 indicates \"not in desired state\". Any other exit code indicates a failure running validate.",
+                                "Description": "What to run to bring this resource into the desired state. An exit code of 100 indicates \"success\", any other exit code indicates a failure running enforce.",
                                 "MaxItems": 1,
                                 "IsBlock": true,
                                 "ConfigImplicitMode": "Block",
@@ -49583,7 +49812,7 @@
                                     "file": {
                                       "Type": "List",
                                       "Optional": true,
-                                      "Description": "Required. A deb package.",
+                                      "Description": "A remote or local file.",
                                       "MaxItems": 1,
                                       "IsBlock": true,
                                       "ConfigImplicitMode": "Block",
@@ -49695,7 +49924,7 @@
                                     "file": {
                                       "Type": "List",
                                       "Optional": true,
-                                      "Description": "Required. A deb package.",
+                                      "Description": "A remote or local file.",
                                       "MaxItems": 1,
                                       "IsBlock": true,
                                       "ConfigImplicitMode": "Block",
@@ -49805,7 +50034,7 @@
                               "file": {
                                 "Type": "List",
                                 "Optional": true,
-                                "Description": "Required. A deb package.",
+                                "Description": "A remote or local source.",
                                 "MaxItems": 1,
                                 "IsBlock": true,
                                 "ConfigImplicitMode": "Block",
@@ -50065,7 +50294,7 @@
                                     "source": {
                                       "Type": "List",
                                       "Required": true,
-                                      "Description": "Required. A deb package.",
+                                      "Description": "Required. The MSI package.",
                                       "MaxItems": 1,
                                       "IsBlock": true,
                                       "ConfigImplicitMode": "Block",
@@ -50157,7 +50386,7 @@
                                     "source": {
                                       "Type": "List",
                                       "Required": true,
-                                      "Description": "Required. A deb package.",
+                                      "Description": "Required. An rpm package.",
                                       "MaxItems": 1,
                                       "IsBlock": true,
                                       "ConfigImplicitMode": "Block",
@@ -58557,7 +58786,7 @@
       },
       "schedule": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "Schedule specification defining when the Transfer Job should be scheduled to start, end and what time to run.",
         "MaxItems": 1,
         "IsBlock": true,
@@ -60373,6 +60602,11 @@
                           "Elem": {
                             "Type": "SchemaInfo",
                             "Info": {
+                              "default_mode": {
+                                "Type": "Int",
+                                "Description": "Mode bits to use on created files by default. Must be a value between 0000\nand 0777. Defaults to 0644. Directories within the path are not affected by\nthis setting. This might be in conflict with other options that affect the\nfile mode, like fsGroup, and the result can be other mode bits set.",
+                                "Computed": true
+                              },
                               "items": {
                                 "Type": "List",
                                 "Description": "If unspecified, the volume will expose a file whose name is the\nsecret_name.\nIf specified, the key will be used as the version to fetch from Cloud\nSecret Manager and the path will be the name of the file exposed in the\nvolume. When items are defined, they must specify a key and a path.",
@@ -60385,6 +60619,11 @@
                                     "key": {
                                       "Type": "String",
                                       "Description": "The Cloud Secret Manager secret version.\nCan be 'latest' for the latest value or an integer for a specific version.",
+                                      "Computed": true
+                                    },
+                                    "mode": {
+                                      "Type": "Int",
+                                      "Description": "Mode bits to use on this file, must be a value between 0000 and 0777. If\nnot specified, the volume defaultMode will be used. This might be in\nconflict with other options that affect the file mode, like fsGroup, and\nthe result can be other mode bits set.",
                                       "Computed": true
                                     },
                                     "path": {
@@ -61863,7 +62102,7 @@
       },
       "load_balancing_scheme": {
         "Type": "String",
-        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL",
+        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n*   `EXTERNAL_MANAGED` is used for:\n    *   Global external HTTP(S) load balancers \n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL, EXTERNAL_MANAGED",
         "Computed": true
       },
       "name": {
@@ -61993,7 +62232,7 @@
       },
       "load_balancing_scheme": {
         "Type": "String",
-        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL",
+        "Description": "Specifies the forwarding rule type.\n\n*   `EXTERNAL` is used for:\n    *   Classic Cloud VPN gateways\n    *   Protocol forwarding to VMs from an external IP address\n    *   The following load balancers: HTTP(S), SSL Proxy, TCP Proxy, and Network TCP/UDP\n*   `INTERNAL` is used for:\n    *   Protocol forwarding to VMs from an internal IP address\n    *   Internal TCP/UDP load balancers\n*   `INTERNAL_MANAGED` is used for:\n    *   Internal HTTP(S) load balancers\n*   `INTERNAL_SELF_MANAGED` is used for:\n    *   Traffic Director\n*   `EXTERNAL_MANAGED` is used for:\n    *   Global external HTTP(S) load balancers \n\nFor more information about forwarding rules, refer to [Forwarding rule concepts](/load-balancing/docs/forwarding-rule-concepts). Possible values: INVALID, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, EXTERNAL, EXTERNAL_MANAGED",
         "Computed": true
       },
       "metadata_filters": {

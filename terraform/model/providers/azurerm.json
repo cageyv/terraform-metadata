@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v2.93.0",
+  "version": "v2.94.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -54,7 +54,7 @@
     "environment": {
       "Type": "String",
       "Required": true,
-      "Description": "The Cloud Environment which should be used. Possible values are public, usgovernment, german, and china. Defaults to public.",
+      "Description": "The Cloud Environment which should be used. Possible values are public, usgovernment, and china. Defaults to public.",
       "DefaultFunc": "ENV(ARM_ENVIRONMENT)"
     },
     "features": {
@@ -291,6 +291,12 @@
       "Optional": true,
       "Description": "The Tenant ID which should be used.",
       "DefaultFunc": "ENV(ARM_TENANT_ID)"
+    },
+    "use_msal": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Should Terraform obtain MSAL auth tokens and no longer use Azure Active Directory Graph?",
+      "DefaultFunc": "MENV(ARM_USE_MSAL,ARM_USE_MSGRAPH)"
     },
     "use_msi": {
       "Type": "Bool",
@@ -7872,6 +7878,42 @@
             "username": {
               "Type": "String",
               "Computed": true
+            }
+          }
+        }
+      },
+      "storage_account": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "access_key": {
+              "Type": "String",
+              "Required": true
+            },
+            "account_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "mount_path": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "share_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
             }
           }
         }
@@ -35733,6 +35775,11 @@
             "security_group_id": {
               "Type": "String",
               "Required": true
+            },
+            "security_group_name": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
             }
           }
         }
@@ -71801,6 +71848,10 @@
         "Type": "String",
         "Required": true
       },
+      "partition_key": {
+        "Type": "String",
+        "Optional": true
+      },
       "resource_group_name": {
         "Type": "String",
         "Required": true
@@ -73856,7 +73907,10 @@
       "endpoint_status": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Default": {
+          "Type": "string",
+          "Value": "Enabled"
+        }
       },
       "geo_mappings": {
         "Type": "List",
@@ -74422,6 +74476,26 @@
           "Type": "bool",
           "Value": "false"
         }
+      }
+    },
+    "azurerm_virtual_desktop_host_pool_registration_info": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "expiration_date": {
+        "Type": "String",
+        "Required": true
+      },
+      "hostpool_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "token": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "azurerm_virtual_desktop_scaling_plan": {
@@ -78536,6 +78610,228 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_web_pubsub": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "aad_auth_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "capacity": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "external_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hostname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "live_trace": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connectivity_logs_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "http_request_logs_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "messaging_logs_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "local_auth_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "primary_access_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "primary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "public_port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secondary_access_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "secondary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "sku": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tls_client_cert_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "version": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azurerm_web_pubsub_hub": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "anonymous_connections_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "event_handler": {
+        "Type": "Set",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auth": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "MinItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "managed_identity_id": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "system_events": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "url_template": {
+              "Type": "String",
+              "Required": true
+            },
+            "user_event_pattern": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "web_pubsub_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_windows_virtual_machine": {
@@ -86415,17 +86711,11 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true,
-        "ConflictsWith": [
-          "name_regex"
-        ]
+        "Optional": true
       },
       "name_regex": {
         "Type": "String",
-        "Optional": true,
-        "ConflictsWith": [
-          "name"
-        ]
+        "Optional": true
       },
       "os_disk": {
         "Type": "List",
@@ -96753,6 +97043,92 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_web_pubsub": {
+      "__timeouts__": [
+        "read"
+      ],
+      "aad_auth_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "capacity": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "external_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hostname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "local_auth_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "primary_access_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "primary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "public_port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secondary_access_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "secondary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "sku": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tls_client_cert_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Computed": true
       }
     }
   }
