@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.8.0",
+  "version": "v4.9.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -53292,6 +53292,7 @@
         "Type": "List",
         "Optional": true,
         "Description": "The config settings for software inside the runtime.",
+        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -61332,6 +61333,117 @@
         "Description": "The zone where the instance will be provisioned. If not provided,\nthe service will choose a zone for the instance. For STANDARD_HA tier,\ninstances will be created across two zones for protection against\nzonal failures. If [alternativeLocationId] is also provided, it must\nbe different from [locationId].",
         "Computed": true
       },
+      "maintenance_policy": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Maintenance policy for an instance.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Description": "Output only. The time when the policy was created.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. Description of what this policy is for.\nCreate/Update methods return INVALID_ARGUMENT if the\nlength is greater than 512."
+            },
+            "update_time": {
+              "Type": "String",
+              "Description": "Output only. The time when the policy was last updated.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "weekly_maintenance_window": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. Maintenance window that is applied to resources covered by this policy.\nMinimum 1. For the current version, the maximum number\nof weekly_window is expected to be one.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "day": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. The day of week that maintenance updates occur.\n\n- DAY_OF_WEEK_UNSPECIFIED: The day of the week is unspecified.\n- MONDAY: Monday\n- TUESDAY: Tuesday\n- WEDNESDAY: Wednesday\n- THURSDAY: Thursday\n- FRIDAY: Friday\n- SATURDAY: Saturday\n- SUNDAY: Sunday Possible values: [\"DAY_OF_WEEK_UNSPECIFIED\", \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\", \"SUNDAY\"]"
+                  },
+                  "duration": {
+                    "Type": "String",
+                    "Description": "Output only. Duration of the maintenance window.\nThe current window is fixed at 1 hour.\nA duration in seconds with up to nine fractional digits,\nterminated by 's'. Example: \"3.5s\".",
+                    "Computed": true
+                  },
+                  "start_time": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Required. Start time of the window in UTC time.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "hours": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Hours of day in 24 hour format. Should be from 0 to 23.\nAn API may choose to allow the value \"24:00:00\" for scenarios like business closing time."
+                        },
+                        "minutes": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Minutes of hour of day. Must be from 0 to 59."
+                        },
+                        "nanos": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999."
+                        },
+                        "seconds": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Seconds of minutes of the time. Must normally be from 0 to 59.\nAn API may allow the value 60 if it allows leap-seconds."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "maintenance_schedule": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Upcoming maintenance schedule.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_time": {
+              "Type": "String",
+              "Description": "Output only. The end time of any upcoming scheduled maintenance for this instance.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "schedule_deadline_time": {
+              "Type": "String",
+              "Description": "Output only. The deadline that the maintenance schedule start time\ncan not go beyond, including reschedule.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "start_time": {
+              "Type": "String",
+              "Description": "Output only. The start time of any upcoming scheduled maintenance for this instance.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            }
+          }
+        }
+      },
       "memory_size_gb": {
         "Type": "Int",
         "Required": true,
@@ -65373,7 +65485,7 @@
                 "Info": {
                   "aws_access_key": {
                     "Type": "List",
-                    "Required": true,
+                    "Optional": true,
                     "Description": "AWS credentials block.",
                     "MaxItems": 1,
                     "IsBlock": true,
@@ -65398,6 +65510,11 @@
                     "Type": "String",
                     "Required": true,
                     "Description": "S3 Bucket name."
+                  },
+                  "role_arn": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The Amazon Resource Name (ARN) of the role to support temporary credentials via 'AssumeRoleWithWebIdentity'. For more information about ARNs, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns). When a role ARN is provided, Transfer Service fetches temporary credentials for the session using a 'AssumeRoleWithWebIdentity' call for the provided role using the [GoogleServiceAccount][] for this project."
                   }
                 }
               }
@@ -75788,6 +75905,114 @@
         "Type": "String",
         "Description": "The zone where the instance will be provisioned. If not provided,\nthe service will choose a zone for the instance. For STANDARD_HA tier,\ninstances will be created across two zones for protection against\nzonal failures. If [alternativeLocationId] is also provided, it must\nbe different from [locationId].",
         "Computed": true
+      },
+      "maintenance_policy": {
+        "Type": "List",
+        "Description": "Maintenance policy for an instance.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Description": "Output only. The time when the policy was created.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "description": {
+              "Type": "String",
+              "Description": "Optional. Description of what this policy is for.\nCreate/Update methods return INVALID_ARGUMENT if the\nlength is greater than 512.",
+              "Computed": true
+            },
+            "update_time": {
+              "Type": "String",
+              "Description": "Output only. The time when the policy was last updated.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "weekly_maintenance_window": {
+              "Type": "List",
+              "Description": "Optional. Maintenance window that is applied to resources covered by this policy.\nMinimum 1. For the current version, the maximum number\nof weekly_window is expected to be one.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "day": {
+                    "Type": "String",
+                    "Description": "Required. The day of week that maintenance updates occur.\n\n- DAY_OF_WEEK_UNSPECIFIED: The day of the week is unspecified.\n- MONDAY: Monday\n- TUESDAY: Tuesday\n- WEDNESDAY: Wednesday\n- THURSDAY: Thursday\n- FRIDAY: Friday\n- SATURDAY: Saturday\n- SUNDAY: Sunday Possible values: [\"DAY_OF_WEEK_UNSPECIFIED\", \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\", \"SUNDAY\"]",
+                    "Computed": true
+                  },
+                  "duration": {
+                    "Type": "String",
+                    "Description": "Output only. Duration of the maintenance window.\nThe current window is fixed at 1 hour.\nA duration in seconds with up to nine fractional digits,\nterminated by 's'. Example: \"3.5s\".",
+                    "Computed": true
+                  },
+                  "start_time": {
+                    "Type": "List",
+                    "Description": "Required. Start time of the window in UTC time.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "hours": {
+                          "Type": "Int",
+                          "Description": "Hours of day in 24 hour format. Should be from 0 to 23.\nAn API may choose to allow the value \"24:00:00\" for scenarios like business closing time.",
+                          "Computed": true
+                        },
+                        "minutes": {
+                          "Type": "Int",
+                          "Description": "Minutes of hour of day. Must be from 0 to 59.",
+                          "Computed": true
+                        },
+                        "nanos": {
+                          "Type": "Int",
+                          "Description": "Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.",
+                          "Computed": true
+                        },
+                        "seconds": {
+                          "Type": "Int",
+                          "Description": "Seconds of minutes of the time. Must normally be from 0 to 59.\nAn API may allow the value 60 if it allows leap-seconds.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "maintenance_schedule": {
+        "Type": "List",
+        "Description": "Upcoming maintenance schedule.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_time": {
+              "Type": "String",
+              "Description": "Output only. The end time of any upcoming scheduled maintenance for this instance.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "schedule_deadline_time": {
+              "Type": "String",
+              "Description": "Output only. The deadline that the maintenance schedule start time\ncan not go beyond, including reschedule.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            },
+            "start_time": {
+              "Type": "String",
+              "Description": "Output only. The start time of any upcoming scheduled maintenance for this instance.\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond\nresolution and up to nine fractional digits.",
+              "Computed": true
+            }
+          }
+        }
       },
       "memory_size_gb": {
         "Type": "Int",

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.16.0",
+  "version": "v2.17.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -1323,6 +1323,67 @@
       "state": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azuread_custom_directory_role": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The description of the custom directory role"
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The display name of the custom directory role"
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Required": true,
+        "Description": "Indicates whether the role is enabled for assignment"
+      },
+      "object_id": {
+        "Type": "String",
+        "Description": "The object ID of the directory role",
+        "Computed": true
+      },
+      "permissions": {
+        "Type": "Set",
+        "Required": true,
+        "Description": "List of permissions that are included in the custom directory role",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_resource_actions": {
+              "Type": "Set",
+              "Required": true,
+              "Description": "Set of tasks that can be performed on a resource",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "template_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Custom template identifier that is typically used if one needs an identifier to be the same across different directories.",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The version of the role definition."
       }
     },
     "azuread_directory_role": {
