@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.9.0",
+  "version": "v4.10.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -13201,6 +13201,34 @@
         "Optional": true,
         "Description": "The security policy associated with this backend service."
       },
+      "security_settings": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The security settings that apply to this backend service. This field is applicable to either\na regional backend service with the service_protocol set to HTTP, HTTPS, or HTTP2, and\nload_balancing_scheme set to INTERNAL_MANAGED; or a global backend service with the\nload_balancing_scheme set to INTERNAL_SELF_MANAGED.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_tls_policy": {
+              "Type": "String",
+              "Required": true,
+              "Description": "ClientTlsPolicy is a resource that specifies how a client should authenticate\nconnections to backends of a service. This resource itself does not affect\nconfiguration unless it is attached to a backend service resource."
+            },
+            "subject_alt_names": {
+              "Type": "List",
+              "Required": true,
+              "Description": "A list of alternate names to verify the subject identity in the certificate.\nIf specified, the client will verify that the server certificate's subject\nalt name matches one of the specified values.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "self_link": {
         "Type": "String",
         "Computed": true
@@ -13215,6 +13243,124 @@
         "Type": "Int",
         "Optional": true,
         "Description": "How many seconds to wait for the backend before considering it a\nfailed request. Default is 30 seconds. Valid range is [1, 86400].",
+        "Computed": true
+      }
+    },
+    "google_compute_backend_service_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_backend_service_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_backend_service_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
@@ -29484,6 +29630,27 @@
                 }
               }
             },
+            "gcp_filestore_csi_driver_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The status of the Filestore CSI driver addon, which allows the usage of filestore instance as volumes. Defaults to disabled; set enabled = true to enable.",
+              "Computed": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "enable_autopilot"
+              ],
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true
+                  }
+                }
+              }
+            },
             "horizontal_pod_autoscaling": {
               "Type": "List",
               "Optional": true,
@@ -29591,6 +29758,15 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "image_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The default image type used by NAP once a new node pool is being created.",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "COS_CONTAINERD"
+                    }
+                  },
                   "oauth_scopes": {
                     "Type": "List",
                     "Optional": true,
@@ -59796,7 +59972,7 @@
       "network": {
         "Type": "String",
         "Optional": true,
-        "Description": "Name of the VPC network. Required if 'ip_cidr_range' is set."
+        "Description": "Name or self_link of the VPC network. Required if 'ip_cidr_range' is set."
       },
       "project": {
         "Type": "String",
@@ -62122,6 +62298,33 @@
         "Type": "String",
         "Description": "The security policy associated with this backend service.",
         "Computed": true
+      },
+      "security_settings": {
+        "Type": "List",
+        "Description": "The security settings that apply to this backend service. This field is applicable to either\na regional backend service with the service_protocol set to HTTP, HTTPS, or HTTP2, and\nload_balancing_scheme set to INTERNAL_MANAGED; or a global backend service with the\nload_balancing_scheme set to INTERNAL_SELF_MANAGED.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_tls_policy": {
+              "Type": "String",
+              "Description": "ClientTlsPolicy is a resource that specifies how a client should authenticate\nconnections to backends of a service. This resource itself does not affect\nconfiguration unless it is attached to a backend service resource.",
+              "Computed": true
+            },
+            "subject_alt_names": {
+              "Type": "List",
+              "Description": "A list of alternate names to verify the subject identity in the certificate.\nIf specified, the client will verify that the server certificate's subject\nalt name matches one of the specified values.",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
       },
       "self_link": {
         "Type": "String",
@@ -65318,6 +65521,22 @@
                 }
               }
             },
+            "gcp_filestore_csi_driver_config": {
+              "Type": "List",
+              "Description": "The status of the Filestore CSI driver addon, which allows the usage of filestore instance as volumes. Defaults to disabled; set enabled = true to enable.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "horizontal_pod_autoscaling": {
               "Type": "List",
               "Description": "The status of the Horizontal Pod Autoscaling addon, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods. It ensures that a Heapster pod is running in the cluster, which is also used by the Cloud Monitoring service. It is enabled by default; set disabled = true to disable.",
@@ -65404,6 +65623,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "image_type": {
+                    "Type": "String",
+                    "Description": "The default image type used by NAP once a new node pool is being created.",
+                    "Computed": true
+                  },
                   "oauth_scopes": {
                     "Type": "List",
                     "Description": "Scopes that are used by NAP when creating node pools.",

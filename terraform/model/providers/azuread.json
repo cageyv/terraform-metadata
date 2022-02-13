@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.17.0",
+  "version": "v2.18.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -1449,7 +1449,8 @@
       "auto_subscribe_new_members": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether new members added to the group will be auto-subscribed to receive email notifications."
+        "Description": "Indicates whether new members added to the group will be auto-subscribed to receive email notifications.",
+        "Computed": true
       },
       "behaviors": {
         "Type": "Set",
@@ -1499,17 +1500,20 @@
       "external_senders_allowed": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether people external to the organization can send messages to the group."
+        "Description": "Indicates whether people external to the organization can send messages to the group.",
+        "Computed": true
       },
       "hide_from_address_lists": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether the group is displayed in certain parts of the Outlook user interface: in the Address Book, in address lists for selecting message recipients, and in the Browse Groups dialog for searching groups."
+        "Description": "Indicates whether the group is displayed in certain parts of the Outlook user interface: in the Address Book, in address lists for selecting message recipients, and in the Browse Groups dialog for searching groups.",
+        "Computed": true
       },
       "hide_from_outlook_clients": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether the group is displayed in Outlook clients, such as Outlook for Windows and Outlook on the web."
+        "Description": "Indicates whether the group is displayed in Outlook clients, such as Outlook for Windows and Outlook on the web.",
+        "Computed": true
       },
       "mail": {
         "Type": "String",

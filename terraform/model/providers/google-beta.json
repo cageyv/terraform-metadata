@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.9.0",
+  "version": "v4.10.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -14411,6 +14411,124 @@
         "Computed": true
       }
     },
+    "google_compute_backend_service_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_backend_service_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_backend_service_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_compute_backend_service_signed_url_key": {
       "__timeouts__": [
         "create",
@@ -26774,6 +26892,117 @@
               "Type": "Int",
               "Required": true,
               "Description": "An unique positive integer indicating the priority of evaluation for a rule. Rules are evaluated from highest priority (lowest numerically) to lowest priority (highest numerically) in order."
+            },
+            "rate_limit_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Rate limit threshold for this security policy. Must be specified if the action is \"rate_based_ban\" or \"throttle\". Cannot be specified for any other actions.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ban_duration_sec": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Can only be specified if the action for the rule is \"rate_based_ban\". If specified, determines the time (in seconds) the traffic will continue to be banned by the rate limit after the rate falls below the threshold."
+                  },
+                  "ban_threshold": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Can only be specified if the action for the rule is \"rate_based_ban\". If specified, the key will be banned for the configured 'banDurationSec' when the number of requests that exceed the 'rateLimitThreshold' also exceed this 'banThreshold'.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Number of HTTP(S) requests for calculating the threshold."
+                        },
+                        "interval_sec": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Interval over which the threshold is computed."
+                        }
+                      }
+                    }
+                  },
+                  "conform_action": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Action to take for requests that are under the configured rate limit threshold. Valid option is \"allow\" only."
+                  },
+                  "enforce_on_key": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Determines the key to enforce the rateLimitThreshold on. Possible values are: \"ALL\" -- A single rate limit threshold is applied to all the requests matching this rule. This is the default value if this field 'enforceOnKey' is not configured. \"IP\" -- The source IP address of the request is the key. Each IP has this limit enforced separately. \"HTTP_HEADER\" -- The value of the HTTP Header whose name is configured under \"enforceOnKeyName\". The key value is truncated to the first 128 bytes of the Header value. If no such header is present in the request, the key type defaults to \"ALL\". \"XFF_IP\" -- The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP Header. If no such header is present or the value is not a valid IP, the key type defaults to \"ALL\".",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "ALL"
+                    }
+                  },
+                  "enforce_on_key_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Rate limit key name applicable only for the following key types: HTTP_HEADER -- Name of the HTTP Header whose value is taken as the key value."
+                  },
+                  "exceed_action": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Action to take for requests that are above the configured rate limit threshold, to either deny with a specified HTTP response code, or redirect to a different endpoint. Valid options are \"deny()\" where valid values for status are 403, 404, 429, and 502, and \"redirect\" where the redirect parameters come from exceedRedirectOptions below."
+                  },
+                  "exceed_redirect_options": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Parameters defining the redirect action that is used as the exceed action. Cannot be specified if the exceed action is not redirect.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "target": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Target for the redirect action. This is required if the type is EXTERNAL_302 and cannot be specified for GOOGLE_RECAPTCHA."
+                        },
+                        "type": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "Type of the redirect action."
+                        }
+                      }
+                    }
+                  },
+                  "rate_limit_threshold": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Threshold at which to begin ratelimiting.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Number of HTTP(S) requests for calculating the threshold."
+                        },
+                        "interval_sec": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Interval over which the threshold is computed."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -32190,6 +32419,27 @@
                 }
               }
             },
+            "gcp_filestore_csi_driver_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The status of the Filestore CSI driver addon, which allows the usage of filestore instance as volumes. Defaults to disabled; set enabled = true to enable.",
+              "Computed": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "enable_autopilot"
+              ],
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true
+                  }
+                }
+              }
+            },
             "horizontal_pod_autoscaling": {
               "Type": "List",
               "Optional": true,
@@ -32339,6 +32589,15 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "image_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The default image type used by NAP once a new node pool is being created.",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "COS_CONTAINERD"
+                    }
+                  },
                   "min_cpu_platform": {
                     "Type": "String",
                     "Optional": true,
@@ -66501,7 +66760,7 @@
       "network": {
         "Type": "String",
         "Optional": true,
-        "Description": "Name of the VPC network. Required if 'ip_cidr_range' is set."
+        "Description": "Name or self_link of the VPC network. Required if 'ip_cidr_range' is set."
       },
       "project": {
         "Type": "String",
@@ -72291,6 +72550,22 @@
                 }
               }
             },
+            "gcp_filestore_csi_driver_config": {
+              "Type": "List",
+              "Description": "The status of the Filestore CSI driver addon, which allows the usage of filestore instance as volumes. Defaults to disabled; set enabled = true to enable.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "horizontal_pod_autoscaling": {
               "Type": "List",
               "Description": "The status of the Horizontal Pod Autoscaling addon, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods. It ensures that a Heapster pod is running in the cluster, which is also used by the Cloud Monitoring service. It is enabled by default; set disabled = true to disable.",
@@ -72415,6 +72690,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "image_type": {
+                    "Type": "String",
+                    "Description": "The default image type used by NAP once a new node pool is being created.",
+                    "Computed": true
+                  },
                   "min_cpu_platform": {
                     "Type": "String",
                     "Description": "Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform. Applicable values are the friendly names of CPU platforms, such as Intel Haswell.",

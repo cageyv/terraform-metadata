@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v2.95.0",
+  "version": "v2.96.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -762,6 +762,11 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "capacity": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
             "gateway_regional_url": {
               "Type": "String",
               "Computed": true
@@ -778,6 +783,10 @@
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
+            },
+            "public_ip_address_id": {
+              "Type": "String",
+              "Optional": true
             },
             "public_ip_addresses": {
               "Type": "List",
@@ -802,6 +811,15 @@
                     "Required": true
                   }
                 }
+              }
+            },
+            "zones": {
+              "Type": "List",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             }
           }
@@ -1156,7 +1174,6 @@
             "identity_ids": {
               "Type": "Set",
               "Optional": true,
-              "MinItems": 1,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -1173,11 +1190,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "None"
-              }
+              "Required": true
             }
           }
         }
@@ -1264,6 +1277,10 @@
           }
         }
       },
+      "public_ip_address_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "public_ip_addresses": {
         "Type": "List",
         "Computed": true,
@@ -1271,6 +1288,14 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       },
       "publisher_email": {
@@ -8455,10 +8480,8 @@
           "Type": "SchemaInfo",
           "Info": {
             "identity_ids": {
-              "Type": "List",
+              "Type": "Set",
               "Required": true,
-              "MaxItems": 1,
-              "MinItems": 1,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -8467,11 +8490,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "UserAssigned"
-              }
+              "Required": true
             }
           }
         }
@@ -9418,6 +9437,14 @@
           "Value": "false"
         }
       },
+      "force_customer_storage_for_profiler": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "instrumentation_key": {
         "Type": "String",
         "Computed": true
@@ -9782,6 +9809,39 @@
       "dsc_server_endpoint": {
         "Type": "String",
         "Computed": true
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "location": {
         "Type": "String",
@@ -12002,7 +12062,7 @@
       },
       "identity": {
         "Type": "List",
-        "Optional": true,
+        "Required": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -12010,22 +12070,13 @@
           "Type": "SchemaInfo",
           "Info": {
             "identity_ids": {
-              "Type": "List",
+              "Type": "Set",
               "Required": true,
-              "MinItems": 1,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
-            },
-            "principal_id": {
-              "Type": "String",
-              "Computed": true
-            },
-            "tenant_id": {
-              "Type": "String",
-              "Computed": true
             },
             "type": {
               "Type": "String",
@@ -13986,7 +14037,6 @@
             "identity_ids": {
               "Type": "Set",
               "Optional": true,
-              "MinItems": 1,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -14003,11 +14053,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "None"
-              }
+              "Required": true
             }
           }
         }
@@ -15486,7 +15532,6 @@
       "identity": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -15494,9 +15539,8 @@
           "Type": "SchemaInfo",
           "Info": {
             "identity_ids": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
-              "MinItems": 1,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -15504,6 +15548,10 @@
               }
             },
             "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
               "Type": "String",
               "Computed": true
             },
@@ -15705,7 +15753,6 @@
       "identity": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -15713,9 +15760,8 @@
           "Type": "SchemaInfo",
           "Info": {
             "identity_ids": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
-              "MinItems": 1,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -24118,7 +24164,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -26194,6 +26240,29 @@
       "target_iqn": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "azurerm_disk_pool_iscsi_target_lun": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "disk_pool_managed_disk_attachment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "iscsi_target_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "lun": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_disk_pool_managed_disk_attachment": {
@@ -29240,7 +29309,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -29944,9 +30013,8 @@
           "Type": "SchemaInfo",
           "Info": {
             "identity_ids": {
-              "Type": "List",
-              "Optional": true,
-              "MinItems": 1,
+              "Type": "Set",
+              "Required": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -43622,6 +43690,14 @@
         "Type": "Bool",
         "Optional": true
       },
+      "enable_auto_stop": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "enable_disk_encryption": {
         "Type": "Bool",
         "Optional": true
@@ -43645,7 +43721,6 @@
       "identity": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -45732,6 +45807,10 @@
               "Type": "String",
               "Computed": true
             },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
             "type": {
               "Type": "String",
               "Required": true
@@ -47580,7 +47659,6 @@
       "identity": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -49727,7 +49805,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -51027,7 +51105,6 @@
       "identity": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -51044,7 +51121,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -54875,6 +54952,39 @@
           }
         }
       },
+      "foo": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "fully_qualified_domain_name": {
         "Type": "String",
         "Computed": true
@@ -57945,6 +58055,7 @@
       },
       "name": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "network_security_group_id": {
@@ -58416,10 +58527,6 @@
                 "ElementsType": "String"
               }
             },
-            "principal_id": {
-              "Type": "String",
-              "Computed": true
-            },
             "type": {
               "Type": "String",
               "Required": true
@@ -58729,6 +58836,14 @@
                       "Value": "true"
                     }
                   },
+                  "patch_mode": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "ImageDefault"
+                    }
+                  },
                   "provision_vm_agent": {
                     "Type": "Bool",
                     "Optional": true,
@@ -58799,6 +58914,22 @@
                     "Default": {
                       "Type": "bool",
                       "Value": "true"
+                    }
+                  },
+                  "hotpatching_enabled": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
+                  },
+                  "patch_mode": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "AutomaticByOS"
                     }
                   },
                   "provision_vm_agent": {
@@ -62427,7 +62558,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -62579,7 +62710,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -64199,6 +64330,32 @@
         "Required": true
       },
       "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_sentinel_watchlist_item": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "properties": {
+        "Type": "Map",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "watchlist_id": {
         "Type": "String",
         "Required": true
       }
@@ -67226,7 +67383,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -68473,7 +68630,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -71536,6 +71693,54 @@
         "Required": true
       }
     },
+    "azurerm_stream_analytics_output_function": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "api_key": {
+        "Type": "String",
+        "Required": true
+      },
+      "batch_max_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "100"
+        }
+      },
+      "batch_max_in_bytes": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "262144"
+        }
+      },
+      "function_app": {
+        "Type": "String",
+        "Required": true
+      },
+      "function_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "stream_analytics_job_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_stream_analytics_output_mssql": {
       "__timeouts__": [
         "create",
@@ -72502,7 +72707,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -79275,6 +79480,95 @@
         "Required": true
       }
     },
+    "azurerm_web_pubsub_network_acl": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "default_action": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "webpubsub.ACLAction",
+          "Value": "Deny"
+        }
+      },
+      "private_endpoint": {
+        "Type": "Set",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_request_types": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "denied_request_types": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "public_network": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_request_types": {
+              "Type": "Set",
+              "Optional": true,
+              "ConflictsWith": [
+                "public_network.0.denied_request_types"
+              ],
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "denied_request_types": {
+              "Type": "Set",
+              "Optional": true,
+              "ConflictsWith": [
+                "public_network.0.allowed_request_types"
+              ],
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "web_pubsub_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_windows_virtual_machine": {
       "__timeouts__": [
         "create",
@@ -79406,6 +79700,14 @@
         "Default": {
           "Type": "string",
           "Value": "PT1H30M"
+        }
+      },
+      "hotpatching_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
         }
       },
       "identity": {
@@ -80054,6 +80356,10 @@
               }
             },
             "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
               "Type": "String",
               "Computed": true
             },
@@ -80919,6 +81225,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "capacity": {
+              "Type": "Int",
+              "Optional": true
+            },
             "gateway_regional_url": {
               "Type": "String",
               "Computed": true
@@ -80936,9 +81246,22 @@
                 "ElementsType": "String"
               }
             },
+            "public_ip_address_id": {
+              "Type": "String",
+              "Computed": true
+            },
             "public_ip_addresses": {
               "Type": "List",
               "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "zones": {
+              "Type": "List",
+              "Optional": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -81150,6 +81473,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "public_ip_address_id": {
+        "Type": "String",
+        "Computed": true
       },
       "public_ip_addresses": {
         "Type": "List",
@@ -85711,17 +86038,15 @@
       ],
       "identity": {
         "Type": "List",
-        "Optional": true,
         "Computed": true,
-        "MaxItems": 1,
         "IsBlock": true,
-        "ConfigImplicitMode": "Block",
+        "ConfigImplicitMode": "ComputedBlock",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "identity_ids": {
-              "Type": "Set",
-              "Optional": true,
+              "Type": "List",
+              "Computed": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -85738,7 +86063,7 @@
             },
             "type": {
               "Type": "String",
-              "Required": true
+              "Computed": true
             }
           }
         }
@@ -89622,11 +89947,9 @@
       },
       "identity": {
         "Type": "List",
-        "Optional": true,
         "Computed": true,
-        "MaxItems": 1,
         "IsBlock": true,
-        "ConfigImplicitMode": "Block",
+        "ConfigImplicitMode": "ComputedBlock",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -89640,7 +89963,7 @@
             },
             "type": {
               "Type": "String",
-              "Required": true
+              "Computed": true
             }
           }
         }
@@ -92718,6 +93041,37 @@
         "Required": true
       }
     },
+    "azurerm_portal_dashboard": {
+      "__timeouts__": [
+        "read"
+      ],
+      "dashboard_properties": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_postgresql_flexible_server": {
       "__timeouts__": [
         "read"
@@ -94802,6 +95156,73 @@
         }
       }
     },
+    "azurerm_site_recovery_fabric": {
+      "__timeouts__": [
+        "read"
+      ],
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "recovery_vault_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_site_recovery_protection_container": {
+      "__timeouts__": [
+        "read"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "recovery_fabric_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "recovery_vault_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_site_recovery_replication_policy": {
+      "__timeouts__": [
+        "read"
+      ],
+      "application_consistent_snapshot_frequency_in_minutes": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "recovery_point_retention_in_minutes": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "recovery_vault_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_snapshot": {
       "__timeouts__": [
         "read"
@@ -95328,10 +95749,6 @@
               "Computed": true
             },
             "type": {
-              "Type": "String",
-              "Computed": true
-            },
-            "user_assigned_identity_id": {
               "Type": "String",
               "Computed": true
             }
@@ -96969,6 +97386,10 @@
               }
             },
             "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
               "Type": "String",
               "Computed": true
             },
