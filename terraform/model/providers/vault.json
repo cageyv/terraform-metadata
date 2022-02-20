@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.2.1",
+  "version": "v3.3.0",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -227,6 +227,13 @@
         "Optional": true,
         "Description": "Use anonymous bind to discover the bind DN of a user."
       },
+      "formatter": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Text to insert the password into, ex. \"customPrefix{{PASSWORD}}customSuffix\".",
+        "Computed": true,
+        "Deprecated": "Formatter is deprecated and password_policy should be used with Vault \u003e= 1.5."
+      },
       "groupattr": {
         "Type": "String",
         "Optional": true,
@@ -252,6 +259,13 @@
         "Optional": true,
         "Description": "The number of seconds after a Vault rotation where, if Active Directory shows a later rotation, it should be considered out-of-band.",
         "Computed": true
+      },
+      "length": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The desired length of passwords that Vault generates.",
+        "Computed": true,
+        "Deprecated": "Length is deprecated and password_policy should be used with Vault \u003e= 1.5."
       },
       "local": {
         "Type": "Bool",
@@ -1708,6 +1722,12 @@
         "Type": "String",
         "Required": true,
         "Description": "The tenant id for the Azure Active Directory organization."
+      },
+      "use_microsoft_graph_api": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Use the Microsoft Graph API. Should be set to true on vault-1.10+",
+        "Computed": true
       }
     },
     "vault_azure_secret_backend_role": {
@@ -2388,6 +2408,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             }
           }
         }
@@ -2539,6 +2569,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2648,6 +2688,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2707,6 +2757,11 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
             "tls_ca": {
               "Type": "String",
               "Optional": true,
@@ -2716,6 +2771,11 @@
               "Type": "String",
               "Optional": true,
               "Description": "x509 certificate for connecting to the database. This must be a PEM encoded version of the private key and the certificate combined."
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -2776,6 +2836,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2835,6 +2905,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2893,6 +2973,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -2958,6 +3048,16 @@
                 "Value": "2"
               }
             },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
             "username_template": {
               "Type": "String",
               "Optional": true,
@@ -2965,6 +3065,12 @@
             }
           }
         }
+      },
+      "plugin_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+        "Computed": true
       },
       "postgresql": {
         "Type": "List",
@@ -3016,6 +3122,16 @@
                 "Type": "int",
                 "Value": "2"
               }
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
             },
             "username_template": {
               "Type": "String",
@@ -4749,6 +4865,224 @@
         }
       }
     },
+    "vault_kmip_secret_backend": {
+      "default_tls_client_key_bits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate key bits, valid values depend on key type",
+        "Computed": true
+      },
+      "default_tls_client_key_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Client certificate key type, rsa or ec",
+        "Computed": true
+      },
+      "default_tls_client_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate TTL in seconds",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount for the backend"
+      },
+      "listen_addrs": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Addresses the KMIP server should listen on (host:port)",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KMIP secret backend will be mounted"
+      },
+      "server_hostnames": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Hostnames to include in the server's TLS certificate as SAN DNS names. The first will be used as the common name (CN)",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "server_ips": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "IPs to include in the server's TLS certificate as SAN IP addresses",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tls_ca_key_bits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "CA key bits, valid values depend on key type",
+        "Computed": true
+      },
+      "tls_ca_key_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "CA key type, rsa or ec",
+        "Computed": true
+      },
+      "tls_min_version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Minimum TLS version to accept",
+        "Computed": true
+      }
+    },
+    "vault_kmip_secret_role": {
+      "operation_activate": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Activate operation",
+        "Computed": true
+      },
+      "operation_add_attribute": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Add Attribute operation",
+        "Computed": true
+      },
+      "operation_all": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant all permissions to this role. May not be specified with any other operation_* params",
+        "Computed": true
+      },
+      "operation_create": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Create operation",
+        "Computed": true
+      },
+      "operation_destroy": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Destroy operation",
+        "Computed": true
+      },
+      "operation_discover_versions": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Discover Version operation",
+        "Computed": true
+      },
+      "operation_get": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Get operation",
+        "Computed": true
+      },
+      "operation_get_attribute_list": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Get Attribute List operation",
+        "Computed": true
+      },
+      "operation_get_attributes": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Get Attributes operation",
+        "Computed": true
+      },
+      "operation_locate": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Locate operation",
+        "Computed": true
+      },
+      "operation_none": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Remove all permissions from this role. May not be specified with any other operation_* params",
+        "Computed": true
+      },
+      "operation_register": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Register operation",
+        "Computed": true
+      },
+      "operation_rekey": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Rekey operation",
+        "Computed": true
+      },
+      "operation_revoke": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Grant permission to use the KMIP Revoke operation",
+        "Computed": true
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KMIP backend is mounted"
+      },
+      "role": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the role"
+      },
+      "scope": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the scope"
+      },
+      "tls_client_key_bits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate key bits, valid values depend on key type"
+      },
+      "tls_client_key_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Client certificate key type, rsa or ec"
+      },
+      "tls_client_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Client certificate TTL in seconds"
+      }
+    },
+    "vault_kmip_secret_scope": {
+      "force": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Force deletion even if there are managed objects in the scope",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Path where KMIP backend is mounted"
+      },
+      "scope": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the scope"
+      }
+    },
     "vault_kubernetes_auth_backend_config": {
       "backend": {
         "Type": "String",
@@ -4780,9 +5114,7 @@
         "Type": "String",
         "Optional": true,
         "Description": "PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API.",
-        "Default": {
-          "Type": "string"
-        }
+        "Computed": true
       },
       "kubernetes_host": {
         "Type": "String",
@@ -4809,6 +5141,12 @@
       }
     },
     "vault_kubernetes_auth_backend_role": {
+      "alias_name_source": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Configures how identity aliases are generated. Valid choices are: serviceaccount_uid, serviceaccount_name",
+        "Computed": true
+      },
       "audience": {
         "Type": "String",
         "Optional": true,
@@ -4924,6 +5262,11 @@
       },
       "bindpass": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "case_sensitive_names": {
+        "Type": "Bool",
         "Optional": true,
         "Computed": true
       },
@@ -6470,13 +6813,23 @@
         "Description": "The PKI secret backend the resource belongs to."
       },
       "ca_chain": {
-        "Type": "String",
-        "Description": "The CA chain.",
-        "Computed": true
+        "Type": "List",
+        "Description": "The CA chain as a list of format specific certificates",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "certificate": {
         "Type": "String",
-        "Description": "The certicate.",
+        "Description": "The signed intermediate CA certificate.",
+        "Computed": true
+      },
+      "certificate_bundle": {
+        "Type": "String",
+        "Description": "The concatenation of the intermediate and issuing CA certificates (PEM encoded). Requires the format to be set to any of: pem, pem_bundle. The value will be empty for all other formats.",
         "Computed": true
       },
       "common_name": {
@@ -6520,7 +6873,7 @@
       },
       "issuing_ca": {
         "Type": "String",
-        "Description": "The issuing CA.",
+        "Description": "The issuing CA certificate.",
         "Computed": true
       },
       "locality": {
@@ -7543,6 +7896,17 @@
       }
     },
     "vault_token_auth_backend_role": {
+      "allowed_entity_aliases": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed entity aliases for this role.",
+        "DefaultFunc": "UNKNOWN",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "allowed_policies": {
         "Type": "Set",
         "Optional": true,
@@ -7554,10 +7918,32 @@
           "ElementsType": "String"
         }
       },
+      "allowed_policies_glob": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed policies with glob match for given role.",
+        "DefaultFunc": "UNKNOWN",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "disallowed_policies": {
         "Type": "Set",
         "Optional": true,
         "Description": "List of disallowed policies for given role.",
+        "DefaultFunc": "UNKNOWN",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "disallowed_policies_glob": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of disallowed policies with glob match for given role.",
         "DefaultFunc": "UNKNOWN",
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -8563,6 +8949,11 @@
       }
     },
     "vault_kubernetes_auth_backend_role": {
+      "alias_name_source": {
+        "Type": "String",
+        "Description": "Method used for generating identity aliases.",
+        "Computed": true
+      },
       "audience": {
         "Type": "String",
         "Optional": true,

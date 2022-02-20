@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.10.0",
+  "version": "v4.11.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -10172,19 +10172,19 @@
                             "Info": {
                               "container_port": {
                                 "Type": "Int",
-                                "Required": true,
-                                "Description": "Port number."
+                                "Optional": true,
+                                "Description": "Port number the container listens on. This must be a valid port number, 0 \u003c x \u003c 65536."
                               },
                               "name": {
                                 "Type": "String",
                                 "Optional": true,
-                                "Description": "Name of the port.",
+                                "Description": "If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".",
                                 "Computed": true
                               },
                               "protocol": {
                                 "Type": "String",
                                 "Optional": true,
-                                "Description": "Protocol used on port. Defaults to TCP."
+                                "Description": "Protocol for port. Must be \"TCP\". Defaults to \"TCP\"."
                               }
                             }
                           }
@@ -11961,6 +11961,89 @@
         "Type": "String",
         "Required": true,
         "Description": "The runtime in which the function is going to run. Eg. \"nodejs8\", \"nodejs10\", \"python37\", \"go111\"."
+      },
+      "secret_environment_variables": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Secret environment variables configuration",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the environment variable."
+            },
+            "project_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Project identifier (due to a known limitation, only project number is supported by this field) of the project that contains the secret. If not set, it will be populated with the function's project, assuming that the secret exists in the same project as of the function.",
+              "Computed": true
+            },
+            "secret": {
+              "Type": "String",
+              "Required": true,
+              "Description": "ID of the secret in secret manager (not the full resource name)."
+            },
+            "version": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Version of the secret (version number or the string \"latest\"). It is recommended to use a numeric version for secret environment variables as any updates to the secret value is not reflected until new clones start."
+            }
+          }
+        }
+      },
+      "secret_volumes": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Secret volumes configuration.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mount_path": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The path within the container to mount the secret volume. For example, setting the mount_path as \"/etc/secrets\" would mount the secret value files under the \"/etc/secrets\" directory. This directory will also be completely shadowed and unavailable to mount any other secrets. Recommended mount paths: \"/etc/secrets\" Restricted mount paths: \"/cloudsql\", \"/dev/log\", \"/pod\", \"/proc\", \"/var/log\"."
+            },
+            "project_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Project identifier (due to a known limitation, only project number is supported by this field) of the project that contains the secret. If not set, it will be populated with the function's project, assuming that the secret exists in the same project as of the function.",
+              "Computed": true
+            },
+            "secret": {
+              "Type": "String",
+              "Required": true,
+              "Description": "ID of the secret in secret manager (not the full resource name)."
+            },
+            "versions": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "List of secret versions to mount for this secret. If empty, the \"latest\" version of the secret will be made available in a file named after the secret under the mount point.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "path": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as \"/etc/secrets\" and path as \"/secret_foo\" would mount the secret value file at \"/etc/secrets/secret_foo\"."
+                  },
+                  "version": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Version of the secret (version number or the string \"latest\"). It is preferable to use \"latest\" version with secret volumes as secret value changes are reflected immediately."
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "service_account_email": {
         "Type": "String",
@@ -23823,7 +23906,7 @@
       "app_engine": {
         "Type": "List",
         "Optional": true,
-        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine or cloud_function may be set.",
+        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -23851,7 +23934,7 @@
       "cloud_function": {
         "Type": "List",
         "Optional": true,
-        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine or cloud_function may be set.",
+        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -23874,7 +23957,7 @@
       "cloud_run": {
         "Type": "List",
         "Optional": true,
-        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine or cloud_function may be set.",
+        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -23931,6 +24014,39 @@
       "self_link": {
         "Type": "String",
         "Computed": true
+      },
+      "serverless_deployment": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloudRun, appEngine, cloudFunction or serverlessDeployment may be set.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "platform": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The platform of the NEG backend target(s). Possible values:\nAPI Gateway: apigateway.googleapis.com"
+            },
+            "resource": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The user-defined name of the workload/instance. This value must be provided explicitly or in the urlMask.\nThe resource identified by this value is platform-specific and is as follows: API Gateway: The gateway ID, App Engine: The service name,\nCloud Functions: The function name, Cloud Run: The service name"
+            },
+            "url_mask": {
+              "Type": "String",
+              "Required": true,
+              "Description": "A template to parse platform-specific fields from a request URL. URL mask allows for routing to multiple resources\non the same serverless platform without having to create multiple Network Endpoint Groups and backend resources.\nThe fields parsed by this template are platform-specific and are as follows: API Gateway: The gateway ID,\nApp Engine: The service and version, Cloud Functions: The function name, Cloud Run: The service and tag"
+            },
+            "version": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The optional resource version. The version identified by this value is platform-specific and is follows:\nAPI Gateway: Unused, App Engine: The service version, Cloud Functions: Unused, Cloud Run: The service tag"
+            }
+          }
+        }
       }
     },
     "google_compute_region_per_instance_config": {
@@ -63902,6 +64018,11 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "allocated_ip_range": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The name of the allocated ip range for the private ip CloudSQL instance. For example: \"google-managed-services-default\". If set, the cloned instance ip will be created in the allocated range. The range name must comply with [RFC 1035](https://tools.ietf.org/html/rfc1035). Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?."
+            },
             "point_in_time": {
               "Type": "String",
               "Optional": true,
@@ -64685,7 +64806,8 @@
       },
       "default_event_based_hold": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Description": "Whether or not to automatically apply an eventBasedHold to new objects added to the bucket."
       },
       "encryption": {
         "Type": "List",
@@ -65930,6 +66052,42 @@
                     "Type": "String",
                     "Optional": true,
                     "Description": "A duration in seconds with up to nine fractional digits, terminated by 's'. Example: \"3.5s\"."
+                  }
+                }
+              }
+            },
+            "posix_data_sink": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A POSIX filesystem data sink.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "root_directory": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Root directory path to the filesystem."
+                  }
+                }
+              }
+            },
+            "posix_data_source": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A POSIX filesystem data source.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "root_directory": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Root directory path to the filesystem."
                   }
                 }
               }
@@ -67613,17 +67771,17 @@
                             "Info": {
                               "container_port": {
                                 "Type": "Int",
-                                "Description": "Port number.",
+                                "Description": "Port number the container listens on. This must be a valid port number, 0 \u003c x \u003c 65536.",
                                 "Computed": true
                               },
                               "name": {
                                 "Type": "String",
-                                "Description": "Name of the port.",
+                                "Description": "If specified, used to specify which protocol to use. Allowed values are \"http1\" and \"h2c\".",
                                 "Computed": true
                               },
                               "protocol": {
                                 "Type": "String",
-                                "Description": "Protocol used on port. Defaults to TCP.",
+                                "Description": "Protocol for port. Must be \"TCP\". Defaults to \"TCP\".",
                                 "Computed": true
                               }
                             }
@@ -67915,6 +68073,87 @@
         "Type": "String",
         "Description": "The runtime in which the function is going to run. Eg. \"nodejs8\", \"nodejs10\", \"python37\", \"go111\".",
         "Computed": true
+      },
+      "secret_environment_variables": {
+        "Type": "List",
+        "Description": "Secret environment variables configuration",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
+              "Type": "String",
+              "Description": "Name of the environment variable.",
+              "Computed": true
+            },
+            "project_id": {
+              "Type": "String",
+              "Description": "Project identifier (due to a known limitation, only project number is supported by this field) of the project that contains the secret. If not set, it will be populated with the function's project, assuming that the secret exists in the same project as of the function.",
+              "Computed": true
+            },
+            "secret": {
+              "Type": "String",
+              "Description": "ID of the secret in secret manager (not the full resource name).",
+              "Computed": true
+            },
+            "version": {
+              "Type": "String",
+              "Description": "Version of the secret (version number or the string \"latest\"). It is recommended to use a numeric version for secret environment variables as any updates to the secret value is not reflected until new clones start.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "secret_volumes": {
+        "Type": "List",
+        "Description": "Secret volumes configuration.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mount_path": {
+              "Type": "String",
+              "Description": "The path within the container to mount the secret volume. For example, setting the mount_path as \"/etc/secrets\" would mount the secret value files under the \"/etc/secrets\" directory. This directory will also be completely shadowed and unavailable to mount any other secrets. Recommended mount paths: \"/etc/secrets\" Restricted mount paths: \"/cloudsql\", \"/dev/log\", \"/pod\", \"/proc\", \"/var/log\".",
+              "Computed": true
+            },
+            "project_id": {
+              "Type": "String",
+              "Description": "Project identifier (due to a known limitation, only project number is supported by this field) of the project that contains the secret. If not set, it will be populated with the function's project, assuming that the secret exists in the same project as of the function.",
+              "Computed": true
+            },
+            "secret": {
+              "Type": "String",
+              "Description": "ID of the secret in secret manager (not the full resource name).",
+              "Computed": true
+            },
+            "versions": {
+              "Type": "List",
+              "Description": "List of secret versions to mount for this secret. If empty, the \"latest\" version of the secret will be made available in a file named after the secret under the mount point.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "path": {
+                    "Type": "String",
+                    "Description": "Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as \"/etc/secrets\" and path as \"/secret_foo\" would mount the secret value file at \"/etc/secrets/secret_foo\".",
+                    "Computed": true
+                  },
+                  "version": {
+                    "Type": "String",
+                    "Description": "Version of the secret (version number or the string \"latest\"). It is preferable to use \"latest\" version with secret volumes as secret value changes are reflected immediately.",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "service_account_email": {
         "Type": "String",
@@ -71184,7 +71423,7 @@
       },
       "project": {
         "Type": "String",
-        "Required": true,
+        "Optional": true,
         "Description": "The ID of the project in which the resource belongs. If it is not provided, the provider project is used."
       },
       "region": {
@@ -76990,6 +77229,11 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "allocated_ip_range": {
+              "Type": "String",
+              "Description": "The name of the allocated ip range for the private ip CloudSQL instance. For example: \"google-managed-services-default\". If set, the cloned instance ip will be created in the allocated range. The range name must comply with [RFC 1035](https://tools.ietf.org/html/rfc1035). Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?.",
+              "Computed": true
+            },
             "point_in_time": {
               "Type": "String",
               "Description": "The timestamp of the point in time that should be restored.",
@@ -77563,6 +77807,7 @@
       },
       "default_event_based_hold": {
         "Type": "Bool",
+        "Description": "Whether or not to automatically apply an eventBasedHold to new objects added to the bucket.",
         "Computed": true
       },
       "encryption": {
