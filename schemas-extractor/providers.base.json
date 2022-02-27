@@ -30,7 +30,10 @@
     "repository": "github.com/auth0/terraform-provider-auth0"
   },
   "avi": {},
-  "aviatrix": {},
+  "aviatrix": {
+    "repository": "github.com/AviatrixSystems/terraform-provider-aviatrix",
+    "pkg_name": "aviatrix"
+  },
   "aws": {
     "pkg_name": "internal/provider"
   },
