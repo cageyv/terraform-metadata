@@ -26,7 +26,9 @@
     "pkg_name": "internal/provider"
   },
   "arukas": {},
-  "auth0": {},
+  "auth0": {
+    "repository": "github.com/auth0/terraform-provider-auth0"
+  },
   "avi": {},
   "aviatrix": {},
   "aws": {
