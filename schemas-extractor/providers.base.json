@@ -16,7 +16,8 @@
   "aci": {},
   "acme": {},
   "akamai": {
-    "repository": "github.com/akamai/terraform-provider-akamai"
+    "repository": "github.com/akamai/terraform-provider-akamai",
+    "pkg_name": "v2/pkg/providers"
   },
   "alicloud": {
     "repository": "github.com/aliyun/terraform-provider-alicloud"
