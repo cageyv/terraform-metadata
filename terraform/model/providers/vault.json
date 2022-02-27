@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.3.0",
+  "version": "v3.3.1",
   "provider": {
     "add_address_to_env": {
       "Type": "String",

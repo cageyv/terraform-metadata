@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v2.97.0",
+  "version": "v2.98.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -44045,7 +44045,7 @@
         "ConflictsWith": [
           "disk_encryption_enabled"
         ],
-        "Deprecated": "This property has been renamed to auto_stop_enabled to be more consistent with the rest of the provider and will be removed in v3.0 of the provider"
+        "Deprecated": "This property has been renamed to disk_encryption_enabled to be more consistent with the rest of the provider and will be removed in v3.0 of the provider"
       },
       "enable_purge": {
         "Type": "Bool",
