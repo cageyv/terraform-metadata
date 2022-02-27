@@ -23,7 +23,7 @@
     "repository": "github.com/aliyun/terraform-provider-alicloud"
   },
   "archive": {
-    "repository": "github.com/terraform-providers/terraform-provider-__NAME__"
+    "pkg_name": "internal/provider"
   },
   "arukas": {},
   "auth0": {},
