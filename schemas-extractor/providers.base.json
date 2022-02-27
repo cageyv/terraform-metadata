@@ -29,7 +29,7 @@
   "avi": {},
   "aviatrix": {},
   "aws": {
-    "repository": "github.com/terraform-providers/terraform-provider-__NAME__"
+    "pkg_name": "internal/provider"
   },
   "awscc": {},
   "azure": {
