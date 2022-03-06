@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.11.0",
+  "version": "v4.12.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -201,6 +201,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_DATA_CATALOG_CUSTOM_ENDPOINT)"
+    },
+    "data_fusion_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_DATA_FUSION_CUSTOM_ENDPOINT)"
     },
     "data_loss_prevention_custom_endpoint": {
       "Type": "String",
@@ -4964,6 +4969,52 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "dataset": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Grants all resources of particular types in a particular dataset read access to the current dataset.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "dataset": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "The dataset this entry applies to",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dataset_id": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "The ID of the dataset containing this table."
+                        },
+                        "project_id": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "The ID of the project containing this table."
+                        }
+                      }
+                    }
+                  },
+                  "target_types": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Which resources in the dataset this entry applies to. Currently, only views are supported,\nbut additional target types may be added in the future. Possible values: VIEWS",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
             "domain": {
               "Type": "String",
               "Optional": true,
@@ -5124,6 +5175,52 @@
         "Type": "Bool",
         "Description": "If true, represents that that the iam_member in the config was translated to a different member type by the API, and is stored in state as a different member type",
         "Computed": true
+      },
+      "dataset": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Grants all resources of particular types in a particular dataset read access to the current dataset.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dataset": {
+              "Type": "List",
+              "Required": true,
+              "Description": "The dataset this entry applies to",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "dataset_id": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The ID of the dataset containing this table."
+                  },
+                  "project_id": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The ID of the project containing this table."
+                  }
+                }
+              }
+            },
+            "target_types": {
+              "Type": "List",
+              "Required": true,
+              "Description": "Which resources in the dataset this entry applies to. Currently, only views are supported,\nbut additional target types may be added in the future. Possible values: VIEWS",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
       },
       "dataset_id": {
         "Type": "String",
@@ -6878,6 +6975,19 @@
         "Type": "String",
         "Optional": true,
         "Description": "The name of the instance to create the app profile within."
+      },
+      "multi_cluster_routing_cluster_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The set of clusters to route to. The order is ignored; clusters will be tried in order of distance. If left empty, all clusters are eligible.",
+        "ConflictsWith": [
+          "single_cluster_routing"
+        ],
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "multi_cluster_routing_use_any": {
         "Type": "Bool",
@@ -18601,7 +18711,7 @@
       ],
       "instance": {
         "Type": "String",
-        "Required": true,
+        "Optional": true,
         "Description": "The name for a specific VM instance that the IP address belongs to.\nThis is required for network endpoints of type GCE_VM_IP_PORT.\nThe instance must be in the same zone of network endpoint group."
       },
       "ip_address": {
@@ -18659,7 +18769,7 @@
       "network_endpoint_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "Type of network endpoints in this network endpoint group. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\"]",
+        "Description": "Type of network endpoints in this network endpoint group. \nNON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network \nendpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).\nNote that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services\nthat 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,\nINTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or\nCONNECTION balancing modes. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\", \"NON_GCP_PRIVATE_IP_PORT\"]",
         "Default": {
           "Type": "string",
           "Value": "GCE_VM_IP_PORT"
@@ -24297,7 +24407,7 @@
             "action": {
               "Type": "String",
               "Required": true,
-              "Description": "Action to take when match matches the request. Valid values:   \"allow\" : allow access to target, \"deny(status)\" : deny access to target, returns the HTTP response code specified (valid values are 403, 404 and 502)"
+              "Description": "Action to take when match matches the request."
             },
             "description": {
               "Type": "String",
@@ -32483,6 +32593,143 @@
         "Required": true
       }
     },
+    "google_data_fusion_instance": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "The time the instance was created in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds.",
+        "Computed": true
+      },
+      "dataproc_service_account": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "User-managed service account to set on Dataproc when Cloud Data Fusion creates Dataproc to run data processing pipelines."
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "An optional description of the instance."
+      },
+      "enable_stackdriver_logging": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Option to enable Stackdriver Logging."
+      },
+      "enable_stackdriver_monitoring": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Option to enable Stackdriver Monitoring."
+      },
+      "gcs_bucket": {
+        "Type": "String",
+        "Description": "Cloud Storage bucket generated by Data Fusion in the customer project.",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "The resource labels for instance to use to annotate any related underlying resources,\nsuch as Compute Engine VMs.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the instance or a fully qualified identifier for the instance."
+      },
+      "network_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Network configuration options. These are required when a private Data Fusion instance is to be created.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_allocation": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The IP range in CIDR notation to use for the managed Data Fusion instance\nnodes. This range must not overlap with any other ranges used in the Data Fusion instance network."
+            },
+            "network": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the network in the project with which the tenant project\nwill be peered for executing pipelines. In case of shared VPC where the network resides in another host\nproject the network should specified in the form of projects/{host-project-id}/global/networks/{network}"
+            }
+          }
+        }
+      },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Map of additional options used to configure the behavior of Data Fusion instance.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "private_instance": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Specifies whether the Data Fusion instance should be private. If set to\ntrue, all Data Fusion nodes will have private IP addresses and will not be\nable to access the public internet."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The region of the Data Fusion instance.",
+        "Computed": true
+      },
+      "service_endpoint": {
+        "Type": "String",
+        "Description": "Endpoint on which the Data Fusion UI and REST APIs are accessible.",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The current state of this Data Fusion instance.\n- CREATING: Instance is being created\n- RUNNING: Instance is running and ready for requests\n- FAILED: Instance creation failed\n- DELETING: Instance is being deleted\n- UPGRADING: Instance is being upgraded\n- RESTARTING: Instance is being restarted",
+        "Computed": true
+      },
+      "state_message": {
+        "Type": "String",
+        "Description": "Additional information about the current state of this Data Fusion instance if available.",
+        "Computed": true
+      },
+      "tenant_project_id": {
+        "Type": "String",
+        "Description": "The name of the tenant project.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Represents the type of Data Fusion instance. Each type is configured with\nthe default settings for processing and memory.\n- BASIC: Basic Data Fusion instance. In Basic type, the user will be able to create data pipelines\nusing point and click UI. However, there are certain limitations, such as fewer number\nof concurrent pipelines, no support for streaming pipelines, etc.\n- ENTERPRISE: Enterprise Data Fusion instance. In Enterprise type, the user will have more features\navailable, such as support for streaming pipelines, higher number of concurrent pipelines, etc.\n- DEVELOPER: Developer Data Fusion instance. In Developer type, the user will have all features available but\nwith restrictive capabilities. This is to help enterprises design and develop their data ingestion and integration \npipelines at low cost. Possible values: [\"BASIC\", \"ENTERPRISE\", \"DEVELOPER\"]"
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "The time the instance was last updated in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds.",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Current version of the Data Fusion.",
+        "Computed": true
+      }
+    },
     "google_data_loss_prevention_deidentify_template": {
       "__timeouts__": [
         "create",
@@ -40246,7 +40493,7 @@
             "cloud_function": {
               "Type": "String",
               "Optional": true,
-              "Description": "The Cloud Function resource name. Only Cloud Functions V2 is supported. Format: projects/{project}/locations/{location}/functions/{function}"
+              "Description": "[WARNING] Configuring a Cloud Function in Trigger is not supported as of today. The Cloud Function resource name. Format: projects/{project}/locations/{location}/functions/{function}"
             },
             "cloud_run_service": {
               "Type": "List",
@@ -40325,7 +40572,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The resource name of the trigger. Must be unique within the location on the project and must be in `projects/{project}/locations/{location}/triggers/{trigger}` format."
+        "Description": "Required. The resource name of the trigger. Must be unique within the location on the project."
       },
       "project": {
         "Type": "String",
@@ -40367,7 +40614,7 @@
                   "topic": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Optional. The name of the Pub/Sub topic created and managed by Eventarc system as a transport for the event delivery. Format: `projects/{PROJECT_ID}/topics/{TOPIC_NAME You may set an existing topic for triggers of the type google.cloud.pubsub.topic.v1.messagePublished` only. The topic you provide here will not be deleted by Eventarc at trigger deletion."
+                    "Description": "Optional. The name of the Pub/Sub topic created and managed by Eventarc system as a transport for the event delivery. Format: `projects/{PROJECT_ID}/topics/{TOPIC_NAME}. You may set an existing topic for triggers of the type google.cloud.pubsub.topic.v1.messagePublished` only. The topic you provide here will not be deleted by Eventarc at trigger deletion."
                   }
                 }
               }
@@ -56079,7 +56326,7 @@
           "Info": {
             "cert": {
               "Type": "String",
-              "Description": "Serial number, as extracted from the certificate.",
+              "Description": "The certificate data in PEM format.",
               "Computed": true
             },
             "create_time": {
@@ -64671,7 +64918,7 @@
       },
       "network_endpoint_type": {
         "Type": "String",
-        "Description": "Type of network endpoints in this network endpoint group. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\"]",
+        "Description": "Type of network endpoints in this network endpoint group. \nNON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network \nendpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).\nNote that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services\nthat 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,\nINTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or\nCONNECTION balancing modes. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\", \"NON_GCP_PRIVATE_IP_PORT\"]",
         "Computed": true
       },
       "project": {
@@ -68965,7 +69212,7 @@
           "Info": {
             "cert": {
               "Type": "String",
-              "Description": "Serial number, as extracted from the certificate.",
+              "Description": "The certificate data in PEM format.",
               "Computed": true
             },
             "create_time": {
