@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.20.1",
+  "version": "v4.21.0",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -450,6 +450,15 @@
               "Optional": true
             },
             "dismissal_restrictions": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "pull_request_bypassers": {
               "Type": "Set",
               "Optional": true,
               "ConfigImplicitMode": "Attr",
@@ -2851,6 +2860,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "suspended_at": {
+        "Type": "String",
+        "Computed": true
       },
       "updated_at": {
         "Type": "String",

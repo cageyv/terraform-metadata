@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.18.0",
+  "version": "v2.19.1",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -4122,6 +4122,11 @@
             "display_name": {
               "Type": "String",
               "Description": "The display name of the application associated with this service principal",
+              "Computed": true
+            },
+            "object_id": {
+              "Type": "String",
+              "Description": "The object ID of the service principal",
               "Computed": true
             },
             "preferred_single_sign_on_mode": {

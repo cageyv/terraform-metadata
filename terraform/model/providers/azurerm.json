@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v2.98.0",
+  "version": "v2.99.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -11344,6 +11344,21 @@
         "Type": "String",
         "Computed": true
       },
+      "encryption": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConfigExplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key_vault_key_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "identity": {
         "Type": "List",
         "Optional": true,
@@ -15705,6 +15720,14 @@
           }
         }
       },
+      "export_policy_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "georeplication_locations": {
         "Type": "Set",
         "Optional": true,
@@ -18060,6 +18083,101 @@
       "name": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azurerm_cosmosdb_sql_role_assignment": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "account_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "principal_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "role_definition_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "scope": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_cosmosdb_sql_role_definition": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "account_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "assignable_scopes": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "permissions": {
+        "Type": "Set",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "data_actions": {
+              "Type": "Set",
+              "Required": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "role_definition_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "CustomRole"
+        }
       }
     },
     "azurerm_cosmosdb_sql_stored_procedure": {
@@ -33498,7 +33616,7 @@
         "Type": "Bool",
         "Optional": true,
         "Computed": true,
-        "Deprecated": "This property is no longer configurable in the service and has been deprecated. It will be removed in 3.0 of the provider."
+        "Deprecated": "This property is no longer configurable in the service and has been deprecated."
       },
       "connection_string": {
         "Type": "Set",
@@ -39911,6 +40029,10 @@
       "ip_filter_rule": {
         "Type": "List",
         "Optional": true,
+        "ConflictsWith": [
+          "network_rule_set"
+        ],
+        "Deprecated": "This property block is deprecated in favour of `network_rule_set` and will be removed in version 3.0 of the provider.",
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -39942,6 +40064,60 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "network_rule_set": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "apply_to_builtin_eventhub_endpoint": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "default_action": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "Deny"
+              }
+            },
+            "ip_rule": {
+              "Type": "List",
+              "Optional": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "action": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "Allow"
+                    }
+                  },
+                  "ip_mask": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "public_network_access_enabled": {
         "Type": "Bool",
@@ -42250,6 +42426,56 @@
         "Type": "String",
         "Optional": true
       },
+      "azure_active_directory_role_based_access_control": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "role_based_access_control"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_group_object_ids": {
+              "Type": "List",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "azure_rbac_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "client_app_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "managed": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "server_app_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "server_app_secret": {
+              "Type": "String",
+              "Optional": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
       "azure_policy_enabled": {
         "Type": "Bool",
         "Optional": true,
@@ -43333,7 +43559,7 @@
         "ConflictsWith": [
           "private_cluster_enabled"
         ],
-        "Deprecated": "Deprecated in favour of `private_cluster_enabled`"
+        "Deprecated": "`private_link_enabled` is deprecated in favour of `private_cluster_enabled` and will be removed in version 3.0 of the AzureRM Provider"
       },
       "public_network_access_enabled": {
         "Type": "Bool",
@@ -43352,6 +43578,11 @@
         "Optional": true,
         "Computed": true,
         "MaxItems": 1,
+        "ConflictsWith": [
+          "role_based_access_control_enabled",
+          "azure_active_directory_role_based_access_control"
+        ],
+        "Deprecated": "`role_based_access_control` is deprecated in favour of the properties `role_based_access_control_enabled` and `azure_active_directory_role_based_access_control` and will be removed in version 3.0 of the AzureRM provider",
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -43409,6 +43640,14 @@
             }
           }
         }
+      },
+      "role_based_access_control_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "role_based_access_control"
+        ]
       },
       "service_principal": {
         "Type": "List",
@@ -54965,6 +55204,14 @@
         "Type": "String",
         "Required": true
       },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "log_monitoring_enabled": {
         "Type": "Bool",
         "Optional": true,
@@ -55592,11 +55839,12 @@
       ],
       "administrator_login": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true
       },
       "administrator_login_password": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "azuread_administrator": {
         "Type": "List",
@@ -55816,6 +56064,14 @@
         "update",
         "delete"
       ],
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "log_monitoring_enabled": {
         "Type": "Bool",
         "Optional": true,
@@ -57217,7 +57473,7 @@
       "tags": {
         "Type": "Map",
         "Optional": true,
-        "Deprecated": "This property as been deprecated as the API no longer supports tags and will be removed in version 3.0 of the provider.",
+        "Deprecated": "This property has been deprecated as the API no longer supports tags and will be removed in version 3.0 of the provider.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -62399,6 +62655,14 @@
         "update",
         "delete"
       ],
+      "cross_region_restore_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "encryption": {
         "Type": "List",
         "Optional": true,
@@ -62883,7 +63147,9 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "This field is no longer used and will be removed in the next major version of the Azure Provider"
       },
       "secondary_access_key": {
         "Type": "String",
@@ -64599,8 +64865,8 @@
                     "Type": "String",
                     "Optional": true,
                     "Default": {
-                      "Type": "securityinsight.EntitiesMatchingMethod",
-                      "Value": "None"
+                      "Type": "securityinsight.MatchingMethod",
+                      "Value": "AnyAlert"
                     }
                   },
                   "group_by": {
@@ -71242,7 +71508,7 @@
           "Info": {
             "filter": {
               "Type": "List",
-              "Required": true,
+              "Optional": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -71286,7 +71552,32 @@
                 }
               }
             },
+            "format": {
+              "Type": "String",
+              "Required": true
+            },
             "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "schedule": {
+              "Type": "String",
+              "Required": true
+            },
+            "schema_fields": {
+              "Type": "List",
+              "Required": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "storage_container_name": {
               "Type": "String",
               "Required": true
             }
@@ -71299,7 +71590,8 @@
       },
       "storage_container_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Deprecated": "The policy level destination storage container is deprecated by the service team since API version 2021-04-01, this is not functional and will be removed in v3.0 of the provider. Use the `rules.*.storage_container_name` instead."
       }
     },
     "azurerm_storage_container": {
@@ -71387,9 +71679,19 @@
           }
         }
       },
+      "group": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "owner": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "properties": {
         "Type": "Map",
@@ -71606,11 +71908,7 @@
                         },
                         "tier_to_cool_after_days_since_last_access_time_greater_than": {
                           "Type": "Int",
-                          "Optional": true,
-                          "Default": {
-                            "Type": "int",
-                            "Value": "-1"
-                          }
+                          "Optional": true
                         },
                         "tier_to_cool_after_days_since_modification_greater_than": {
                           "Type": "Int",
@@ -81963,7 +82261,7 @@
             },
             "location": {
               "Type": "String",
-              "Computed": true
+              "Required": true
             },
             "service_status": {
               "Type": "String",
@@ -84259,6 +84557,21 @@
       "account_endpoint": {
         "Type": "String",
         "Computed": true
+      },
+      "encryption": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConfigExplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key_vault_key_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "key_vault_reference": {
         "Type": "List",
@@ -87120,10 +87433,6 @@
           "Value": "false"
         }
       },
-      "location": {
-        "Type": "String",
-        "Computed": true
-      },
       "manage": {
         "Type": "Bool",
         "Optional": true,
@@ -87205,10 +87514,6 @@
       "eventhub_name": {
         "Type": "String",
         "Required": true
-      },
-      "location": {
-        "Type": "String",
-        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -89573,9 +89878,25 @@
       "__timeouts__": [
         "read"
       ],
+      "aci_connector_linux": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "subnet_name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "addon_profile": {
         "Type": "List",
         "Computed": true,
+        "Deprecated": "`addon_profile` is deprecated in favour of the properties `https_application_routing_enabled`, `azure_policy_enabled`, `open_service_mesh_enabled` and the blocks `oms_agent`, `ingress_application_gateway` and `key_vault_secrets_provider` and will be removed in version 3.0 of the AzureRM Provider",
         "IsBlock": true,
         "ConfigImplicitMode": "ComputedBlock",
         "Elem": {
@@ -89926,6 +90247,50 @@
           "ElementsType": "String"
         }
       },
+      "azure_active_directory_role_based_access_control": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_group_object_ids": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "azure_rbac_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "client_app_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "managed": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "server_app_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "azure_policy_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "disk_encryption_set_id": {
         "Type": "String",
         "Computed": true
@@ -89935,6 +90300,14 @@
         "Computed": true
       },
       "fqdn": {
+        "Type": "String",
+        "Computed": true
+      },
+      "http_application_routing_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "http_application_routing_zone_name": {
         "Type": "String",
         "Computed": true
       },
@@ -89959,6 +90332,102 @@
               "Computed": true
             },
             "user_assigned_identity_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ingress_application_gateway": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "effective_gateway_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "gateway_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "gateway_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ingress_application_gateway_identity": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "client_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "object_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "user_assigned_identity_id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "subnet_cidr": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "key_vault_secrets_provider": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "secret_identity": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "client_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "object_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "user_assigned_identity_id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "secret_rotation_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "secret_rotation_interval": {
               "Type": "String",
               "Computed": true
             }
@@ -90151,6 +90620,48 @@
         "Type": "String",
         "Computed": true
       },
+      "oms_agent": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "log_analytics_workspace_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "oms_agent_identity": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "client_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "object_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "user_assigned_identity_id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "open_service_mesh_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "private_cluster_enabled": {
         "Type": "Bool",
         "Computed": true
@@ -90161,7 +90672,8 @@
       },
       "private_link_enabled": {
         "Type": "Bool",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "`private_link_enabled` is deprecated in favour of `private_cluster_enabled` and will be removed in version 3.0 of the AzureRM Provider"
       },
       "resource_group_name": {
         "Type": "String",
@@ -90170,6 +90682,7 @@
       "role_based_access_control": {
         "Type": "List",
         "Computed": true,
+        "Deprecated": "`role_based_access_control` is deprecated in favour of the property `role_based_access_control_enabled` and the block `azure_active_directory_role_based_access_control` and will be removed in version 3.0 of the AzureRM Provider.",
         "IsBlock": true,
         "ConfigImplicitMode": "ComputedBlock",
         "Elem": {
@@ -90217,6 +90730,10 @@
             }
           }
         }
+      },
+      "role_based_access_control_enabled": {
+        "Type": "Bool",
+        "Computed": true
       },
       "service_principal": {
         "Type": "List",
@@ -94983,7 +95500,9 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "This field is no longer used and will be removed in the next major version of the Azure Provider"
       },
       "secondary_access_key": {
         "Type": "String",
@@ -95522,9 +96041,13 @@
         "Type": "String",
         "Required": true
       },
+      "namespace_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "primary_connection_string": {
         "Type": "String",
@@ -95540,7 +96063,7 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "secondary_connection_string": {
         "Type": "String",
@@ -95571,9 +96094,13 @@
         "Type": "String",
         "Required": true
       },
+      "namespace_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "partner_namespace_id": {
         "Type": "String",
@@ -95585,7 +96112,7 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "secondary_connection_string_alias": {
         "Type": "String",
@@ -95648,9 +96175,13 @@
         "Type": "String",
         "Required": true
       },
+      "namespace_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "requires_duplicate_detection": {
         "Type": "Bool",
@@ -95662,7 +96193,7 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "status": {
         "Type": "String",
@@ -95687,7 +96218,7 @@
       },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "primary_connection_string": {
         "Type": "String",
@@ -95701,13 +96232,17 @@
         "Type": "String",
         "Computed": true
       },
+      "queue_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "queue_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "secondary_connection_string": {
         "Type": "String",
@@ -95772,7 +96307,7 @@
       },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "requires_session": {
         "Type": "Bool",
@@ -95780,11 +96315,15 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
+      },
+      "topic_id": {
+        "Type": "String",
+        "Optional": true
       },
       "topic_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "azurerm_servicebus_topic": {
@@ -95823,9 +96362,13 @@
         "Type": "String",
         "Required": true
       },
+      "namespace_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "requires_duplicate_detection": {
         "Type": "Bool",
@@ -95833,7 +96376,7 @@
       },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "status": {
         "Type": "String",
@@ -95862,7 +96405,7 @@
       },
       "namespace_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "primary_connection_string": {
         "Type": "String",
@@ -95876,9 +96419,13 @@
         "Type": "String",
         "Computed": true
       },
+      "queue_name": {
+        "Type": "String",
+        "Optional": true
+      },
       "resource_group_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "secondary_connection_string": {
         "Type": "String",
@@ -95896,9 +96443,13 @@
         "Type": "Bool",
         "Computed": true
       },
+      "topic_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "topic_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "azurerm_shared_image": {
@@ -98686,6 +99237,15 @@
       },
       "subnets": {
         "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tags": {
+        "Type": "Map",
         "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.12.0",
+  "version": "v4.13.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -2631,6 +2631,42 @@
         "Type": "String",
         "Required": true,
         "Description": "The type of trust represented by the trust resource. Possible values: [\"FOREST\", \"EXTERNAL\"]"
+      }
+    },
+    "google_apigee_endpoint_attachment": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "endpoint_attachment_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the endpoint attachment."
+      },
+      "host": {
+        "Type": "String",
+        "Description": "Host that can be used in either HTTP Target Endpoint directly, or as the host in Target Server.",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Location of the endpoint attachment."
+      },
+      "name": {
+        "Type": "String",
+        "Description": "Name of the Endpoint Attachment in the following format:\norganizations/{organization}/endpointAttachments/{endpointAttachment}.",
+        "Computed": true
+      },
+      "org_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Apigee Organization associated with the Apigee instance,\nin the format 'organizations/{{org_name}}'."
+      },
+      "service_attachment": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Format: projects/*/regions/*/serviceAttachments/*"
       }
     },
     "google_apigee_envgroup": {
@@ -10947,7 +10983,8 @@
             "no_external_ip": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, workers are created without any public address, which prevents network egress to public IPs."
+              "Description": "If true, workers are created without any public address, which prevents network egress to public IPs.",
+              "Computed": true
             }
           }
         }
@@ -11780,6 +11817,35 @@
               "Description": "The Kubernetes Engine cluster used to run this environment.",
               "Computed": true
             },
+            "maintenance_window": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The configuration for Cloud Composer maintenance window.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_time": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Maintenance window end time. It is used only to calculate the duration of the maintenance window. The value for end-time must be in the future, relative to 'start_time'."
+                  },
+                  "recurrence": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Maintenance window recurrence. Format is a subset of RFC-5545 (https://tools.ietf.org/html/rfc5545) 'RRULE'. The only allowed values for 'FREQ' field are 'FREQ=DAILY' and 'FREQ=WEEKLY;BYDAY=...'. Example values: 'FREQ=WEEKLY;BYDAY=TU,WE', 'FREQ=DAILY'."
+                  },
+                  "start_time": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Start time of the first recurrence of the maintenance window."
+                  }
+                }
+              }
+            },
             "node_config": {
               "Type": "List",
               "Optional": true,
@@ -11977,7 +12043,7 @@
                   "env_variables": {
                     "Type": "Map",
                     "Optional": true,
-                    "Description": "Additional environment variables to provide to the Apache Airflow schedulerf, worker, and webserver processes. Environment variable names must match the regular expression [a-zA-Z_][a-zA-Z0-9_]*. They cannot specify Apache Airflow software configuration overrides (they cannot match the regular expression AIRFLOW__[A-Z0-9_]+__[A-Z0-9_]+), and they cannot match any of the following reserved names: AIRFLOW_HOME C_FORCE_ROOT CONTAINER_NAME DAGS_FOLDER GCP_PROJECT GCS_BUCKET GKE_CLUSTER_NAME SQL_DATABASE SQL_INSTANCE SQL_PASSWORD SQL_PROJECT SQL_REGION SQL_USER.",
+                    "Description": "Additional environment variables to provide to the Apache Airflow scheduler, worker, and webserver processes. Environment variable names must match the regular expression [a-zA-Z_][a-zA-Z0-9_]*. They cannot specify Apache Airflow software configuration overrides (they cannot match the regular expression AIRFLOW__[A-Z0-9_]+__[A-Z0-9_]+), and they cannot match any of the following reserved names: AIRFLOW_HOME C_FORCE_ROOT CONTAINER_NAME DAGS_FOLDER GCP_PROJECT GCS_BUCKET GKE_CLUSTER_NAME SQL_DATABASE SQL_INSTANCE SQL_PASSWORD SQL_PROJECT SQL_REGION SQL_USER.",
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
                       "Type": "SchemaElements",
@@ -12211,7 +12277,8 @@
       "region": {
         "Type": "String",
         "Optional": true,
-        "Description": "The location or Compute Engine region for the environment."
+        "Description": "The location or Compute Engine region for the environment.",
+        "Computed": true
       }
     },
     "google_compute_address": {
@@ -12222,7 +12289,7 @@
       "address": {
         "Type": "String",
         "Optional": true,
-        "Description": "The static external IP address represented by this resource. Only\nIPv4 is supported. An address may only be specified for INTERNAL\naddress types. The IP address must be inside the specified subnetwork,\nif any.",
+        "Description": "The static external IP address represented by this resource. Only\nIPv4 is supported. An address may only be specified for INTERNAL\naddress types. The IP address must be inside the specified subnetwork,\nif any. Set by the API if undefined.",
         "Computed": true
       },
       "address_type": {
@@ -13436,124 +13503,6 @@
         "Type": "Int",
         "Optional": true,
         "Description": "How many seconds to wait for the backend before considering it a\nfailed request. Default is 30 seconds. Valid range is [1, 86400].",
-        "Computed": true
-      }
-    },
-    "google_compute_backend_service_iam_binding": {
-      "condition": {
-        "Type": "List",
-        "Optional": true,
-        "MaxItems": 1,
-        "IsBlock": true,
-        "ConfigImplicitMode": "Block",
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "description": {
-              "Type": "String",
-              "Optional": true
-            },
-            "expression": {
-              "Type": "String",
-              "Required": true
-            },
-            "title": {
-              "Type": "String",
-              "Required": true
-            }
-          }
-        }
-      },
-      "etag": {
-        "Type": "String",
-        "Computed": true
-      },
-      "members": {
-        "Type": "Set",
-        "Required": true,
-        "ConfigImplicitMode": "Attr",
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "role": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "google_compute_backend_service_iam_member": {
-      "condition": {
-        "Type": "List",
-        "Optional": true,
-        "MaxItems": 1,
-        "IsBlock": true,
-        "ConfigImplicitMode": "Block",
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "description": {
-              "Type": "String",
-              "Optional": true
-            },
-            "expression": {
-              "Type": "String",
-              "Required": true
-            },
-            "title": {
-              "Type": "String",
-              "Required": true
-            }
-          }
-        }
-      },
-      "etag": {
-        "Type": "String",
-        "Computed": true
-      },
-      "member": {
-        "Type": "String",
-        "Required": true
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "role": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "google_compute_backend_service_iam_policy": {
-      "etag": {
-        "Type": "String",
-        "Computed": true
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "policy_data": {
-        "Type": "String",
-        "Required": true
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
         "Computed": true
       }
     },
@@ -18769,7 +18718,7 @@
       "network_endpoint_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "Type of network endpoints in this network endpoint group. \nNON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network \nendpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).\nNote that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services\nthat 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,\nINTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or\nCONNECTION balancing modes. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\", \"NON_GCP_PRIVATE_IP_PORT\"]",
+        "Description": "Type of network endpoints in this network endpoint group.\nNON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network\nendpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).\nNote that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services\nthat 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,\nINTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or\nCONNECTION balancing modes. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\", \"NON_GCP_PRIVATE_IP_PORT\"]",
         "Default": {
           "Type": "string",
           "Value": "GCE_VM_IP_PORT"
@@ -23949,6 +23898,15 @@
               "Type": "Int",
               "Required": true,
               "Description": "Local BGP Autonomous System Number (ASN). Must be an RFC6996\nprivate ASN, either 16-bit or 32-bit. The value will be fixed for\nthis router resource. All VPN tunnels that link to this router\nwill have the same local ASN."
+            },
+            "keepalive_interval": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The interval in seconds between BGP keepalive messages that are sent to the peer.\nHold time is three times the interval at which keepalive messages are sent, and the hold time is the\nmaximum number of seconds allowed to elapse between successive keepalive messages that BGP receives from a peer.\nBGP will use the smaller of either the local hold time value or the peer's hold time value as the hold time for\nthe BGP connection between the two peers. If set, this value must be between 20 and 60. The default is 20.",
+              "Default": {
+                "Type": "int",
+                "Value": "20"
+              }
             }
           }
         }
@@ -31420,6 +31378,7 @@
         "Type": "List",
         "Optional": true,
         "Description": "Vertical Pod Autoscaling automatically adjusts the resources of pods controlled by it.",
+        "Computed": true,
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -37543,7 +37502,7 @@
                             "Info": {
                               "executable_file": {
                                 "Type": "String",
-                                "Optional": true,
+                                "Required": true,
                                 "Description": "Required. Cloud Storage URI of executable file."
                               },
                               "execution_timeout": {
@@ -37590,7 +37549,7 @@
                         "master_config": {
                           "Type": "List",
                           "Optional": true,
-                          "Description": "Optional. The Compute Engine config settings for worker instances in a cluster.",
+                          "Description": "Optional. The Compute Engine config settings for the master instance in a cluster.",
                           "Computed": true,
                           "MaxItems": 1,
                           "IsBlock": true,
@@ -37720,7 +37679,7 @@
                         "secondary_worker_config": {
                           "Type": "List",
                           "Optional": true,
-                          "Description": "Optional. The Compute Engine config settings for worker instances in a cluster.",
+                          "Description": "Optional. The Compute Engine config settings for additional worker instances in a cluster.",
                           "Computed": true,
                           "MaxItems": 1,
                           "IsBlock": true,
@@ -61657,6 +61616,33 @@
               "Description": "The Kubernetes Engine cluster used to run this environment.",
               "Computed": true
             },
+            "maintenance_window": {
+              "Type": "List",
+              "Description": "The configuration for Cloud Composer maintenance window.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_time": {
+                    "Type": "String",
+                    "Description": "Maintenance window end time. It is used only to calculate the duration of the maintenance window. The value for end-time must be in the future, relative to 'start_time'.",
+                    "Computed": true
+                  },
+                  "recurrence": {
+                    "Type": "String",
+                    "Description": "Maintenance window recurrence. Format is a subset of RFC-5545 (https://tools.ietf.org/html/rfc5545) 'RRULE'. The only allowed values for 'FREQ' field are 'FREQ=DAILY' and 'FREQ=WEEKLY;BYDAY=...'. Example values: 'FREQ=WEEKLY;BYDAY=TU,WE', 'FREQ=DAILY'.",
+                    "Computed": true
+                  },
+                  "start_time": {
+                    "Type": "String",
+                    "Description": "Start time of the first recurrence of the maintenance window.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "node_config": {
               "Type": "List",
               "Description": "The configuration used for the Kubernetes Engine cluster.",
@@ -61819,7 +61805,7 @@
                   },
                   "env_variables": {
                     "Type": "Map",
-                    "Description": "Additional environment variables to provide to the Apache Airflow schedulerf, worker, and webserver processes. Environment variable names must match the regular expression [a-zA-Z_][a-zA-Z0-9_]*. They cannot specify Apache Airflow software configuration overrides (they cannot match the regular expression AIRFLOW__[A-Z0-9_]+__[A-Z0-9_]+), and they cannot match any of the following reserved names: AIRFLOW_HOME C_FORCE_ROOT CONTAINER_NAME DAGS_FOLDER GCP_PROJECT GCS_BUCKET GKE_CLUSTER_NAME SQL_DATABASE SQL_INSTANCE SQL_PASSWORD SQL_PROJECT SQL_REGION SQL_USER.",
+                    "Description": "Additional environment variables to provide to the Apache Airflow scheduler, worker, and webserver processes. Environment variable names must match the regular expression [a-zA-Z_][a-zA-Z0-9_]*. They cannot specify Apache Airflow software configuration overrides (they cannot match the regular expression AIRFLOW__[A-Z0-9_]+__[A-Z0-9_]+), and they cannot match any of the following reserved names: AIRFLOW_HOME C_FORCE_ROOT CONTAINER_NAME DAGS_FOLDER GCP_PROJECT GCS_BUCKET GKE_CLUSTER_NAME SQL_DATABASE SQL_INSTANCE SQL_PASSWORD SQL_PROJECT SQL_REGION SQL_USER.",
                     "Computed": true,
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
@@ -64918,7 +64904,7 @@
       },
       "network_endpoint_type": {
         "Type": "String",
-        "Description": "Type of network endpoints in this network endpoint group. \nNON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network \nendpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).\nNote that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services\nthat 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,\nINTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or\nCONNECTION balancing modes. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\", \"NON_GCP_PRIVATE_IP_PORT\"]",
+        "Description": "Type of network endpoints in this network endpoint group.\nNON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network\nendpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).\nNote that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services\nthat 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,\nINTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or\nCONNECTION balancing modes. Default value: \"GCE_VM_IP_PORT\" Possible values: [\"GCE_VM_IP_PORT\", \"NON_GCP_PRIVATE_IP_PORT\"]",
         "Computed": true
       },
       "project": {
@@ -65424,6 +65410,11 @@
             "asn": {
               "Type": "Int",
               "Description": "Local BGP Autonomous System Number (ASN). Must be an RFC6996\nprivate ASN, either 16-bit or 32-bit. The value will be fixed for\nthis router resource. All VPN tunnels that link to this router\nwill have the same local ASN.",
+              "Computed": true
+            },
+            "keepalive_interval": {
+              "Type": "Int",
+              "Description": "The interval in seconds between BGP keepalive messages that are sent to the peer.\nHold time is three times the interval at which keepalive messages are sent, and the hold time is the\nmaximum number of seconds allowed to elapse between successive keepalive messages that BGP receives from a peer.\nBGP will use the smaller of either the local hold time value or the peer's hold time value as the hold time for\nthe BGP connection between the two peers. If set, this value must be between 20 and 60. The default is 20.",
               "Computed": true
             }
           }
@@ -67624,6 +67615,37 @@
         "Computed": true
       }
     },
+    "google_dns_record_set": {
+      "managed_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rrdatas": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ttl": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_folder": {
       "create_time": {
         "Type": "String",
@@ -68657,6 +68679,521 @@
         "ConflictsWith": [
           "domain"
         ]
+      }
+    },
+    "google_privateca_certificate_authority": {
+      "access_urls": {
+        "Type": "List",
+        "Description": "URLs for accessing content published by this CA, such as the CA certificate and CRLs.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ca_certificate_access_url": {
+              "Type": "String",
+              "Description": "The URL where this CertificateAuthority's CA certificate is published. This will only be\nset for CAs that have been activated.",
+              "Computed": true
+            },
+            "crl_access_urls": {
+              "Type": "List",
+              "Description": "The URL where this CertificateAuthority's CRLs are published. This will only be set for\nCAs that have been activated.",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "certificate_authority_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The user provided Resource ID for this Certificate Authority."
+      },
+      "config": {
+        "Type": "List",
+        "Description": "The config used to create a self-signed X.509 certificate or CSR.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "subject_config": {
+              "Type": "List",
+              "Description": "Specifies some of the values in a certificate that are related to the subject.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "subject": {
+                    "Type": "List",
+                    "Description": "Contains distinguished name fields such as the location and organization.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "common_name": {
+                          "Type": "String",
+                          "Description": "The common name of the distinguished name.",
+                          "Computed": true
+                        },
+                        "country_code": {
+                          "Type": "String",
+                          "Description": "The country code of the subject.",
+                          "Computed": true
+                        },
+                        "locality": {
+                          "Type": "String",
+                          "Description": "The locality or city of the subject.",
+                          "Computed": true
+                        },
+                        "organization": {
+                          "Type": "String",
+                          "Description": "The organization of the subject.",
+                          "Computed": true
+                        },
+                        "organizational_unit": {
+                          "Type": "String",
+                          "Description": "The organizational unit of the subject.",
+                          "Computed": true
+                        },
+                        "postal_code": {
+                          "Type": "String",
+                          "Description": "The postal code of the subject.",
+                          "Computed": true
+                        },
+                        "province": {
+                          "Type": "String",
+                          "Description": "The province, territory, or regional state of the subject.",
+                          "Computed": true
+                        },
+                        "street_address": {
+                          "Type": "String",
+                          "Description": "The street address of the subject.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "subject_alt_name": {
+                    "Type": "List",
+                    "Description": "The subject alternative name fields.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dns_names": {
+                          "Type": "List",
+                          "Description": "Contains only valid, fully-qualified host names.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "email_addresses": {
+                          "Type": "List",
+                          "Description": "Contains only valid RFC 2822 E-mail addresses.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "ip_addresses": {
+                          "Type": "List",
+                          "Description": "Contains only valid 32-bit IPv4 addresses or RFC 4291 IPv6 addresses.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "uris": {
+                          "Type": "List",
+                          "Description": "Contains only valid RFC 3986 URIs.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "x509_config": {
+              "Type": "List",
+              "Description": "Describes how some of the technical X.509 fields in a certificate should be populated.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "additional_extensions": {
+                    "Type": "List",
+                    "Description": "Specifies an X.509 extension, which may be used in different parts of X.509 objects like certificates, CSRs, and CRLs.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "critical": {
+                          "Type": "Bool",
+                          "Description": "Indicates whether or not this extension is critical (i.e., if the client does not know how to\nhandle this extension, the client should consider this to be an error).",
+                          "Computed": true
+                        },
+                        "object_id": {
+                          "Type": "List",
+                          "Description": "Describes values that are relevant in a CA certificate.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "object_id_path": {
+                                "Type": "List",
+                                "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                                "Computed": true,
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "Int"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "value": {
+                          "Type": "String",
+                          "Description": "The value of this X.509 extension. A base64-encoded string.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "aia_ocsp_servers": {
+                    "Type": "List",
+                    "Description": "Describes Online Certificate Status Protocol (OCSP) endpoint addresses that appear in the\n\"Authority Information Access\" extension in the certificate.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "ca_options": {
+                    "Type": "List",
+                    "Description": "Describes values that are relevant in a CA certificate.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "is_ca": {
+                          "Type": "Bool",
+                          "Description": "When true, the \"CA\" in Basic Constraints extension will be set to true.",
+                          "Computed": true
+                        },
+                        "max_issuer_path_length": {
+                          "Type": "Int",
+                          "Description": "Refers to the \"path length constraint\" in Basic Constraints extension. For a CA certificate, this value describes the depth of\nsubordinate CA certificates that are allowed. If this value is less than 0, the request will fail.",
+                          "Computed": true
+                        },
+                        "non_ca": {
+                          "Type": "Bool",
+                          "Description": "When true, the \"CA\" in Basic Constraints extension will be set to false. \nIf both 'is_ca' and 'non_ca' are unset, the extension will be omitted from the CA certificate.",
+                          "Computed": true
+                        },
+                        "zero_max_issuer_path_length": {
+                          "Type": "Bool",
+                          "Description": "When true, the \"path length constraint\" in Basic Constraints extension will be set to 0.\nif both 'max_issuer_path_length' and 'zero_max_issuer_path_length' are unset,\nthe max path length will be omitted from the CA certificate.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "key_usage": {
+                    "Type": "List",
+                    "Description": "Indicates the intended use for keys that correspond to a certificate.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "base_key_usage": {
+                          "Type": "List",
+                          "Description": "Describes high-level ways in which a key may be used.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "cert_sign": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to sign certificates.",
+                                "Computed": true
+                              },
+                              "content_commitment": {
+                                "Type": "Bool",
+                                "Description": "The key may be used for cryptographic commitments. Note that this may also be referred to as \"non-repudiation\".",
+                                "Computed": true
+                              },
+                              "crl_sign": {
+                                "Type": "Bool",
+                                "Description": "The key may be used sign certificate revocation lists.",
+                                "Computed": true
+                              },
+                              "data_encipherment": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to encipher data.",
+                                "Computed": true
+                              },
+                              "decipher_only": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to decipher only.",
+                                "Computed": true
+                              },
+                              "digital_signature": {
+                                "Type": "Bool",
+                                "Description": "The key may be used for digital signatures.",
+                                "Computed": true
+                              },
+                              "encipher_only": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to encipher only.",
+                                "Computed": true
+                              },
+                              "key_agreement": {
+                                "Type": "Bool",
+                                "Description": "The key may be used in a key agreement protocol.",
+                                "Computed": true
+                              },
+                              "key_encipherment": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to encipher other keys.",
+                                "Computed": true
+                              }
+                            }
+                          }
+                        },
+                        "extended_key_usage": {
+                          "Type": "List",
+                          "Description": "Describes high-level ways in which a key may be used.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "client_auth": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as \"TLS WWW client authentication\", though regularly used for non-WWW TLS.",
+                                "Computed": true
+                              },
+                              "code_signing": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as \"Signing of downloadable executable code client authentication\".",
+                                "Computed": true
+                              },
+                              "email_protection": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as \"Email protection\".",
+                                "Computed": true
+                              },
+                              "ocsp_signing": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as \"Signing OCSP responses\".",
+                                "Computed": true
+                              },
+                              "server_auth": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as \"TLS WWW server authentication\", though regularly used for non-WWW TLS.",
+                                "Computed": true
+                              },
+                              "time_stamping": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as \"Binding the hash of an object to a time\".",
+                                "Computed": true
+                              }
+                            }
+                          }
+                        },
+                        "unknown_extended_key_usages": {
+                          "Type": "List",
+                          "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "object_id_path": {
+                                "Type": "List",
+                                "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                                "Computed": true,
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "Int"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "policy_ids": {
+                    "Type": "List",
+                    "Description": "Describes the X.509 certificate policy object identifiers, per https://tools.ietf.org/html/rfc5280#section-4.2.1.4.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "object_id_path": {
+                          "Type": "List",
+                          "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "Int"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "The time at which this CertificateAuthority was created.\n\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond resolution and up to nine\nfractional digits. Examples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      },
+      "gcs_bucket": {
+        "Type": "String",
+        "Description": "The name of a Cloud Storage bucket where this CertificateAuthority will publish content,\nsuch as the CA certificate and CRLs. This must be a bucket name, without any prefixes\n(such as 'gs://') or suffixes (such as '.googleapis.com'). For example, to use a bucket named\nmy-bucket, you would simply specify 'my-bucket'. If not specified, a managed bucket will be\ncreated.",
+        "Computed": true
+      },
+      "ignore_active_certificates_on_deletion": {
+        "Type": "Bool",
+        "Description": "This field allows the CA to be deleted even if the CA has active certs. Active certs include both unrevoked and unexpired certs.\nUse with care. Defaults to 'false'.",
+        "Computed": true
+      },
+      "key_spec": {
+        "Type": "List",
+        "Description": "Used when issuing certificates for this CertificateAuthority. If this CertificateAuthority\nis a self-signed CertificateAuthority, this key is also used to sign the self-signed CA\ncertificate. Otherwise, it is used to sign a CSR.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "algorithm": {
+              "Type": "String",
+              "Description": "The algorithm to use for creating a managed Cloud KMS key for a for a simplified\nexperience. All managed keys will be have their ProtectionLevel as HSM. Possible values: [\"SIGN_HASH_ALGORITHM_UNSPECIFIED\", \"RSA_PSS_2048_SHA256\", \"RSA_PSS_3072_SHA256\", \"RSA_PSS_4096_SHA256\", \"RSA_PKCS1_2048_SHA256\", \"RSA_PKCS1_3072_SHA256\", \"RSA_PKCS1_4096_SHA256\", \"EC_P256_SHA256\", \"EC_P384_SHA384\"]",
+              "Computed": true
+            },
+            "cloud_kms_key_version": {
+              "Type": "String",
+              "Description": "The resource name for an existing Cloud KMS CryptoKeyVersion in the format\n'projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*'.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Description": "Labels with user-defined metadata.\n\nAn object containing a list of \"key\": value pairs. Example: { \"name\": \"wrench\", \"mass\":\n\"1.3kg\", \"count\": \"3\" }.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lifetime": {
+        "Type": "String",
+        "Description": "The desired lifetime of the CA certificate. Used to create the \"notBeforeTime\" and\n\"notAfterTime\" fields inside an X.509 certificate. A duration in seconds with up to nine\nfractional digits, terminated by 's'. Example: \"3.5s\".",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Location of the CertificateAuthority. A full list of valid locations can be found by\nrunning 'gcloud privateca locations list'."
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The resource name for this CertificateAuthority in the format\nprojects/*/locations/*/certificateAuthorities/*.",
+        "Computed": true
+      },
+      "pem_ca_certificates": {
+        "Type": "List",
+        "Description": "This CertificateAuthority's certificate chain, including the current\nCertificateAuthority's certificate. Ordered such that the root issuer is the final\nelement (consistent with RFC 5246). For a self-signed CA, this will only list the current\nCertificateAuthority's certificate.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "pem_csr": {
+        "Type": "String",
+        "Computed": true
+      },
+      "pool": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the CaPool this Certificate Authority belongs to."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The State for this CertificateAuthority.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The Type of this CertificateAuthority.\n\n~\u003e **Note:** For 'SUBORDINATE' Certificate Authorities, they need to\nbe manually activated (via Cloud Console of 'gcloud') before they can\nissue certificates. Default value: \"SELF_SIGNED\" Possible values: [\"SELF_SIGNED\", \"SUBORDINATE\"]",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "The time at which this CertificateAuthority was updated.\n\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond resolution and up to nine\nfractional digits. Examples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
       }
     },
     "google_project": {
@@ -70924,6 +71461,10 @@
       "project": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "subject_id": {
+        "Type": "String",
         "Computed": true
       }
     },
