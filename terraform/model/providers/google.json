@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.13.0",
+  "version": "v4.14.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -31,6 +31,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_APIGEE_CUSTOM_ENDPOINT)"
+    },
+    "apikeys_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_APIKEYS_CUSTOM_ENDPOINT)"
     },
     "app_engine_custom_endpoint": {
       "Type": "String",
@@ -2996,6 +3001,178 @@
         "Type": "String",
         "Description": "Output only. Subscription type of the Apigee organization.\nValid values include trial (free, limited, and for evaluation purposes only) or paid (full subscription has been purchased).",
         "Computed": true
+      }
+    },
+    "google_apikeys_key": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-readable display name of this API key. Modifiable by user."
+      },
+      "key_string": {
+        "Type": "String",
+        "Description": "Output only. An encrypted and signed value held by this key. This field can be accessed only through the `GetKeyString` method.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The resource name of the key. The name must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the name must match the regular expression: [a-z]([a-z0-9-]{0,61}[a-z0-9])?."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "restrictions": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Key restrictions.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "android_key_restrictions": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The Android apps that are allowed to use the key.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allowed_applications": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "A list of Android applications that are allowed to make API calls with this key.",
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "package_name": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "The package name of the application."
+                        },
+                        "sha1_fingerprint": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "The SHA1 fingerprint of the application. For example, both sha1 formats are acceptable : DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09 or DA39A3EE5E6B4B0D3255BFEF95601890AFD80709. Output format is the latter."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "api_targets": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A restriction for a specific service and optionally one or more specific methods. Requests are allowed if they match any of these restrictions. If no restrictions are specified, all targets are allowed.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "methods": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Optional. List of one or more methods that can be called. If empty, all methods for the service are allowed. A wildcard (*) can be used as the last symbol. Valid examples: `google.cloud.translate.v2.TranslateService.GetSupportedLanguage` `TranslateText` `Get*` `translate.googleapis.com.Get*`",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "service": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The service for this restriction. It should be the canonical service name, for example: `translate.googleapis.com`. You can use `gcloud services list` to get a list of services that are enabled in the project."
+                  }
+                }
+              }
+            },
+            "browser_key_restrictions": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The HTTP referrers (websites) that are allowed to use the key.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allowed_referrers": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "A list of regular expressions for the referrer URLs that are allowed to make API calls with this key.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "ios_key_restrictions": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The iOS apps that are allowed to use the key.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allowed_bundle_ids": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "A list of bundle IDs that are allowed when making API calls with this key.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "server_key_restrictions": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IP addresses of callers that are allowed to use the key.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allowed_ips": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "A list of the caller IP addresses that are allowed to make API calls with this key.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "google_app_engine_application": {
@@ -6286,6 +6463,49 @@
         "Description": "Minimum slots available to this reservation. A slot is a unit of computational power in BigQuery, and serves as the\nunit of parallelism. Queries using this reservation might use more slots during runtime if ignoreIdleSlots is set to false."
       }
     },
+    "google_bigquery_reservation_assignment": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "assignee": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The resource which will use the reservation. E.g. projects/myproject, folders/123, organizations/456."
+      },
+      "job_type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Types of job, which could be specified when using the reservation. Possible values: JOB_TYPE_UNSPECIFIED, PIPELINE, QUERY"
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The location for the resource",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Description": "Output only. The resource name of the assignment.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "reservation": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The reservation for the resource"
+      },
+      "state": {
+        "Type": "String",
+        "Description": "Assignment will remain in PENDING state if no active capacity commitment is present. It will become ACTIVE when some capacity commitment becomes active. Possible values: STATE_UNSPECIFIED, PENDING, ACTIVE",
+        "Computed": true
+      }
+    },
     "google_bigquery_routine": {
       "__timeouts__": [
         "create",
@@ -9051,7 +9271,7 @@
       "template": {
         "Type": "List",
         "Optional": true,
-        "Description": "template holds the latest specification for the Revision to\nbe stamped out. The template references the container image, and may also\ninclude labels and annotations that should be attached to the Revision.\nTo correlate a Revision, and/or to force a Revision to be created when the\nspec doesn't otherwise change, a nonce label may be provided in the\ntemplate metadata. For more details, see:\nhttps://github.com/knative/serving/blob/master/docs/client-conventions.md#associate-modifications-with-revisions\n\nCloud Run does not currently support referencing a build that is\nresponsible for materializing the container image from source.",
+        "Description": "template holds the latest specification for the Revision to\nbe stamped out. The template references the container image, and may also\ninclude labels and annotations that should be attached to the Revision.\nTo correlate a Revision, and/or to force a Revision to be created when the\nspec doesn't otherwise change, a nonce label may be provided in the\ntemplate metadata. For more details, see:\nhttps://github.com/knative/serving/blob/main/docs/client-conventions.md#associate-modifications-with-revisions\n\nCloud Run does not currently support referencing a build that is\nresponsible for materializing the container image from source.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -9145,7 +9365,7 @@
                   "containers": {
                     "Type": "List",
                     "Optional": true,
-                    "Description": "Container defines the unit of execution for this Revision.\nIn the context of a Revision, we disallow a number of the fields of\nthis Container, including: name, ports, and volumeMounts.\nThe runtime contract is documented here:\nhttps://github.com/knative/serving/blob/master/docs/runtime-contract.md",
+                    "Description": "Container defines the unit of execution for this Revision.\nIn the context of a Revision, we disallow a number of the fields of\nthis Container, including: name, ports, and volumeMounts.\nThe runtime contract is documented here:\nhttps://github.com/knative/serving/blob/main/docs/runtime-contract.md",
                     "Computed": true,
                     "IsBlock": true,
                     "ConfigImplicitMode": "Block",
@@ -10627,7 +10847,45 @@
       "filename": {
         "Type": "String",
         "Optional": true,
-        "Description": "Path, from the source root, to a file whose contents is used for the template. Either a filename or build template must be provided."
+        "Description": "Path, from the source root, to a file whose contents is used for the template. \nEither a filename or build template must be provided. Set this only when using trigger_template or github.\nWhen using Pub/Sub, Webhook or Manual set the file name using git_file_source instead."
+      },
+      "filter": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A Common Expression Language string. Used only with Pub/Sub and Webhook."
+      },
+      "git_file_source": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The file source describing the local or remote Build template.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "path": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The path of the file, with the repo root as the root of the path."
+            },
+            "repo_type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The type of the repo, since it may not be explicit from the repo field (e.g from a URL). Possible values: [\"UNKNOWN\", \"CLOUD_SOURCE_REPOSITORIES\", \"GITHUB\"]"
+            },
+            "revision": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The branch, tag, arbitrary ref, or SHA version of the repo to use when resolving the \nfilename (optional). This field respects the same syntax/resolution as described here: https://git-scm.com/docs/gitrevisions \nIf unspecified, the revision from which the trigger invocation originated is assumed to be the revision from which to read the specified path."
+            },
+            "uri": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The URI of the repo (optional). If unspecified, the repo from which the trigger \ninvocation originated is assumed to be the repo from which to read the specified path."
+            }
+          }
+        }
       },
       "github": {
         "Type": "List",
@@ -10742,7 +11000,7 @@
       "pubsub_config": {
         "Type": "List",
         "Optional": true,
-        "Description": "PubsubConfig describes the configuration of a trigger that creates \na build whenever a Pub/Sub message is published.\n\nOne of 'trigger_template', 'github', 'pubsub_config' or 'webhook_config' must be provided.",
+        "Description": "PubsubConfig describes the configuration of a trigger that creates \na build whenever a Pub/Sub message is published.\n\nOne of 'trigger_template', 'github', 'pubsub_config' 'webhook_config' or 'source_to_build' must be provided.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -10777,6 +11035,34 @@
         "Optional": true,
         "Description": "The service account used for all user-controlled operations including\ntriggers.patch, triggers.run, builds.create, and builds.cancel.\n\nIf no service account is set, then the standard Cloud Build service account\n([PROJECT_NUM]@system.gserviceaccount.com) will be used instead.\n\nFormat: projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT_ID_OR_EMAIL}"
       },
+      "source_to_build": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The repo and ref of the repository from which to build. \nThis field is used only for those triggers that do not respond to SCM events. \nTriggers that respond to such events build source at whatever commit caused the event. \nThis field is currently only used by Webhook, Pub/Sub, Manual, and Cron triggers.\n\nOne of 'trigger_template', 'github', 'pubsub_config' 'webhook_config' or 'source_to_build' must be provided.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ref": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The branch or tag to use. Must start with \"refs/\" (required)."
+            },
+            "repo_type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The type of the repo, since it may not be explicit from the repo field (e.g from a URL). Possible values: [\"UNKNOWN\", \"CLOUD_SOURCE_REPOSITORIES\", \"GITHUB\"]"
+            },
+            "uri": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The URI of the repo (required)."
+            }
+          }
+        }
+      },
       "substitutions": {
         "Type": "Map",
         "Optional": true,
@@ -10805,7 +11091,7 @@
       "trigger_template": {
         "Type": "List",
         "Optional": true,
-        "Description": "Template describing the types of source changes to trigger a build.\n\nBranch and tag names in trigger templates are interpreted as regular\nexpressions. Any branch or tag change that matches that regular\nexpression will trigger a build.\n\nOne of 'trigger_template', 'github', 'pubsub_config' or 'webhook_config' must be provided.",
+        "Description": "Template describing the types of source changes to trigger a build.\n\nBranch and tag names in trigger templates are interpreted as regular\nexpressions. Any branch or tag change that matches that regular\nexpression will trigger a build.\n\nOne of 'trigger_template', 'github', 'pubsub_config', 'webhook_config' or 'source_to_build' must be provided.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -10858,7 +11144,7 @@
       "webhook_config": {
         "Type": "List",
         "Optional": true,
-        "Description": "WebhookConfig describes the configuration of a trigger that creates \na build whenever a webhook is sent to a trigger's webhook URL.\n\nOne of 'trigger_template', 'github', 'pubsub_config' or 'webhook_config' must be provided.",
+        "Description": "WebhookConfig describes the configuration of a trigger that creates \na build whenever a webhook is sent to a trigger's webhook URL.\n\nOne of 'trigger_template', 'github', 'pubsub_config' 'webhook_config' or 'source_to_build' must be provided.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -11983,6 +12269,12 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "cloud_composer_connection_subnetwork": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "When specified, the environment will use Private Service Connect instead of VPC peerings to connect to Cloud SQL in the Tenant Project, and the PSC endpoint in the Customer Project will use an IP address from this subnetwork. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+                    "Computed": true
+                  },
                   "cloud_composer_network_ipv4_cidr_block": {
                     "Type": "String",
                     "Optional": true,
@@ -30602,6 +30894,24 @@
                 }
               }
             },
+            "gvnic": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Enable or disable gvnic in the node pool.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "Whether or not gvnic is enabled"
+                  }
+                }
+              }
+            },
             "image_type": {
               "Type": "String",
               "Optional": true,
@@ -30961,6 +31271,24 @@
                           "Type": "String",
                           "Required": true,
                           "Description": "The accelerator type resource name."
+                        }
+                      }
+                    }
+                  },
+                  "gvnic": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Enable or disable gvnic in the node pool.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "enabled": {
+                          "Type": "Bool",
+                          "Required": true,
+                          "Description": "Whether or not gvnic is enabled"
                         }
                       }
                     }
@@ -31601,6 +31929,24 @@
                     "Type": "String",
                     "Required": true,
                     "Description": "The accelerator type resource name."
+                  }
+                }
+              }
+            },
+            "gvnic": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Enable or disable gvnic in the node pool.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "Whether or not gvnic is enabled"
                   }
                 }
               }
@@ -35062,6 +35408,15 @@
                     "Optional": true,
                     "Description": "Specifies the number of preemptible nodes to create. Defaults to 0.",
                     "Computed": true
+                  },
+                  "preemptibility": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specifies the preemptibility of the secondary nodes. Defaults to PREEMPTIBLE.",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "PREEMPTIBLE"
+                    }
                   }
                 }
               }
@@ -37502,7 +37857,7 @@
                             "Info": {
                               "executable_file": {
                                 "Type": "String",
-                                "Required": true,
+                                "Optional": true,
                                 "Description": "Required. Cloud Storage URI of executable file."
                               },
                               "execution_timeout": {
@@ -47780,7 +48135,7 @@
                   "hosts": {
                     "Type": "List",
                     "Required": true,
-                    "Description": "The list of host patterns to match.\n\nHost patterns must be valid hostnames with optional port numbers in the format host:port. * matches any string of ([a-z0-9-.]*).\nThe only accepted ports are :80 and :443.\n\nHosts are matched against the HTTP Host header, or for HTTP/2 and HTTP/3, the \":authority\" header, from the incoming request.",
+                    "Description": "The list of host patterns to match.\n\nHost patterns must be valid hostnames. Ports are not allowed. Wildcard hosts are supported in the suffix or prefix form. * matches any string of ([a-z0-9-.]*). It does not match the empty string.\n\nWhen multiple hosts are specified, hosts are matched in the following priority:\n\n  1. Exact domain names: ''www.foo.com''.\n  2. Suffix domain wildcards: ''*.foo.com'' or ''*-bar.foo.com''.\n  3. Prefix domain wildcards: ''foo.*'' or ''foo-*''.\n  4. Special wildcard ''*'' matching any domain.\n\n  Notes:\n\n    The wildcard will not match the empty string. e.g. ''*-bar.foo.com'' will match ''baz-bar.foo.com'' but not ''-bar.foo.com''. The longest wildcards match first. Only a single host in the entire service can match on ''*''. A domain must be unique across all configured hosts within a service.\n\n    Hosts are matched against the HTTP Host header, or for HTTP/2 and HTTP/3, the \":authority\" header, from the incoming request.\n\n    You may specify up to 10 hosts.",
                     "MaxItems": 10,
                     "MinItems": 1,
                     "ConfigImplicitMode": "Attr",
@@ -48097,7 +48452,7 @@
                                           "exclude_host": {
                                             "Type": "Bool",
                                             "Optional": true,
-                                            "Description": "If true, requests to different hosts will be cached separately.\n\nNote: this should only be enabled if hosts share the same origin and content Removing the host from the cache key may inadvertently result in different objects being cached than intended, depending on which route the first user matched.",
+                                            "Description": "If true, requests to different hosts will be cached separately.\n\nNote: this should only be enabled if hosts share the same origin and content. Removing the host from the cache key may inadvertently result in different objects being cached than intended, depending on which route the first user matched.",
                                             "Computed": true
                                           },
                                           "exclude_query_string": {
@@ -48156,18 +48511,18 @@
                                     "client_ttl": {
                                       "Type": "String",
                                       "Optional": true,
-                                      "Description": "Specifies a separate client (e.g. browser client) TTL, separate from the TTL used by the edge caches. Leaving this empty will use the same cache TTL for both the CDN and the client-facing response.\n\n- The TTL must be \u003e 0 and \u003c= 86400s (1 day)\n- The clientTtl cannot be larger than the defaultTtl (if set)\n- Fractions of a second are not allowed.\n- Omit this field to use the defaultTtl, or the max-age set by the origin, as the client-facing TTL.\n\nWhen the cache mode is set to \"USE_ORIGIN_HEADERS\" or \"BYPASS_CACHE\", you must omit this field.\nA duration in seconds with up to nine fractional digits, terminated by 's'. Example: \"3.5s\"."
+                                      "Description": "Specifies a separate client (e.g. browser client) TTL, separate from the TTL used by the edge caches. Leaving this empty will use the same cache TTL for both the CDN and the client-facing response.\n\n- The TTL must be \u003e 0 and \u003c= 86400s (1 day)\n- The clientTtl cannot be larger than the defaultTtl (if set)\n- Fractions of a second are not allowed.\n\nOmit this field to use the defaultTtl, or the max-age set by the origin, as the client-facing TTL.\n\nWhen the cache mode is set to \"USE_ORIGIN_HEADERS\" or \"BYPASS_CACHE\", you must omit this field.\nA duration in seconds terminated by 's'. Example: \"3s\"."
                                     },
                                     "default_ttl": {
                                       "Type": "String",
                                       "Optional": true,
-                                      "Description": "Specifies the default TTL for cached content served by this origin for responses that do not have an existing valid TTL (max-age or s-max-age).\n\nDefaults to 3600s (1 hour).\n\n- The TTL must be \u003e= 0 and \u003c= 2592000s (1 month)\n- Setting a TTL of \"0\" means \"always revalidate\" (equivalent to must-revalidate)\n- The value of defaultTTL cannot be set to a value greater than that of maxTTL.\n- Fractions of a second are not allowed.\n- When the cacheMode is set to FORCE_CACHE_ALL, the defaultTTL will overwrite the TTL set in all responses.\n\nNote that infrequently accessed objects may be evicted from the cache before the defined TTL. Objects that expire will be revalidated with the origin.\n\nWhen the cache mode is set to \"USE_ORIGIN_HEADERS\" or \"BYPASS_CACHE\", you must omit this field.\n\nA duration in seconds with up to nine fractional digits, terminated by 's'. Example: \"3.5s\".",
+                                      "Description": "Specifies the default TTL for cached content served by this origin for responses that do not have an existing valid TTL (max-age or s-max-age).\n\nDefaults to 3600s (1 hour).\n\n- The TTL must be \u003e= 0 and \u003c= 31,536,000 seconds (1 year)\n- Setting a TTL of \"0\" means \"always revalidate\" (equivalent to must-revalidate)\n- The value of defaultTTL cannot be set to a value greater than that of maxTTL.\n- Fractions of a second are not allowed.\n- When the cacheMode is set to FORCE_CACHE_ALL, the defaultTTL will overwrite the TTL set in all responses.\n\nNote that infrequently accessed objects may be evicted from the cache before the defined TTL. Objects that expire will be revalidated with the origin.\n\nWhen the cache mode is set to \"USE_ORIGIN_HEADERS\" or \"BYPASS_CACHE\", you must omit this field.\n\nA duration in seconds terminated by 's'. Example: \"3s\".",
                                       "Computed": true
                                     },
                                     "max_ttl": {
                                       "Type": "String",
                                       "Optional": true,
-                                      "Description": "Specifies the maximum allowed TTL for cached content served by this origin.\n\nDefaults to 86400s (1 day).\n\nCache directives that attempt to set a max-age or s-maxage higher than this, or an Expires header more than maxTtl seconds in the future will be capped at the value of maxTTL, as if it were the value of an s-maxage Cache-Control directive.\n\n- The TTL must be \u003e= 0 and \u003c= 2592000s (1 month)\n- Setting a TTL of \"0\" means \"always revalidate\"\n- The value of maxTtl must be equal to or greater than defaultTtl.\n- Fractions of a second are not allowed.\n- When the cache mode is set to \"USE_ORIGIN_HEADERS\", \"FORCE_CACHE_ALL\", or \"BYPASS_CACHE\", you must omit this field.\n\nA duration in seconds with up to nine fractional digits, terminated by 's'. Example: \"3.5s\".",
+                                      "Description": "Specifies the maximum allowed TTL for cached content served by this origin.\n\nDefaults to 86400s (1 day).\n\nCache directives that attempt to set a max-age or s-maxage higher than this, or an Expires header more than maxTtl seconds in the future will be capped at the value of maxTTL, as if it were the value of an s-maxage Cache-Control directive.\n\n- The TTL must be \u003e= 0 and \u003c= 31,536,000 seconds (1 year)\n- Setting a TTL of \"0\" means \"always revalidate\"\n- The value of maxTtl must be equal to or greater than defaultTtl.\n- Fractions of a second are not allowed.\n\nWhen the cache mode is set to \"USE_ORIGIN_HEADERS\", \"FORCE_CACHE_ALL\", or \"BYPASS_CACHE\", you must omit this field.\n\nA duration in seconds terminated by 's'. Example: \"3s\".",
                                       "Computed": true
                                     },
                                     "negative_caching": {
@@ -60841,7 +61196,7 @@
       },
       "template": {
         "Type": "List",
-        "Description": "template holds the latest specification for the Revision to\nbe stamped out. The template references the container image, and may also\ninclude labels and annotations that should be attached to the Revision.\nTo correlate a Revision, and/or to force a Revision to be created when the\nspec doesn't otherwise change, a nonce label may be provided in the\ntemplate metadata. For more details, see:\nhttps://github.com/knative/serving/blob/master/docs/client-conventions.md#associate-modifications-with-revisions\n\nCloud Run does not currently support referencing a build that is\nresponsible for materializing the container image from source.",
+        "Description": "template holds the latest specification for the Revision to\nbe stamped out. The template references the container image, and may also\ninclude labels and annotations that should be attached to the Revision.\nTo correlate a Revision, and/or to force a Revision to be created when the\nspec doesn't otherwise change, a nonce label may be provided in the\ntemplate metadata. For more details, see:\nhttps://github.com/knative/serving/blob/main/docs/client-conventions.md#associate-modifications-with-revisions\n\nCloud Run does not currently support referencing a build that is\nresponsible for materializing the container image from source.",
         "Computed": true,
         "IsBlock": true,
         "ConfigImplicitMode": "ComputedBlock",
@@ -60926,7 +61281,7 @@
                   },
                   "containers": {
                     "Type": "List",
-                    "Description": "Container defines the unit of execution for this Revision.\nIn the context of a Revision, we disallow a number of the fields of\nthis Container, including: name, ports, and volumeMounts.\nThe runtime contract is documented here:\nhttps://github.com/knative/serving/blob/master/docs/runtime-contract.md",
+                    "Description": "Container defines the unit of execution for this Revision.\nIn the context of a Revision, we disallow a number of the fields of\nthis Container, including: name, ports, and volumeMounts.\nThe runtime contract is documented here:\nhttps://github.com/knative/serving/blob/main/docs/runtime-contract.md",
                     "Computed": true,
                     "IsBlock": true,
                     "ConfigImplicitMode": "ComputedBlock",
@@ -61756,6 +62111,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "cloud_composer_connection_subnetwork": {
+                    "Type": "String",
+                    "Description": "When specified, the environment will use Private Service Connect instead of VPC peerings to connect to Cloud SQL in the Tenant Project, and the PSC endpoint in the Customer Project will use an IP address from this subnetwork. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
+                    "Computed": true
+                  },
                   "cloud_composer_network_ipv4_cidr_block": {
                     "Type": "String",
                     "Description": "The CIDR block from which IP range for Cloud Composer Network in tenant project will be reserved. Needs to be disjoint from private_cluster_config.master_ipv4_cidr_block and cloud_sql_ipv4_cidr_block. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.",
@@ -66642,6 +67002,23 @@
                 }
               }
             },
+            "gvnic": {
+              "Type": "List",
+              "Description": "Enable or disable gvnic in the node pool.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Description": "Whether or not gvnic is enabled",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "image_type": {
               "Type": "String",
               "Description": "The image type to use for this node. Note that for a given image type, the latest version of it will be used.",
@@ -66952,6 +67329,23 @@
                         "type": {
                           "Type": "String",
                           "Description": "The accelerator type resource name.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "gvnic": {
+                    "Type": "List",
+                    "Description": "Enable or disable gvnic in the node pool.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "enabled": {
+                          "Type": "Bool",
+                          "Description": "Whether or not gvnic is enabled",
                           "Computed": true
                         }
                       }
