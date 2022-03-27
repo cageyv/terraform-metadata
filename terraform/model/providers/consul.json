@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "consul",
   "type": "provider",
-  "version": "v2.14.0",
+  "version": "v2.15.0",
   "provider": {
     "address": {
       "Type": "String",
@@ -185,6 +185,11 @@
           }
         }
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the ACL auth method is associated with."
+      },
       "token_locality": {
         "Type": "String",
         "Optional": true,
@@ -221,6 +226,11 @@
         "Type": "String",
         "Optional": true
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the ACL binding rule is associated with."
+      },
       "selector": {
         "Type": "String",
         "Optional": true,
@@ -251,6 +261,11 @@
       "namespace": {
         "Type": "String",
         "Optional": true
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the ACL policy is associated with."
       },
       "rules": {
         "Type": "String",
@@ -294,6 +309,11 @@
             }
           }
         }
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the ACL role is associated with."
       },
       "policies": {
         "Type": "Set",
@@ -381,6 +401,11 @@
           }
         }
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the ACL token is associated with."
+      },
       "policies": {
         "Type": "Set",
         "Optional": true,
@@ -451,6 +476,18 @@
         "Type": "String",
         "Required": true,
         "Description": "The token accessor id."
+      }
+    },
+    "consul_admin_partition": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Free form partition description."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The partition name. This must be a valid DNS hostname label."
       }
     },
     "consul_agent_service": {
@@ -684,6 +721,10 @@
         "Type": "String",
         "Optional": true
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true
+      },
       "path_prefix": {
         "Type": "String",
         "Required": true
@@ -790,6 +831,10 @@
         "Type": "String",
         "Optional": true
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true
+      },
       "token": {
         "Type": "String",
         "Optional": true
@@ -881,6 +926,11 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the namespace is associated with."
       },
       "policy_defaults": {
         "Type": "List",
@@ -975,6 +1025,11 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the node is associated with."
       },
       "token": {
         "Type": "String",
@@ -1249,6 +1304,11 @@
         "Type": "String",
         "Required": true
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the service is associated with."
+      },
       "port": {
         "Type": "Int",
         "Optional": true
@@ -1325,6 +1385,10 @@
           }
         }
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true
+      },
       "token_locality": {
         "Type": "String",
         "Computed": true
@@ -1337,7 +1401,7 @@
     "consul_acl_policy": {
       "datacenters": {
         "Type": "List",
-        "Optional": true,
+        "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -1346,7 +1410,7 @@
       },
       "description": {
         "Type": "String",
-        "Optional": true
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -1356,9 +1420,13 @@
         "Type": "String",
         "Optional": true
       },
-      "rules": {
+      "partition": {
         "Type": "String",
         "Optional": true
+      },
+      "rules": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "consul_acl_role": {
@@ -1392,6 +1460,10 @@
             }
           }
         }
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true
       },
       "policies": {
         "Type": "List",
@@ -1480,6 +1552,10 @@
             }
           }
         }
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true
       },
       "policies": {
         "Type": "List",
@@ -2137,6 +2213,10 @@
                 "ElementsType": "String"
               }
             },
+            "partition": {
+              "Type": "String",
+              "Optional": true
+            },
             "require_consistent": {
               "Type": "Bool",
               "Optional": true,
@@ -2210,6 +2290,10 @@
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
+            },
+            "partition": {
+              "Type": "String",
+              "Optional": true
             },
             "require_consistent": {
               "Type": "Bool",
@@ -2377,6 +2461,10 @@
                 "ElementsType": "String"
               }
             },
+            "partition": {
+              "Type": "String",
+              "Optional": true
+            },
             "require_consistent": {
               "Type": "Bool",
               "Optional": true,
@@ -2419,6 +2507,17 @@
         }
       }
     },
+    "consul_datacenters": {
+      "datacenters": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "consul_key_prefix": {
       "datacenter": {
         "Type": "String",
@@ -2426,6 +2525,10 @@
         "Computed": true
       },
       "namespace": {
+        "Type": "String",
+        "Optional": true
+      },
+      "partition": {
         "Type": "String",
         "Optional": true
       },
@@ -2509,6 +2612,10 @@
         }
       },
       "namespace": {
+        "Type": "String",
+        "Optional": true
+      },
+      "partition": {
         "Type": "String",
         "Optional": true
       },
@@ -2709,6 +2816,10 @@
                 "ElementsType": "String"
               }
             },
+            "partition": {
+              "Type": "String",
+              "Optional": true
+            },
             "require_consistent": {
               "Type": "Bool",
               "Optional": true,
@@ -2782,6 +2893,10 @@
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
+            },
+            "partition": {
+              "Type": "String",
+              "Optional": true
             },
             "require_consistent": {
               "Type": "Bool",
@@ -3144,6 +3259,10 @@
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
+            },
+            "partition": {
+              "Type": "String",
+              "Optional": true
             },
             "require_consistent": {
               "Type": "Bool",

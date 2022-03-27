@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.3.1",
+  "version": "v3.4.0",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -718,6 +718,11 @@
         "Optional": true,
         "Description": "The SecretID to be managed. If not specified, Vault auto-generates one.",
         "Computed": true
+      },
+      "with_wrapped_accessor": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Use the wrapped secret-id accessor as the id of this resource. If false, a fresh secret-id will be regenerated whenever the wrapping token is expired or invalidated through unwrapping."
       },
       "wrapping_accessor": {
         "Type": "String",
@@ -2052,6 +2057,22 @@
         "Optional": true,
         "Description": "The path of the Consul Secret Backend the role belongs to."
       },
+      "consul_namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Consul namespace that the token will be created in. Applicable for Vault 1.10+ and Consul 1.7+",
+        "Computed": true
+      },
+      "consul_roles": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of Consul roles to attach to the token. Applicable for Vault 1.10+ with Consul 1.5+",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "local": {
         "Type": "Bool",
         "Optional": true,
@@ -2075,9 +2096,15 @@
         "Required": true,
         "Description": "The name of an existing role against which to create this Consul credential"
       },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Consul admin partition that the token will be created in. Applicable for Vault 1.10+ and Consul 1.11+",
+        "Computed": true
+      },
       "policies": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "List of Consul policies to associate with this role",
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -2390,6 +2417,11 @@
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
             },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
             "max_connection_lifetime": {
               "Type": "Int",
               "Optional": true,
@@ -2668,6 +2700,11 @@
               "Type": "Bool",
               "Optional": true,
               "Description": "Set to true when the target is a Contained Database, e.g. AzureSQL."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
             },
             "max_connection_lifetime": {
               "Type": "Int",
@@ -3104,6 +3141,11 @@
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
             },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
             "max_connection_lifetime": {
               "Type": "Int",
               "Optional": true,
@@ -3172,6 +3214,11 @@
               "Type": "String",
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
             },
             "max_connection_lifetime": {
               "Type": "Int",
@@ -3917,6 +3964,12 @@
         "Required": true,
         "Description": "The organization users must be part of."
       },
+      "organization_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The ID of the organization users must be part of. Vault will attempt to fetch and set this value if it is not provided (vault-1.10+)",
+        "Computed": true
+      },
       "path": {
         "Type": "String",
         "Optional": true,
@@ -4372,6 +4425,94 @@
         "Computed": true
       }
     },
+    "vault_identity_oidc_assignment": {
+      "entity_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of Vault entity IDs.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of Vault group IDs.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the assignment."
+      }
+    },
+    "vault_identity_oidc_client": {
+      "access_token_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The time-to-live for access tokens obtained by the client.",
+        "Computed": true
+      },
+      "assignments": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of assignment resources associated with the client.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "client_id": {
+        "Type": "String",
+        "Description": "The Client ID from Vault.",
+        "Computed": true
+      },
+      "client_secret": {
+        "Type": "String",
+        "Description": "The Client Secret from Vault.",
+        "Computed": true
+      },
+      "client_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The client type based on its ability to maintain confidentiality of credentials.Defaults to 'confidential'.",
+        "Computed": true
+      },
+      "id_token_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The time-to-live for ID tokens obtained by the client. The value should be less than the verification_ttl on the key.",
+        "Computed": true
+      },
+      "key": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A reference to a named key resource in Vault. This cannot be modified after creation.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the client."
+      },
+      "redirect_uris": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Redirection URI values used by the client. One of these values must exactly match the redirect_uri parameter value used in each authentication request.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "vault_identity_oidc_key": {
       "algorithm": {
         "Type": "String",
@@ -4429,6 +4570,52 @@
         "Description": "Name of the key."
       }
     },
+    "vault_identity_oidc_provider": {
+      "allowed_client_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The client IDs that are permitted to use the provider. If empty, no clients are allowed. If \"*\", all clients are allowed.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "https_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Set to true if the issuer endpoint uses HTTPS.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "issuer": {
+        "Type": "String",
+        "Description": "Specifies what will be used as the 'scheme://host:port' component for the 'iss' claim of ID tokens.This value is computed using the issuer_host and https_enabled fields.",
+        "Computed": true
+      },
+      "issuer_host": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The host for the issuer. Can be either host or host:port."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the provider."
+      },
+      "scopes_supported": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The scopes available for requesting on the provider.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "vault_identity_oidc_role": {
       "client_id": {
         "Type": "String",
@@ -4459,6 +4646,23 @@
           "Type": "int",
           "Value": "86400"
         }
+      }
+    },
+    "vault_identity_oidc_scope": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The scope's description."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the scope. The openid scope name is reserved."
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The template string for the scope. This may be provided as escaped JSON or base64 encoded JSON."
       }
     },
     "vault_jwt_auth_backend": {
@@ -8058,6 +8262,12 @@
           "Value": "false"
         }
       },
+      "auto_rotate_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Amount of time the key should live before being automatically rotated. A value of 0 disables automatic rotation for the key.",
+        "Computed": true
+      },
       "backend": {
         "Type": "String",
         "Required": true,
@@ -8389,7 +8599,7 @@
         "Description": "If 'validate_creds' is true, the number of seconds after which to give up validating credentials.",
         "Default": {
           "Type": "int",
-          "Value": "1200"
+          "Value": "300"
         }
       },
       "num_seconds_between_tests": {
@@ -8398,7 +8608,7 @@
         "Description": "If 'validate_creds' is true, the number of seconds to wait between each test of generated credentials.",
         "Default": {
           "Type": "int",
-          "Value": "7"
+          "Value": "1"
         }
       },
       "num_sequential_successes": {
@@ -8414,6 +8624,16 @@
         "Type": "String",
         "Required": true,
         "Description": "Azure Secret Role to read credentials from."
+      },
+      "subscription_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The subscription ID to use during credential validation. Defaults to the subscription ID configured in the Vault backend"
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The tenant ID to use during credential validation. Defaults to the tenant ID configured in the Vault backend"
       },
       "validate_creds": {
         "Type": "Bool",
@@ -8894,6 +9114,137 @@
       "type": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "vault_identity_oidc_client_creds": {
+      "client_id": {
+        "Type": "String",
+        "Description": "The Client ID from Vault.",
+        "Computed": true
+      },
+      "client_secret": {
+        "Type": "String",
+        "Description": "The Client Secret from Vault.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the client."
+      }
+    },
+    "vault_identity_oidc_openid_config": {
+      "authorization_endpoint": {
+        "Type": "String",
+        "Description": "The Authorization Endpoint for the provider.",
+        "Computed": true
+      },
+      "grant_types_supported": {
+        "Type": "List",
+        "Description": "The grant types supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "id_token_signing_alg_values_supported": {
+        "Type": "List",
+        "Description": "The signing algorithms supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "issuer": {
+        "Type": "String",
+        "Description": "The URL of the issuer for the provider.",
+        "Computed": true
+      },
+      "jwks_uri": {
+        "Type": "String",
+        "Description": "The well known keys URI for the provider.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the provider."
+      },
+      "request_uri_parameter_supported": {
+        "Type": "Bool",
+        "Description": "Specifies whether Request URI Parameter is supported by the provider.",
+        "Computed": true
+      },
+      "response_types_supported": {
+        "Type": "List",
+        "Description": "The response types supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "scopes_supported": {
+        "Type": "List",
+        "Description": "The scopes supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "subject_types_supported": {
+        "Type": "List",
+        "Description": "The subject types supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "token_endpoint": {
+        "Type": "String",
+        "Description": "The Token Endpoint for the provider.",
+        "Computed": true
+      },
+      "token_endpoint_auth_methods_supported": {
+        "Type": "List",
+        "Description": "The token endpoint auth methods supported by the provider.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "userinfo_endpoint": {
+        "Type": "String",
+        "Description": "The User Info Endpoint for the provider.",
+        "Computed": true
+      }
+    },
+    "vault_identity_oidc_public_keys": {
+      "keys": {
+        "Type": "List",
+        "Description": "The public portion of keys for an OIDC provider. Clients can use them to validate the authenticity of an identity token.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the provider."
       }
     },
     "vault_kubernetes_auth_backend_config": {

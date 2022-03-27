@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.10.1",
+  "version": "v3.11.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -2671,10 +2671,6 @@
           }
         }
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "identifier": {
         "Type": "String",
         "Optional": true
@@ -4317,6 +4313,14 @@
                 "Value": "false"
               }
             },
+            "disable_zaraz": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "edge_cache_ttl": {
               "Type": "Int",
               "Optional": true
@@ -5074,6 +5078,29 @@
                       "ElementsType": "String"
                     }
                   },
+                  "response": {
+                    "Type": "List",
+                    "Optional": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "content": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "content_type": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "status_code": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
                   "rules": {
                     "Type": "Map",
                     "Optional": true,
@@ -5229,6 +5256,10 @@
                   "requests_per_period": {
                     "Type": "Int",
                     "Optional": true
+                  },
+                  "requests_to_origin": {
+                    "Type": "Bool",
+                    "Optional": true
                   }
                 }
               }
@@ -5287,7 +5318,8 @@
       },
       "edge_ip_connectivity": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "edge_ips": {
         "Type": "List",
@@ -5762,6 +5794,29 @@
         }
       }
     },
+    "cloudflare_teams_proxy_endpoint": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "ips": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "subdomain": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "cloudflare_teams_rule": {
       "account_id": {
         "Type": "String",
@@ -6112,6 +6167,80 @@
       },
       "total_active_users": {
         "Type": "Int",
+        "Required": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "cloudflare_waiting_room_event": {
+      "created_on": {
+        "Type": "String",
+        "Computed": true
+      },
+      "custom_page_html": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disable_session_renewal": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "event_end_time": {
+        "Type": "String",
+        "Required": true
+      },
+      "event_start_time": {
+        "Type": "String",
+        "Required": true
+      },
+      "modified_on": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "new_users_per_minute": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "prequeue_start_time": {
+        "Type": "String",
+        "Optional": true
+      },
+      "queueing_method": {
+        "Type": "String",
+        "Optional": true
+      },
+      "session_duration": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "shuffle_at_event_start": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "suspended": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "total_active_users": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "waiting_room_id": {
+        "Type": "String",
         "Required": true
       },
       "zone_id": {

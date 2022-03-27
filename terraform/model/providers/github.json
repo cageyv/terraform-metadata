@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.21.0",
+  "version": "v4.23.0",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -66,6 +66,15 @@
       "Optional": true,
       "Description": "The GitHub owner name to manage. Use this field instead of `organization` when managing individual accounts.",
       "DefaultFunc": "ENV(GITHUB_OWNER)"
+    },
+    "read_delay_ms": {
+      "Type": "Int",
+      "Optional": true,
+      "Description": "Amount of time in milliseconds to sleep in between non-write requests to GitHub API. Defaults to 0ms if not set.",
+      "Default": {
+        "Type": "int",
+        "Value": "0"
+      }
     },
     "token": {
       "Type": "String",
@@ -685,6 +694,56 @@
         }
       }
     },
+    "github_issue": {
+      "assignees": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of Logins for Users to assign to this issue",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "body": {
+        "Type": "String",
+        "Optional": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "issue_id": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of names of labels on the issue",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "milestone_number": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "number": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "title": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "github_issue_label": {
       "color": {
         "Type": "String",
@@ -826,13 +885,21 @@
         "Type": "String",
         "Required": true
       },
+      "content_id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "content_type": {
+        "Type": "String",
+        "Optional": true
+      },
       "etag": {
         "Type": "String",
         "Computed": true
       },
       "note": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "github_project_column": {
@@ -983,6 +1050,10 @@
       "http_clone_url": {
         "Type": "String",
         "Computed": true
+      },
+      "ignore_vulnerability_alerts_during_read": {
+        "Type": "Bool",
+        "Optional": true
       },
       "is_template": {
         "Type": "Bool",
@@ -2056,6 +2127,10 @@
         "Type": "String",
         "Computed": true
       },
+      "orgname": {
+        "Type": "String",
+        "Computed": true
+      },
       "plan": {
         "Type": "String",
         "Computed": true
@@ -2156,6 +2231,28 @@
             }
           }
         }
+      }
+    },
+    "github_ref": {
+      "branch": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ref": {
+        "Type": "String",
+        "Computed": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "sha": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "github_release": {
@@ -2774,6 +2871,55 @@
         }
       },
       "slug": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "github_tree": {
+      "entries": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mode": {
+              "Type": "String",
+              "Computed": true
+            },
+            "path": {
+              "Type": "String",
+              "Computed": true
+            },
+            "sha": {
+              "Type": "String",
+              "Computed": true
+            },
+            "size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "recursive": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "tree_sha": {
         "Type": "String",
         "Required": true
       }
