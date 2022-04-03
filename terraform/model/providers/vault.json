@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.4.0",
+  "version": "v3.4.1",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -7372,6 +7372,11 @@
         "Required": true,
         "Description": "Specifies the RabbitMQ management administrator password"
       },
+      "password_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a password policy to use when creating dynamic credentials. Defaults to generating an alphanumeric password if not set."
+      },
       "path": {
         "Type": "String",
         "Optional": true,
@@ -7385,6 +7390,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Specifies the RabbitMQ management administrator username"
+      },
+      "username_template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Template describing how dynamic usernames are generated."
       },
       "verify_connection": {
         "Type": "Bool",
@@ -8572,6 +8582,11 @@
         "Type": "String",
         "Description": "The client secret for credentials to query the Azure APIs.",
         "Computed": true
+      },
+      "environment": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Azure environment to use during credential validation.\nDefaults to the environment configured in the Vault backend.\nSome possible values: AzurePublicCloud, AzureGovernmentCloud"
       },
       "lease_duration": {
         "Type": "Int",

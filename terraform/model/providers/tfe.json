@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.29.0",
+  "version": "v0.30.2",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -727,9 +727,48 @@
           "Type": "string"
         }
       },
+      "variable_set_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "workspace_id": {
         "Type": "String",
+        "Optional": true
+      }
+    },
+    "tfe_variable_set": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "workspace_ids"
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "name": {
+        "Type": "String",
         "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "tfe_workspace": {
@@ -1115,6 +1154,44 @@
         "Required": true
       }
     },
+    "tfe_variable_set": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "variable_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "tfe_variables": {
       "env": {
         "Type": "List",
@@ -1186,6 +1263,10 @@
           }
         }
       },
+      "variable_set_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "variables": {
         "Type": "List",
         "Computed": true,
@@ -1223,7 +1304,7 @@
       },
       "workspace_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "tfe_workspace": {
