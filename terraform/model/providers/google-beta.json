@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.15.0",
+  "version": "v4.16.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -296,6 +296,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_FIREBASE_CUSTOM_ENDPOINT)"
+    },
+    "firebaserules_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_FIREBASERULES_CUSTOM_ENDPOINT)"
     },
     "firestore_custom_endpoint": {
       "Type": "String",
@@ -8356,6 +8361,34 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "autoscaling_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of Autoscaling configurations. Only one element is used and allowed.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu_target": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The target CPU utilization for autoscaling. Value must be between 10 and 80."
+                  },
+                  "max_nodes": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The maximum number of nodes for autoscaling."
+                  },
+                  "min_nodes": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The minimum number of nodes for autoscaling."
+                  }
+                }
+              }
+            },
             "cluster_id": {
               "Type": "String",
               "Required": true,
@@ -13742,7 +13775,7 @@
                   "image_version": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-[0-9]+\\.[0-9]+(\\.[0-9]+)?-airflow-[0-9]+\\.[0-9]+(\\.[0-9]+.*)?. The Cloud Composer portion of the version is a semantic version. The portion of the image version following 'airflow-' is an official Apache Airflow repository release name. See documentation for allowed release names.",
+                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+\\.[0-9]+(\\.[0-9]+)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major and minor versions specified. See documentation for more details and version list.",
                     "Computed": true
                   },
                   "pypi_packages": {
@@ -14528,6 +14561,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "An optional textual description of the resource; provided by the\nclient when the resource is created."
+      },
+      "edge_security_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The security policy associated with this backend bucket."
       },
       "enable_cdn": {
         "Type": "Bool",
@@ -28085,6 +28123,12 @@
         "Type": "String",
         "Description": "The URI of the created resource.",
         "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The type indicates the intended use of the security policy. CLOUD_ARMOR - Cloud Armor backend security policies can be configured to filter incoming HTTP requests targeting backend services. They filter requests before they hit the origin servers. CLOUD_ARMOR_EDGE - Cloud Armor edge security policies can be configured to filter incoming HTTP requests targeting backend services (including Cloud CDN-enabled) as well as backend buckets (Cloud Storage). They filter requests before the request is served from Google's cache.",
+        "Computed": true
       }
     },
     "google_compute_service_attachment": {
@@ -32105,7 +32149,7 @@
       "authorization": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Configuration related to the cluster RBAC settings.",
+        "Description": "Configuration related to the cluster RBAC settings.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32115,7 +32159,7 @@
             "admin_users": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. Users to perform operations as a cluster admin. A managed ClusterRoleBinding will be created to grant the `cluster-admin` ClusterRole to the users. At most one user can be specified. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
+              "Description": "Users to perform operations as a cluster admin. A managed ClusterRoleBinding will be created to grant the `cluster-admin` ClusterRole to the users. At most one user can be specified. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
               "Elem": {
@@ -32124,7 +32168,7 @@
                   "username": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The name of the user, e.g. `my-gcp-id@gmail.com`."
+                    "Description": "The name of the user, e.g. `my-gcp-id@gmail.com`."
                   }
                 }
               }
@@ -32135,12 +32179,12 @@
       "aws_region": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The AWS region where the cluster runs. Each Google Cloud region supports a subset of nearby AWS regions. You can call to list all supported AWS regions within a given Google Cloud region."
+        "Description": "The AWS region where the cluster runs. Each Google Cloud region supports a subset of nearby AWS regions. You can call to list all supported AWS regions within a given Google Cloud region."
       },
       "control_plane": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Configuration related to the cluster control plane.",
+        "Description": "Configuration related to the cluster control plane.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32150,7 +32194,7 @@
             "aws_services_authentication": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. Authentication configuration for management of AWS resources.",
+              "Description": "Authentication configuration for management of AWS resources.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -32160,7 +32204,7 @@
                   "role_arn": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The Amazon Resource Name (ARN) of the role that the Anthos Multi-Cloud API will assume when managing AWS resources on your account."
+                    "Description": "The Amazon Resource Name (ARN) of the role that the Anthos Multi-Cloud API will assume when managing AWS resources on your account."
                   },
                   "role_session_name": {
                     "Type": "String",
@@ -32174,7 +32218,7 @@
             "config_encryption": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. The ARN of the AWS KMS key used to encrypt cluster configuration.",
+              "Description": "The ARN of the AWS KMS key used to encrypt cluster configuration.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -32184,7 +32228,7 @@
                   "kms_key_arn": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The ARN of the AWS KMS key used to encrypt cluster configuration."
+                    "Description": "The ARN of the AWS KMS key used to encrypt cluster configuration."
                   }
                 }
               }
@@ -32192,7 +32236,7 @@
             "database_encryption": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. The ARN of the AWS KMS key used to encrypt cluster secrets.",
+              "Description": "The ARN of the AWS KMS key used to encrypt cluster secrets.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -32202,7 +32246,7 @@
                   "kms_key_arn": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The ARN of the AWS KMS key used to encrypt cluster secrets."
+                    "Description": "The ARN of the AWS KMS key used to encrypt cluster secrets."
                   }
                 }
               }
@@ -32210,12 +32254,12 @@
             "iam_instance_profile": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The name of the AWS IAM instance pofile to assign to each control plane replica."
+              "Description": "The name of the AWS IAM instance pofile to assign to each control plane replica."
             },
             "instance_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional. The AWS instance type. When unspecified, it defaults to `t3.medium`.",
+              "Description": "Optional. The AWS instance type. When unspecified, it defaults to `m5.large`.",
               "Computed": true
             },
             "main_volume": {
@@ -32338,7 +32382,7 @@
                   "ec2_key_pair": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The name of the EC2 key pair used to login into cluster machines."
+                    "Description": "The name of the EC2 key pair used to login into cluster machines."
                   }
                 }
               }
@@ -32346,7 +32390,7 @@
             "subnet_ids": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. The list of subnets where control plane replicas will run. A replica will be provisioned on each subnet and up to three values can be provided. Each subnet must be in a different AWS Availability Zone (AZ).",
+              "Description": "The list of subnets where control plane replicas will run. A replica will be provisioned on each subnet and up to three values can be provided. Each subnet must be in a different AWS Availability Zone (AZ).",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -32366,7 +32410,7 @@
             "version": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The Kubernetes version to run on control plane replicas (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling ."
+              "Description": "The Kubernetes version to run on control plane replicas (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling ."
             }
           }
         }
@@ -32428,7 +32472,7 @@
       "networking": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Cluster-wide networking configuration.",
+        "Description": "Cluster-wide networking configuration.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32438,7 +32482,7 @@
             "pod_address_cidr_blocks": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. All pods in the cluster are assigned an RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.",
+              "Description": "All pods in the cluster are assigned an RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -32448,7 +32492,7 @@
             "service_address_cidr_blocks": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. All services in the cluster are assigned an RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.",
+              "Description": "All services in the cluster are assigned an RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -32458,7 +32502,7 @@
             "vpc_id": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The VPC associated with the cluster. All component clusters (i.e. control plane and node pools) run on a single VPC. This field cannot be changed after creation."
+              "Description": "The VPC associated with the cluster. All component clusters (i.e. control plane and node pools) run on a single VPC. This field cannot be changed after creation."
             }
           }
         }
@@ -32536,7 +32580,7 @@
       "autoscaling": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Autoscaler configuration for this node pool.",
+        "Description": "Autoscaler configuration for this node pool.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32546,12 +32590,12 @@
             "max_node_count": {
               "Type": "Int",
               "Required": true,
-              "Description": "Required. Maximum number of nodes in the NodePool. Must be \u003e= min_node_count."
+              "Description": "Maximum number of nodes in the NodePool. Must be \u003e= min_node_count."
             },
             "min_node_count": {
               "Type": "Int",
               "Required": true,
-              "Description": "Required. Minimum number of nodes in the NodePool. Must be \u003e= 1 and \u003c= max_node_count."
+              "Description": "Minimum number of nodes in the NodePool. Must be \u003e= 1 and \u003c= max_node_count."
             }
           }
         }
@@ -32564,7 +32608,7 @@
       "config": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. The configuration of the node pool.",
+        "Description": "The configuration of the node pool.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32574,7 +32618,7 @@
             "config_encryption": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. The ARN of the AWS KMS key used to encrypt node pool configuration.",
+              "Description": "The ARN of the AWS KMS key used to encrypt node pool configuration.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -32584,7 +32628,7 @@
                   "kms_key_arn": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The ARN of the AWS KMS key used to encrypt node pool configuration."
+                    "Description": "The ARN of the AWS KMS key used to encrypt node pool configuration."
                   }
                 }
               }
@@ -32592,12 +32636,12 @@
             "iam_instance_profile": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The name of the AWS IAM role assigned to nodes in the pool."
+              "Description": "The name of the AWS IAM role assigned to nodes in the pool."
             },
             "instance_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional. The AWS instance type. When unspecified, it defaults to `t3.medium`.",
+              "Description": "Optional. The AWS instance type. When unspecified, it defaults to `m5.large`.",
               "Computed": true
             },
             "labels": {
@@ -32670,7 +32714,7 @@
                   "ec2_key_pair": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The name of the EC2 key pair used to login into cluster machines."
+                    "Description": "The name of the EC2 key pair used to login into cluster machines."
                   }
                 }
               }
@@ -32697,17 +32741,17 @@
                   "effect": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The taint effect. Possible values: EFFECT_UNSPECIFIED, NO_SCHEDULE, PREFER_NO_SCHEDULE, NO_EXECUTE"
+                    "Description": "The taint effect. Possible values: EFFECT_UNSPECIFIED, NO_SCHEDULE, PREFER_NO_SCHEDULE, NO_EXECUTE"
                   },
                   "key": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. Key for the taint."
+                    "Description": "Key for the taint."
                   },
                   "value": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. Value for the taint."
+                    "Description": "Value for the taint."
                   }
                 }
               }
@@ -32733,7 +32777,7 @@
       "max_pods_constraint": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. The constraint on the maximum number of pods that can be run simultaneously on a node in the node pool.",
+        "Description": "The constraint on the maximum number of pods that can be run simultaneously on a node in the node pool.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32743,7 +32787,7 @@
             "max_pods_per_node": {
               "Type": "Int",
               "Required": true,
-              "Description": "Required. The maximum number of pods to schedule on a single node."
+              "Description": "The maximum number of pods to schedule on a single node."
             }
           }
         }
@@ -32772,7 +32816,7 @@
       "subnet_id": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The subnet where the node pool node run."
+        "Description": "The subnet where the node pool node run."
       },
       "uid": {
         "Type": "String",
@@ -32787,7 +32831,7 @@
       "version": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The Kubernetes version to run on this node pool (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling GetAwsServerConfig."
+        "Description": "The Kubernetes version to run on this node pool (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling GetAwsServerConfig."
       }
     },
     "google_container_azure_client": {
@@ -32798,7 +32842,7 @@
       "application_id": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The Azure Active Directory Application ID."
+        "Description": "The Azure Active Directory Application ID."
       },
       "certificate": {
         "Type": "String",
@@ -32829,7 +32873,7 @@
       "tenant_id": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The Azure Active Directory Tenant ID."
+        "Description": "The Azure Active Directory Tenant ID."
       },
       "uid": {
         "Type": "String",
@@ -32856,7 +32900,7 @@
       "authorization": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Configuration related to the cluster RBAC settings.",
+        "Description": "Configuration related to the cluster RBAC settings.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -32866,7 +32910,7 @@
             "admin_users": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. Users that can perform operations as a cluster admin. A new ClusterRoleBinding will be created to grant the cluster-admin ClusterRole to the users. At most one user can be specified. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
+              "Description": "Users that can perform operations as a cluster admin. A new ClusterRoleBinding will be created to grant the cluster-admin ClusterRole to the users. At most one user can be specified. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
               "Elem": {
@@ -32875,7 +32919,7 @@
                   "username": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The name of the user, e.g. `my-gcp-id@gmail.com`."
+                    "Description": "The name of the user, e.g. `my-gcp-id@gmail.com`."
                   }
                 }
               }
@@ -32886,17 +32930,17 @@
       "azure_region": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The Azure region where the cluster runs. Each Google Cloud region supports a subset of nearby Azure regions. You can call to list all supported Azure regions within a given Google Cloud region."
+        "Description": "The Azure region where the cluster runs. Each Google Cloud region supports a subset of nearby Azure regions. You can call to list all supported Azure regions within a given Google Cloud region."
       },
       "client": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. Name of the AzureClient. The `AzureClient` resource must reside on the same GCP project and region as the `AzureCluster`. `AzureClient` names are formatted as `projects/\u003cproject-number\u003e/locations/\u003cregion\u003e/azureClients/\u003cclient-id\u003e`. See Resource Names (https:cloud.google.com/apis/design/resource_names) for more details on Google Cloud resource names."
+        "Description": "Name of the AzureClient. The `AzureClient` resource must reside on the same GCP project and region as the `AzureCluster`. `AzureClient` names are formatted as `projects/\u003cproject-number\u003e/locations/\u003cregion\u003e/azureClients/\u003cclient-id\u003e`. See Resource Names (https:cloud.google.com/apis/design/resource_names) for more details on Google Cloud resource names."
       },
       "control_plane": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Configuration related to the cluster control plane.",
+        "Description": "Configuration related to the cluster control plane.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -33009,7 +33053,7 @@
             "ssh_config": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. SSH configuration for how to access the underlying control plane machines.",
+              "Description": "SSH configuration for how to access the underlying control plane machines.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -33019,7 +33063,7 @@
                   "authorized_key": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The SSH public key data for VMs managed by Anthos. This accepts the authorized_keys file format used in OpenSSH according to the sshd(8) manual page."
+                    "Description": "The SSH public key data for VMs managed by Anthos. This accepts the authorized_keys file format used in OpenSSH according to the sshd(8) manual page."
                   }
                 }
               }
@@ -33027,7 +33071,7 @@
             "subnet_id": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The ARM ID of the subnet where the control plane VMs are deployed. Example: `/subscriptions//resourceGroups//providers/Microsoft.Network/virtualNetworks//subnets/default`."
+              "Description": "The ARM ID of the subnet where the control plane VMs are deployed. Example: `/subscriptions//resourceGroups//providers/Microsoft.Network/virtualNetworks//subnets/default`."
             },
             "tags": {
               "Type": "Map",
@@ -33042,7 +33086,7 @@
             "version": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The Kubernetes version to run on control plane replicas (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling GetAzureServerConfig."
+              "Description": "The Kubernetes version to run on control plane replicas (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling GetAzureServerConfig."
             },
             "vm_size": {
               "Type": "String",
@@ -33110,7 +33154,7 @@
       "networking": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Cluster-wide networking configuration.",
+        "Description": "Cluster-wide networking configuration.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -33120,7 +33164,7 @@
             "pod_address_cidr_blocks": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. The IP address range of the pods in this cluster, in CIDR notation (e.g. `10.96.0.0/14`). All pods in the cluster get assigned a unique RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.",
+              "Description": "The IP address range of the pods in this cluster, in CIDR notation (e.g. `10.96.0.0/14`). All pods in the cluster get assigned a unique RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -33130,7 +33174,7 @@
             "service_address_cidr_blocks": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. The IP address range for services in this cluster, in CIDR notation (e.g. `10.96.0.0/14`). All services in the cluster get assigned a unique RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creating a cluster.",
+              "Description": "The IP address range for services in this cluster, in CIDR notation (e.g. `10.96.0.0/14`). All services in the cluster get assigned a unique RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creating a cluster.",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -33140,7 +33184,7 @@
             "virtual_network_id": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The Azure Resource Manager (ARM) ID of the VNet associated with your cluster. All components in the cluster (i.e. control plane and node pools) run on a single VNet. Example: `/subscriptions/*/resourceGroups/*/providers/Microsoft.Network/virtualNetworks/*` This field cannot be changed after creation."
+              "Description": "The Azure Resource Manager (ARM) ID of the VNet associated with your cluster. All components in the cluster (i.e. control plane and node pools) run on a single VNet. Example: `/subscriptions/*/resourceGroups/*/providers/Microsoft.Network/virtualNetworks/*` This field cannot be changed after creation."
             }
           }
         }
@@ -33159,7 +33203,7 @@
       "resource_group_id": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The ARM ID of the resource group where the cluster resources are deployed. For example: `/subscriptions/*/resourceGroups/*`"
+        "Description": "The ARM ID of the resource group where the cluster resources are deployed. For example: `/subscriptions/*/resourceGroups/*`"
       },
       "state": {
         "Type": "String",
@@ -33223,7 +33267,7 @@
       "autoscaling": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. Autoscaler configuration for this node pool.",
+        "Description": "Autoscaler configuration for this node pool.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -33233,12 +33277,12 @@
             "max_node_count": {
               "Type": "Int",
               "Required": true,
-              "Description": "Required. Maximum number of nodes in the node pool. Must be \u003e= min_node_count."
+              "Description": "Maximum number of nodes in the node pool. Must be \u003e= min_node_count."
             },
             "min_node_count": {
               "Type": "Int",
               "Required": true,
-              "Description": "Required. Minimum number of nodes in the node pool. Must be \u003e= 1 and \u003c= max_node_count."
+              "Description": "Minimum number of nodes in the node pool. Must be \u003e= 1 and \u003c= max_node_count."
             }
           }
         }
@@ -33257,7 +33301,7 @@
       "config": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. The node configuration of the node pool.",
+        "Description": "The node configuration of the node pool.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -33287,7 +33331,7 @@
             "ssh_config": {
               "Type": "List",
               "Required": true,
-              "Description": "Required. SSH configuration for how to access the node pool machines.",
+              "Description": "SSH configuration for how to access the node pool machines.",
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -33297,7 +33341,7 @@
                   "authorized_key": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "Required. The SSH public key data for VMs managed by Anthos. This accepts the authorized_keys file format used in OpenSSH according to the sshd(8) manual page."
+                    "Description": "The SSH public key data for VMs managed by Anthos. This accepts the authorized_keys file format used in OpenSSH according to the sshd(8) manual page."
                   }
                 }
               }
@@ -33339,7 +33383,7 @@
       "max_pods_constraint": {
         "Type": "List",
         "Required": true,
-        "Description": "Required. The constraint on the maximum number of pods that can be run simultaneously on a node in the node pool.",
+        "Description": "The constraint on the maximum number of pods that can be run simultaneously on a node in the node pool.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -33349,7 +33393,7 @@
             "max_pods_per_node": {
               "Type": "Int",
               "Required": true,
-              "Description": "Required. The maximum number of pods to schedule on a single node."
+              "Description": "The maximum number of pods to schedule on a single node."
             }
           }
         }
@@ -33378,7 +33422,7 @@
       "subnet_id": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The ARM ID of the subnet where the node pool VMs run. Make sure it's a subnet under the virtual network in the cluster configuration."
+        "Description": "The ARM ID of the subnet where the node pool VMs run. Make sure it's a subnet under the virtual network in the cluster configuration."
       },
       "uid": {
         "Type": "String",
@@ -33393,7 +33437,7 @@
       "version": {
         "Type": "String",
         "Required": true,
-        "Description": "Required. The Kubernetes version (e.g. `1.19.10-gke.1000`) running on this node pool."
+        "Description": "The Kubernetes version (e.g. `1.19.10-gke.1000`) running on this node pool."
       }
     },
     "google_container_cluster": {
@@ -33622,9 +33666,6 @@
         "Description": "Configuration for the Google Groups for GKE feature.",
         "Computed": true,
         "MaxItems": 1,
-        "ConflictsWith": [
-          "enable_autopilot"
-        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -45634,6 +45675,49 @@
                   }
                 }
               }
+            },
+            "gke": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A GKE service capable of receiving events. The service should be running in the same project as the trigger.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cluster": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. The name of the cluster the GKE service is running in. The cluster must be running in the same project as the trigger being created."
+                  },
+                  "location": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. The name of the Google Compute Engine in which the cluster resides, which can either be compute zone (for example, us-central1-a) for the zonal clusters or region (for example, us-central1) for regional clusters."
+                  },
+                  "namespace": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. The namespace the GKE service is running in."
+                  },
+                  "path": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The relative path on the GKE service the events should be sent to. The value must conform to the definition of a URI path segment (section 3.3 of RFC2396). Examples: \"/route\", \"route\", \"route/subroute\"."
+                  },
+                  "service": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. Name of the GKE service."
+                  }
+                }
+              }
+            },
+            "workflow": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The resource name of the Workflow whose Executions are triggered by the events. The Workflow resource should be deployed in the same project as the trigger. Format: `projects/{project}/locations/{location}/workflows/{workflow}`"
             }
           }
         }
@@ -45671,6 +45755,11 @@
               "Type": "String",
               "Required": true,
               "Description": "Required. The name of a CloudEvents attribute. Currently, only a subset of attributes are supported for filtering. All triggers MUST provide a filter for the 'type' attribute."
+            },
+            "operator": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. The operator used for matching the events with the value of the filter. If not specified, only events that have an exact key-value pair specified in the filter are matched. The only allowed value is `match-path-pattern`."
             },
             "value": {
               "Type": "String",
@@ -45993,6 +46082,133 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "google_firebaserules_release": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. Time the release was created.",
+        "Computed": true
+      },
+      "disabled": {
+        "Type": "Bool",
+        "Description": "Disable the release to keep it from being served. The response code of NOT_FOUND will be given for executables generated from this Release.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Format: `projects/{project_id}/releases/{release_id}`"
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "ruleset_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the `Ruleset` referred to by this `Release`. The `Ruleset` must exist the `Release` to be created."
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. Time the release was updated.",
+        "Computed": true
+      }
+    },
+    "google_firebaserules_ruleset": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. Time the `Ruleset` was created.",
+        "Computed": true
+      },
+      "metadata": {
+        "Type": "List",
+        "Description": "Output only. The metadata for this ruleset.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "services": {
+              "Type": "List",
+              "Description": "Services that this ruleset has declarations for (e.g., \"cloud.firestore\"). There may be 0+ of these.",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Description": "Output only. Name of the `Ruleset`. The ruleset_id is auto generated by the service. Format: `projects/{project_id}/rulesets/{ruleset_id}`",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "source": {
+        "Type": "List",
+        "Required": true,
+        "Description": "`Source` for the `Ruleset`.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "files": {
+              "Type": "List",
+              "Required": true,
+              "Description": "`File` set constituting the `Source` bundle.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "content": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Textual Content."
+                  },
+                  "fingerprint": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Fingerprint (e.g. github sha) associated with the `File`."
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "File name."
+                  }
+                }
+              }
+            },
+            "language": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "`Language` of the `Source` bundle. If unspecified, the language will default to `FIREBASE_RULES`. Possible values: LANGUAGE_UNSPECIFIED, FIREBASE_RULES, EVENT_FLOW_TRIGGERS"
+            }
+          }
+        }
       }
     },
     "google_firestore_document": {
@@ -52866,7 +53082,7 @@
             "path": {
               "Type": "String",
               "Optional": true,
-              "Description": "The path to the page to run the check against. Will be combined with the host (specified within the MonitoredResource) and port to construct the full URL. Optional (defaults to \"/\").",
+              "Description": "The path to the page to run the check against. Will be combined with the host (specified within the MonitoredResource) and port to construct the full URL. If the provided path does not begin with \"/\", a \"/\" will be prepended automatically. Optional (defaults to \"/\").",
               "Default": {
                 "Type": "string",
                 "Value": "/"
@@ -54019,6 +54235,17 @@
                                             "Optional": true,
                                             "Description": "If true, http and https requests will be cached separately.",
                                             "Computed": true
+                                          },
+                                          "included_cookie_names": {
+                                            "Type": "List",
+                                            "Optional": true,
+                                            "Description": "Names of Cookies to include in cache keys.  The cookie name and cookie value of each cookie named will be used as part of the cache key.\n\nCookie names:\n  - must be valid RFC 6265 \"cookie-name\" tokens\n  - are case sensitive\n  - cannot start with \"Edge-Cache-\" (case insensitive)\n\n  Note that specifying several cookies, and/or cookies that have a large range of values (e.g., per-user) will dramatically impact the cache hit rate, and may result in a higher eviction rate and reduced performance.\n\n  You may specify up to three cookie names.",
+                                            "MaxItems": 3,
+                                            "ConfigImplicitMode": "Attr",
+                                            "Elem": {
+                                              "Type": "SchemaElements",
+                                              "ElementsType": "String"
+                                            }
                                           },
                                           "included_header_names": {
                                             "Type": "List",
@@ -64845,6 +65072,12 @@
         "update",
         "delete"
       ],
+      "database_dialect": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The dialect of the Cloud Spanner Database.\nIf it is not provided, \"GOOGLE_STANDARD_SQL\" will be used. \nNote: Databases that are created with POSTGRESQL dialect do not support \nextra DDL statements in the 'CreateDatabase' call. You must therefore re-apply \nterraform with ddl on the same database after creation. Possible values: [\"GOOGLE_STANDARD_SQL\", \"POSTGRESQL\"]",
+        "Computed": true
+      },
       "ddl": {
         "Type": "List",
         "Optional": true,
@@ -66992,6 +67225,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "repeat_interval": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Interval between the start of each scheduled transfer. If unspecified, the default value is 24 hours. This value may not be less than 1 hour. A duration in seconds with up to nine fractional digits, terminated by 's'. Example: \"3.5s\".",
+              "Default": {
+                "Type": "string",
+                "Value": "86400s"
+              }
+            },
             "schedule_end_date": {
               "Type": "List",
               "Optional": true,
@@ -69784,7 +70026,7 @@
                   },
                   "image_version": {
                     "Type": "String",
-                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-[0-9]+\\.[0-9]+(\\.[0-9]+)?-airflow-[0-9]+\\.[0-9]+(\\.[0-9]+.*)?. The Cloud Composer portion of the version is a semantic version. The portion of the image version following 'airflow-' is an official Apache Airflow repository release name. See documentation for allowed release names.",
+                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+\\.[0-9]+(\\.[0-9]+)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major and minor versions specified. See documentation for more details and version list.",
                     "Computed": true
                   },
                   "pypi_packages": {
@@ -70155,6 +70397,11 @@
       "description": {
         "Type": "String",
         "Description": "An optional textual description of the resource; provided by the\nclient when the resource is created.",
+        "Computed": true
+      },
+      "edge_security_policy": {
+        "Type": "String",
+        "Description": "The security policy associated with this backend bucket.",
         "Computed": true
       },
       "enable_cdn": {
@@ -75922,6 +76169,160 @@
       },
       "repository_url": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_dataproc_metastore_service": {
+      "artifact_gcs_uri": {
+        "Type": "String",
+        "Description": "A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.",
+        "Computed": true
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Description": "The URI of the endpoint used to access the metastore service.",
+        "Computed": true
+      },
+      "hive_metastore_config": {
+        "Type": "List",
+        "Description": "Configuration information specific to running Hive metastore software as the metastore service.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "config_overrides": {
+              "Type": "Map",
+              "Description": "A mapping of Hive metastore configuration key-value pairs to apply to the Hive metastore (configured in hive-site.xml).\nThe mappings override system defaults (some keys cannot be overridden)",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "kerberos_config": {
+              "Type": "List",
+              "Description": "Information used to configure the Hive metastore service as a service principal in a Kerberos realm.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "keytab": {
+                    "Type": "List",
+                    "Description": "A Kerberos keytab file that can be used to authenticate a service principal with a Kerberos Key Distribution Center (KDC).",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cloud_secret": {
+                          "Type": "String",
+                          "Description": "The relative resource name of a Secret Manager secret version, in the following form:\n\n\"projects/{projectNumber}/secrets/{secret_id}/versions/{version_id}\".",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "krb5_config_gcs_uri": {
+                    "Type": "String",
+                    "Description": "A Cloud Storage URI that specifies the path to a krb5.conf file. It is of the form gs://{bucket_name}/path/to/krb5.conf, although the file does not need to be named krb5.conf explicitly.",
+                    "Computed": true
+                  },
+                  "principal": {
+                    "Type": "String",
+                    "Description": "A Kerberos principal that exists in the both the keytab the KDC to authenticate as. A typical principal is of the form \"primary/instance@REALM\", but there is no exact format.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "version": {
+              "Type": "String",
+              "Description": "The Hive metastore schema version.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Description": "User-defined labels for the metastore service.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The  location where the autoscaling policy should reside.\nThe default value is 'global'."
+      },
+      "maintenance_window": {
+        "Type": "List",
+        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day_of_week": {
+              "Type": "String",
+              "Description": "The day of week, when the window starts. Possible values: [\"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\", \"SUNDAY\"]",
+              "Computed": true
+            },
+            "hour_of_day": {
+              "Type": "Int",
+              "Description": "The hour of day (0-23) when the window starts.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The relative resource name of the metastore service.",
+        "Computed": true
+      },
+      "network": {
+        "Type": "String",
+        "Description": "The relative resource name of the VPC network on which the instance can be accessed. It is specified in the following form:\n\n\"projects/{projectNumber}/global/networks/{network_id}\".",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Description": "The TCP port at which the metastore service is reached. Default: 9083.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "service_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the metastore service. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),\nand hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between\n3 and 63 characters."
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The current state of the metastore service.",
+        "Computed": true
+      },
+      "state_message": {
+        "Type": "String",
+        "Description": "Additional information about the current state of the metastore service, if available.",
+        "Computed": true
+      },
+      "tier": {
+        "Type": "String",
+        "Description": "The tier of the service. Possible values: [\"DEVELOPER\", \"ENTERPRISE\"]",
         "Computed": true
       }
     },

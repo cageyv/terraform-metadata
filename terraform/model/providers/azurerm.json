@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.0.2",
+  "version": "v3.1.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -8659,13 +8659,15 @@
             },
             "private_ip_address": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true
+              "Optional": true
             },
             "private_ip_address_allocation": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Default": {
+                "Type": "string",
+                "Value": "Dynamic"
+              }
             },
             "private_link_configuration_id": {
               "Type": "String",
@@ -8677,13 +8679,11 @@
             },
             "public_ip_address_id": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true
+              "Optional": true
             },
             "subnet_id": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true
+              "Optional": true
             }
           }
         }
@@ -14336,6 +14336,10 @@
         "update",
         "delete"
       ],
+      "custom_question_answering_search_service_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "custom_subdomain_name": {
         "Type": "String",
         "Optional": true
@@ -16245,6 +16249,59 @@
           "Type": "bool",
           "Value": "false"
         }
+      }
+    },
+    "azurerm_container_registry_agent_pool": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "container_registry_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "instance_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tier": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "S1"
+        }
+      },
+      "virtual_network_subnet_id": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "azurerm_container_registry_scope_map": {
@@ -41335,6 +41392,16 @@
               "Optional": true,
               "Computed": true
             },
+            "ip_versions": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "load_balancer_profile": {
               "Type": "List",
               "Optional": true,
@@ -41491,6 +41558,14 @@
       "node_resource_group": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "oidc_issuer_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "oidc_issuer_url": {
+        "Type": "String",
         "Computed": true
       },
       "oms_agent": {
@@ -57967,6 +58042,11 @@
           "Value": "true"
         }
       },
+      "ledger_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
       "license_type": {
         "Type": "String",
         "Optional": true,
@@ -68787,6 +68867,10 @@
         "Type": "Int",
         "Optional": true,
         "Computed": true
+      },
+      "zone_balancing_enabled": {
+        "Type": "Bool",
+        "Optional": true
       }
     },
     "azurerm_servicebus_namespace": {
@@ -68802,6 +68886,30 @@
         "Default": {
           "Type": "int",
           "Value": "0"
+        }
+      },
+      "customer_managed_key": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "infrastructure_encryption_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "key_vault_key_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
         }
       },
       "default_primary_connection_string": {
@@ -68851,6 +68959,14 @@
               "Required": true
             }
           }
+        }
+      },
+      "local_auth_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       },
       "location": {
@@ -97345,6 +97461,14 @@
         "Type": "String",
         "Computed": true
       },
+      "oidc_issuer_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "oidc_issuer_url": {
+        "Type": "String",
+        "Computed": true
+      },
       "oms_agent": {
         "Type": "List",
         "Computed": true,
@@ -104832,6 +104956,10 @@
       "worker_count": {
         "Type": "Int",
         "Computed": true
+      },
+      "zone_balancing_enabled": {
+        "Type": "Bool",
+        "Computed": true
       }
     },
     "azurerm_servicebus_namespace": {
@@ -106431,7 +106559,7 @@
         "Type": "String",
         "Computed": true
       },
-      "allow_blob_public_access": {
+      "allow_nested_items_to_be_public": {
         "Type": "Bool",
         "Computed": true
       },

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.11.0",
+  "version": "v3.12.1",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -198,10 +198,7 @@
       "http_only_cookie_attribute": {
         "Type": "Bool",
         "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Computed": true
       },
       "logo_url": {
         "Type": "String",
@@ -214,6 +211,14 @@
       "same_site_cookie_attribute": {
         "Type": "String",
         "Optional": true
+      },
+      "service_auth_401_redirect": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "session_duration": {
         "Type": "String",
@@ -238,6 +243,44 @@
           "Type": "string",
           "Value": "self_hosted"
         }
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "account_id"
+        ]
+      }
+    },
+    "cloudflare_access_bookmark": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "zone_id"
+        ]
+      },
+      "app_launcher_visible": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "domain": {
+        "Type": "String",
+        "Required": true
+      },
+      "logo_url": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
       },
       "zone_id": {
         "Type": "String",
@@ -2010,7 +2053,7 @@
                 "Type": "SchemaInfo",
                 "Info": {
                   "in": {
-                    "Type": "List",
+                    "Type": "Set",
                     "Optional": true,
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
@@ -2019,7 +2062,7 @@
                     }
                   },
                   "not_in": {
-                    "Type": "List",
+                    "Type": "Set",
                     "Optional": true,
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
@@ -2062,7 +2105,7 @@
               }
             },
             "permission_groups": {
-              "Type": "List",
+              "Type": "Set",
               "Required": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
@@ -3070,6 +3113,7 @@
       "notification_email_addresses": {
         "Type": "List",
         "Optional": true,
+        "Deprecated": "Use `cloudflare_notification_policy` instead.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -3079,6 +3123,7 @@
       "notification_suspended": {
         "Type": "Bool",
         "Optional": true,
+        "Deprecated": "Use `cloudflare_notification_policy` instead.",
         "Default": {
           "Type": "bool",
           "Value": "false"
@@ -3875,10 +3920,6 @@
         "Type": "String",
         "Required": true
       },
-      "conditions": {
-        "Type": "Map",
-        "Optional": true
-      },
       "created": {
         "Type": "String",
         "Computed": true
@@ -3911,12 +3952,87 @@
         "Required": true
       },
       "filters": {
-        "Type": "Map",
+        "Type": "List",
         "Optional": true,
-        "ConfigImplicitMode": "Attr",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
         "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "List"
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "health_check_id": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "limit": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "pool_id": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "product": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "services": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "status": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "zones": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
         }
       },
       "modified": {

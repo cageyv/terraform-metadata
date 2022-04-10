@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.19.1",
+  "version": "v2.20.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -996,6 +996,23 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azuread_claims_mapping_policy": {
+      "definition": {
+        "Type": "List",
+        "Required": true,
+        "Description": "A string collection containing a JSON string that defines the rules and settings for this policy",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Display name for this policy"
       }
     },
     "azuread_conditional_access_policy": {
@@ -2241,6 +2258,18 @@
         "Type": "String",
         "Required": true,
         "Description": "The certificate data, which can be PEM encoded, base64 encoded DER or hexadecimal encoded DER"
+      }
+    },
+    "azuread_service_principal_claims_mapping_policy_assignment": {
+      "claims_mapping_policy_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the claims mapping policy to assign"
+      },
+      "service_principal_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Object ID of the service principal for which to assign the policy"
       }
     },
     "azuread_service_principal_delegated_permission_grant": {
