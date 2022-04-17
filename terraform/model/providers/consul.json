@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "consul",
   "type": "provider",
-  "version": "v2.15.0",
+  "version": "v2.15.1",
   "provider": {
     "address": {
       "Type": "String",
@@ -661,6 +661,11 @@
       "namespace": {
         "Type": "String",
         "Optional": true
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The partition the config entry is associated with."
       }
     },
     "consul_intention": {

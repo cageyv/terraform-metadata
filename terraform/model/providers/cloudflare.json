@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.12.1",
+  "version": "v3.12.2",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -5305,7 +5305,7 @@
             },
             "description": {
               "Type": "String",
-              "Required": true
+              "Optional": true
             },
             "enabled": {
               "Type": "Bool",

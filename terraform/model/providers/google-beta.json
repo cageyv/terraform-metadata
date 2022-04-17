@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.16.0",
+  "version": "v4.17.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -326,6 +326,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_HEALTHCARE_CUSTOM_ENDPOINT)"
+    },
+    "iam2_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_IAM2_CUSTOM_ENDPOINT)"
     },
     "iam_beta_custom_endpoint": {
       "Type": "String",
@@ -1212,6 +1217,17 @@
         "Required": true,
         "Description": "The parent of this AccessPolicy in the Cloud Resource Hierarchy.\nFormat: organizations/{organization_id}"
       },
+      "scopes": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Folder or project on which this policy is applicable.\nFormat: folders/{{folder_id}} or projects/{{project_id}}",
+        "MaxItems": 1,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "title": {
         "Type": "String",
         "Required": true,
@@ -1221,6 +1237,109 @@
         "Type": "String",
         "Description": "Time the AccessPolicy was updated in UTC.",
         "Computed": true
+      }
+    },
+    "google_access_context_manager_access_policy_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_access_context_manager_access_policy_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_access_context_manager_access_policy_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
       }
     },
     "google_access_context_manager_gcp_user_access_binding": {
@@ -3396,6 +3515,18 @@
         "update",
         "delete"
       ],
+      "api_proxy_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. API Proxy type supported by the environment. The type can be set when creating\nthe Environment and cannot be changed. Possible values: [\"API_PROXY_TYPE_UNSPECIFIED\", \"PROGRAMMABLE\", \"CONFIGURABLE\"]",
+        "Computed": true
+      },
+      "deployment_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. Deployment type supported by the environment. The deployment type can be\nset when creating the environment and cannot be changed. When you enable archive\ndeployment, you will be prevented from performing a subset of actions within the\nenvironment, including:\nManaging the deployment of API proxy or shared flow revisions;\nCreating, updating, or deleting resource files;\nCreating, updating, or deleting target servers. Possible values: [\"DEPLOYMENT_TYPE_UNSPECIFIED\", \"PROXY\", \"ARCHIVE\"]",
+        "Computed": true
+      },
       "description": {
         "Type": "String",
         "Optional": true,
@@ -3565,7 +3696,7 @@
       "location": {
         "Type": "String",
         "Required": true,
-        "Description": "Compute Engine location where the instance resides. For trial organization\nsubscriptions, the location must be a Compute Engine zone. For paid organization\nsubscriptions, it should correspond to a Compute Engine region."
+        "Description": "Required. Compute Engine location where the instance resides."
       },
       "name": {
         "Type": "String",
@@ -11371,6 +11502,29 @@
         "update",
         "delete"
       ],
+      "approval_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configuration for manual approval to start a build invocation of this BuildTrigger. \nBuilds created by this trigger will require approval before they execute. \nAny user with a Cloud Build Approver role for the project can approve a build.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "approval_required": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether or not approval is needed. If this is set on a build, it will become pending when run, \nand will need to be explicitly approved to start.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            }
+          }
+        }
+      },
       "build": {
         "Type": "List",
         "Optional": true,
@@ -11919,7 +12073,7 @@
             "repo_type": {
               "Type": "String",
               "Required": true,
-              "Description": "The type of the repo, since it may not be explicit from the repo field (e.g from a URL). Possible values: [\"UNKNOWN\", \"CLOUD_SOURCE_REPOSITORIES\", \"GITHUB\"]"
+              "Description": "The type of the repo, since it may not be explicit from the repo field (e.g from a URL). \nValues can be UNKNOWN, CLOUD_SOURCE_REPOSITORIES, GITHUB Possible values: [\"UNKNOWN\", \"CLOUD_SOURCE_REPOSITORIES\", \"GITHUB\"]"
             },
             "revision": {
               "Type": "String",
@@ -12100,7 +12254,7 @@
             "repo_type": {
               "Type": "String",
               "Required": true,
-              "Description": "The type of the repo, since it may not be explicit from the repo field (e.g from a URL). Possible values: [\"UNKNOWN\", \"CLOUD_SOURCE_REPOSITORIES\", \"GITHUB\"]"
+              "Description": "The type of the repo, since it may not be explicit from the repo field (e.g from a URL).\nValues can be UNKNOWN, CLOUD_SOURCE_REPOSITORIES, GITHUB Possible values: [\"UNKNOWN\", \"CLOUD_SOURCE_REPOSITORIES\", \"GITHUB\"]"
             },
             "uri": {
               "Type": "String",
@@ -13775,7 +13929,7 @@
                   "image_version": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+\\.[0-9]+(\\.[0-9]+)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major and minor versions specified. See documentation for more details and version list.",
+                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major or major.minor versions specified. See documentation for more details and version list.",
                     "Computed": true
                   },
                   "pypi_packages": {
@@ -39116,6 +39270,15 @@
         "Description": "The region in which the created job should run.",
         "Computed": true
       },
+      "skip_wait_on_job_termination": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, treat DRAINING and CANCELLING as terminal job states and do not wait for further changes before removing from terraform state and moving on. WARNING: this will lead to job name conflicts if you do not ensure that the job names are different, e.g. by embedding a release ID or by using a random_id.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "state": {
         "Type": "String",
         "Computed": true
@@ -39209,6 +39372,15 @@
         "Type": "String",
         "Optional": true,
         "Description": "The Service Account email used to create the job."
+      },
+      "skip_wait_on_job_termination": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, treat DRAINING and CANCELLING as terminal job states and do not wait for further changes before removing from terraform state and moving on. WARNING: this will lead to job name conflicts if you do not ensure that the job names are different, e.g. by embedding a release ID or by using a random_id.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "state": {
         "Type": "String",
@@ -40616,6 +40788,88 @@
               "Type": "String",
               "Description": "Output-only. A cluster UUID generated by the Cloud Dataproc service when the job is submitted",
               "Computed": true
+            }
+          }
+        }
+      },
+      "presto_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The config of presto job",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_tags": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Presto client tags to attach to this query.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "continue_on_failure": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to continue executing queries if a query fails. Setting to true can be useful when executing independent parallel queries. Defaults to false."
+            },
+            "logging_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The runtime logging config of the job",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_log_levels": {
+                    "Type": "Map",
+                    "Required": true,
+                    "Description": "Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "output_format": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The format in which query output will be displayed. See the Presto documentation for supported output formats."
+            },
+            "properties": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A mapping of property names to values. Used to set Presto session properties Equivalent to using the --session flag in the Presto CLI.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "query_file_uri": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The HCFS URI of the script that contains SQL queries. Conflicts with query_list"
+            },
+            "query_list": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The list of SQL queries or statements to execute as part of the job. Conflicts with query_file_uri",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             }
           }
         }
@@ -45481,6 +45735,121 @@
         "Description": "The name of the service. Usually of the form $apiname.endpoints.$projectid.cloud.goog."
       }
     },
+    "google_endpoints_service_consumers_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "consumer_project": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_endpoints_service_consumers_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "consumer_project": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_endpoints_service_consumers_iam_policy": {
+      "consumer_project": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_endpoints_service_iam_binding": {
       "condition": {
         "Type": "List",
@@ -46378,6 +46747,16 @@
         "update",
         "delete"
       ],
+      "active_key_version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The asymmetric crypto key version to use for signing approval requests.\nEmpty active_key_version indicates that a Google-managed key should be used for signing.\nThis property will be ignored if set by an ancestor of the resource, and new non-empty values may not be set."
+      },
+      "ancestor_has_active_key_version": {
+        "Type": "Bool",
+        "Description": "If the field is true, that indicates that an ancestor of this Folder has set active_key_version.",
+        "Computed": true
+      },
       "enrolled_ancestor": {
         "Type": "Bool",
         "Description": "If the field is true, that indicates that at least one service is enrolled for Access Approval in one or more ancestors of the Folder.",
@@ -46413,6 +46792,11 @@
         "Type": "String",
         "Required": true,
         "Description": "ID of the folder of the access approval settings."
+      },
+      "invalid_key_version": {
+        "Type": "Bool",
+        "Description": "If the field is true, that indicates that there is some configuration issue with the active_key_version\nconfigured on this Folder (e.g. it doesn't exist or the Access Approval service account doesn't have the\ncorrect permissions on it, etc.) This key version is not necessarily the effective key version at this level,\nas key versions are inherited top-down.",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -48161,7 +48545,7 @@
                         "schema_type": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Specifies the output schema type. Only ANALYTICS is supported at this time.\n * ANALYTICS: Analytics schema defined by the FHIR community.\n  See https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md. Default value: \"ANALYTICS\" Possible values: [\"ANALYTICS\"]",
+                          "Description": "Specifies the output schema type.\n * ANALYTICS: Analytics schema defined by the FHIR community.\n  See https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md.\n * ANALYTICS_V2: Analytics V2, similar to schema defined by the FHIR community, with added support for extensions with one or more occurrences and contained resources in stringified JSON.\n * LOSSLESS: A data-driven schema generated from the fields present in the FHIR data being exported, with no additional simplification. Default value: \"ANALYTICS\" Possible values: [\"ANALYTICS\", \"ANALYTICS_V2\", \"LOSSLESS\"]",
                           "Default": {
                             "Type": "string",
                             "Value": "ANALYTICS"
@@ -48395,7 +48779,7 @@
             "version": {
               "Type": "String",
               "Optional": true,
-              "Description": "The version of the unschematized parser to be used when a custom 'schema' is not set. Default value: \"V1\" Possible values: [\"V1\", \"V2\"]",
+              "Description": "The version of the unschematized parser to be used when a custom 'schema' is not set. Default value: \"V1\" Possible values: [\"V1\", \"V2\", \"V3\"]",
               "Default": {
                 "Type": "string",
                 "Value": "V1"
@@ -48511,6 +48895,136 @@
       "policy_data": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "google_iam_deny_policy": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of the rule."
+      },
+      "etag": {
+        "Type": "String",
+        "Description": "The hash of the resource. Used internally during updates.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the policy."
+      },
+      "parent": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The attachment point is identified by its URL-encoded full resource name."
+      },
+      "rules": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Rules to be applied.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "deny_rule": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A deny rule in an IAM deny policy.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "denial_condition": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "User defined CEVAL expression. A CEVAL expression is used to specify match criteria such as origin.ip, source.region_code and contents in the request header.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "description": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Description of the expression. This is a longer text which describes the expression,\ne.g. when hovered over it in a UI."
+                        },
+                        "expression": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "Textual representation of an expression in Common Expression Language syntax."
+                        },
+                        "location": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "String indicating the location of the expression for error reporting,\ne.g. a file name and a position in the file."
+                        },
+                        "title": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Title for the expression, i.e. a short string describing its purpose.\nThis can be used e.g. in UIs which allow to enter the expression."
+                        }
+                      }
+                    }
+                  },
+                  "denied_permissions": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "The permissions that are explicitly denied by this rule. Each permission uses the format '{service-fqdn}/{resource}.{verb}',\nwhere '{service-fqdn}' is the fully qualified domain name for the service. For example, 'iam.googleapis.com/roles.list'.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "denied_principals": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "The identities that are prevented from using one or more permissions on Google Cloud resources.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "exception_permissions": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Specifies the permissions that this rule excludes from the set of denied permissions given by deniedPermissions.\nIf a permission appears in deniedPermissions and in exceptionPermissions then it will not be denied.\nThe excluded permissions can be specified using the same syntax as deniedPermissions.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "exception_principals": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "The identities that are excluded from the deny rule, even if they are listed in the deniedPrincipals.\nFor example, you could add a Google group to the deniedPrincipals, then exclude specific users who belong to that group.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The description of the rule."
+            }
+          }
+        }
       }
     },
     "google_iam_workload_identity_pool": {
@@ -55806,6 +56320,16 @@
         "update",
         "delete"
       ],
+      "active_key_version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The asymmetric crypto key version to use for signing approval requests.\nEmpty active_key_version indicates that a Google-managed key should be used for signing."
+      },
+      "ancestor_has_active_key_version": {
+        "Type": "Bool",
+        "Description": "This field will always be unset for the organization since organizations do not have ancestors.",
+        "Computed": true
+      },
       "enrolled_ancestor": {
         "Type": "Bool",
         "Description": "This field will always be unset for the organization since organizations do not have ancestors.",
@@ -55836,6 +56360,11 @@
             }
           }
         }
+      },
+      "invalid_key_version": {
+        "Type": "Bool",
+        "Description": "If the field is true, that indicates that there is some configuration issue with the active_key_version\nconfigured on this Organization (e.g. it doesn't exist or the Access Approval service account doesn't have the\ncorrect permissions on it, etc.).",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -58439,6 +58968,11 @@
                   }
                 }
               }
+            },
+            "mig_instances_allowed": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Allows the patch job to run on Managed instance groups (MIGs)."
             },
             "post_step": {
               "Type": "List",
@@ -61693,6 +62227,16 @@
         "update",
         "delete"
       ],
+      "active_key_version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The asymmetric crypto key version to use for signing approval requests.\nEmpty active_key_version indicates that a Google-managed key should be used for signing.\nThis property will be ignored if set by an ancestor of the resource, and new non-empty values may not be set."
+      },
+      "ancestor_has_active_key_version": {
+        "Type": "Bool",
+        "Description": "If the field is true, that indicates that an ancestor of this Project has set active_key_version.",
+        "Computed": true
+      },
       "enrolled_ancestor": {
         "Type": "Bool",
         "Description": "If the field is true, that indicates that at least one service is enrolled for Access Approval in one or more ancestors of the Project.",
@@ -61723,6 +62267,11 @@
             }
           }
         }
+      },
+      "invalid_key_version": {
+        "Type": "Bool",
+        "Description": "If the field is true, that indicates that there is some configuration issue with the active_key_version\nconfigured on this Project (e.g. it doesn't exist or the Access Approval service account doesn't have the\ncorrect permissions on it, etc.) This key version is not necessarily the effective key version at this level,\nas key versions are inherited top-down.",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -62463,6 +63012,11 @@
           }
         }
       },
+      "enable_exactly_once_delivery": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If 'true', Pub/Sub provides the following guarantees for the delivery\nof a message with a given value of messageId on this Subscriptions':\n\n- The message sent to a subscriber is guaranteed not to be resent before the message's acknowledgement deadline expires.\n\n- An acknowledged message will not be resent to a subscriber.\n\nNote that subscribers may still receive multiple copies of a message when 'enable_exactly_once_delivery'\nis true if the message was published multiple times by a publisher client. These copies are considered distinct by Pub/Sub and have distinct messageId values"
+      },
       "enable_message_ordering": {
         "Type": "Bool",
         "Optional": true,
@@ -62505,7 +63059,7 @@
       "message_retention_duration": {
         "Type": "String",
         "Optional": true,
-        "Description": "How long to retain unacknowledged messages in the subscription's\nbacklog, from the moment a message is published. If\nretainAckedMessages is true, then this also configures the retention\nof acknowledged messages, and thus configures how far back in time a\nsubscriptions.seek can be done. Defaults to 7 days. Cannot be more\nthan 7 days ('\"604800s\"') or less than 10 minutes ('\"600s\"').\n\nA duration in seconds with up to nine fractional digits, terminated\nby 's'. Example: '\"600.5s\"'.",
+        "Description": "How long to retain unacknowledged messages in the subscription's\nbacklog, from the moment a message is published. If\nretain_acked_messages is true, then this also configures the retention\nof acknowledged messages, and thus configures how far back in time a\nsubscriptions.seek can be done. Defaults to 7 days. Cannot be more\nthan 7 days ('\"604800s\"') or less than 10 minutes ('\"600s\"').\n\nA duration in seconds with up to nine fractional digits, terminated\nby 's'. Example: '\"600.5s\"'.",
         "Default": {
           "Type": "string",
           "Value": "604800s"
@@ -63355,11 +63909,8 @@
       "read_replicas_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "Optional. Read replica mode. Can only be specified when trying to create the instance.\nIf not set, Memorystore Redis backend will default to READ_REPLICAS_DISABLED.\n- READ_REPLICAS_DISABLED: If disabled, read endpoint will not be provided and the \ninstance cannot scale up or down the number of replicas.\n- READ_REPLICAS_ENABLED: If enabled, read endpoint will be provided and the instance \ncan scale up and down the number of replicas. Default value: \"READ_REPLICAS_DISABLED\" Possible values: [\"READ_REPLICAS_DISABLED\", \"READ_REPLICAS_ENABLED\"]",
-        "Default": {
-          "Type": "string",
-          "Value": "READ_REPLICAS_DISABLED"
-        }
+        "Description": "Optional. Read replica mode. Can only be specified when trying to create the instance.\nIf not set, Memorystore Redis backend will default to READ_REPLICAS_DISABLED.\n- READ_REPLICAS_DISABLED: If disabled, read endpoint will not be provided and the \ninstance cannot scale up or down the number of replicas.\n- READ_REPLICAS_ENABLED: If enabled, read endpoint will be provided and the instance \ncan scale up and down the number of replicas. Possible values: [\"READ_REPLICAS_DISABLED\", \"READ_REPLICAS_ENABLED\"]",
+        "Computed": true
       },
       "redis_configs": {
         "Type": "Map",
@@ -68537,6 +69088,48 @@
     }
   },
   "data-sources": {
+    "google_access_approval_folder_service_account": {
+      "account_email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "folder_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_access_approval_organization_service_account": {
+      "account_email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_access_approval_project_service_account": {
+      "account_email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_active_folder": {
       "display_name": {
         "Type": "String",
@@ -70026,7 +70619,7 @@
                   },
                   "image_version": {
                     "Type": "String",
-                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+\\.[0-9]+(\\.[0-9]+)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major and minor versions specified. See documentation for more details and version list.",
+                    "Description": "The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major or major.minor versions specified. See documentation for more details and version list.",
                     "Computed": true
                   },
                   "pypi_packages": {
@@ -78853,7 +79446,7 @@
       },
       "read_replicas_mode": {
         "Type": "String",
-        "Description": "Optional. Read replica mode. Can only be specified when trying to create the instance.\nIf not set, Memorystore Redis backend will default to READ_REPLICAS_DISABLED.\n- READ_REPLICAS_DISABLED: If disabled, read endpoint will not be provided and the \ninstance cannot scale up or down the number of replicas.\n- READ_REPLICAS_ENABLED: If enabled, read endpoint will be provided and the instance \ncan scale up and down the number of replicas. Default value: \"READ_REPLICAS_DISABLED\" Possible values: [\"READ_REPLICAS_DISABLED\", \"READ_REPLICAS_ENABLED\"]",
+        "Description": "Optional. Read replica mode. Can only be specified when trying to create the instance.\nIf not set, Memorystore Redis backend will default to READ_REPLICAS_DISABLED.\n- READ_REPLICAS_DISABLED: If disabled, read endpoint will not be provided and the \ninstance cannot scale up or down the number of replicas.\n- READ_REPLICAS_ENABLED: If enabled, read endpoint will be provided and the instance \ncan scale up and down the number of replicas. Possible values: [\"READ_REPLICAS_DISABLED\", \"READ_REPLICAS_ENABLED\"]",
         "Computed": true
       },
       "redis_configs": {

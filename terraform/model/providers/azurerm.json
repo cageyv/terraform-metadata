@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.1.0",
+  "version": "v3.2.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -15416,6 +15416,110 @@
         }
       }
     },
+    "azurerm_container_connected_registry": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "audit_log_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "client_token_ids": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "container_registry_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "log_level": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "containerregistry.LogLevel",
+          "Value": "None"
+        }
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ReadWrite"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "notification": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Required": true
+            },
+            "digest": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "parent_registry_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "sync_message_ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "P1D"
+        }
+      },
+      "sync_schedule": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "* * * * *"
+        }
+      },
+      "sync_token_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "sync_window": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "azurerm_container_group": {
       "__timeouts__": [
         "create",
@@ -15896,6 +16000,133 @@
             "username": {
               "Type": "String",
               "Required": true
+            }
+          }
+        }
+      },
+      "init_container": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "commands": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "environment_variables": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "image": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "secure_environment_variables": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "volume": {
+              "Type": "List",
+              "Optional": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "empty_dir": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
+                  },
+                  "git_repo": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "directory": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "revision": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "url": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "mount_path": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "read_only": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
+                  },
+                  "secret": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "share_name": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "storage_account_key": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "storage_account_name": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
             }
           }
         }
@@ -52899,13 +53130,22 @@
         "Type": "String",
         "Optional": true
       },
+      "public_access_behind_virtual_network_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "public_network_access_enabled"
+        ]
+      },
       "public_network_access_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Computed": true,
+        "ConflictsWith": [
+          "public_access_behind_virtual_network_enabled"
+        ],
+        "Deprecated": "`public_network_access_enabled` will be removed in favour of the property `public_access_behind_virtual_network_enabled` in version 4.0 of the AzureRM Provider."
       },
       "resource_group_name": {
         "Type": "String",
@@ -53611,6 +53851,56 @@
       "policy_definition_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azurerm_management_group_policy_exemption": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "exemption_category": {
+        "Type": "String",
+        "Required": true
+      },
+      "expires_on": {
+        "Type": "String",
+        "Optional": true
+      },
+      "management_group_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "metadata": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_assignment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_definition_reference_ids": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azurerm_management_group_policy_remediation": {
@@ -66062,6 +66352,56 @@
         "Required": true
       }
     },
+    "azurerm_resource_group_policy_exemption": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "exemption_category": {
+        "Type": "String",
+        "Required": true
+      },
+      "expires_on": {
+        "Type": "String",
+        "Optional": true
+      },
+      "metadata": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_assignment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_definition_reference_ids": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "resource_group_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_resource_group_policy_remediation": {
       "__timeouts__": [
         "create",
@@ -66258,6 +66598,56 @@
       "policy_definition_id": {
         "Type": "String",
         "Required": true
+      },
+      "resource_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_resource_policy_exemption": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "exemption_category": {
+        "Type": "String",
+        "Required": true
+      },
+      "expires_on": {
+        "Type": "String",
+        "Optional": true
+      },
+      "metadata": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_assignment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_definition_reference_ids": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "resource_id": {
         "Type": "String",
@@ -67877,6 +68267,10 @@
         "Optional": true
       },
       "display_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "item_search_key": {
         "Type": "String",
         "Required": true
       },
@@ -74779,6 +75173,31 @@
         "Required": true
       }
     },
+    "azurerm_stream_analytics_job_schedule": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "last_output_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "start_mode": {
+        "Type": "String",
+        "Required": true
+      },
+      "start_time": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "stream_analytics_job_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_stream_analytics_managed_private_endpoint": {
       "__timeouts__": [
         "create",
@@ -76033,6 +76452,56 @@
       "policy_definition_id": {
         "Type": "String",
         "Required": true
+      },
+      "subscription_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_subscription_policy_exemption": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "exemption_category": {
+        "Type": "String",
+        "Required": true
+      },
+      "expires_on": {
+        "Type": "String",
+        "Optional": true
+      },
+      "metadata": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_assignment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_definition_reference_ids": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "subscription_id": {
         "Type": "String",
@@ -81838,7 +82307,7 @@
             },
             "server_root_certificate": {
               "Type": "Set",
-              "Required": true,
+              "Optional": true,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
               "Elem": {
@@ -97775,6 +98244,39 @@
         "Computed": true
       }
     },
+    "azurerm_kusto_database": {
+      "__timeouts__": [
+        "read"
+      ],
+      "cluster_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "hot_cache_period": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "size": {
+        "Type": "Float",
+        "Computed": true
+      },
+      "soft_delete_period": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "azurerm_lb": {
       "__timeouts__": [
         "read"
@@ -107451,6 +107953,10 @@
         "Type": "String",
         "Computed": true
       },
+      "last_output_time": {
+        "Type": "String",
+        "Computed": true
+      },
       "location": {
         "Type": "String",
         "Computed": true
@@ -107466,6 +107972,14 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "start_mode": {
+        "Type": "String",
+        "Computed": true
+      },
+      "start_time": {
+        "Type": "String",
+        "Computed": true
       },
       "streaming_units": {
         "Type": "Int",

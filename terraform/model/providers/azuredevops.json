@@ -1,9 +1,9 @@
 {
   ".schema_version": "2",
-  ".sdk_type": "terraform-plugin-sdk-v1",
+  ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuredevops",
   "type": "provider",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "provider": {
     "org_service_url": {
       "Type": "String",
@@ -218,7 +218,7 @@
               "Required": true
             },
             "filename_patterns": {
-              "Type": "Set",
+              "Type": "List",
               "Optional": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
@@ -1651,6 +1651,42 @@
           "Type": "bool",
           "Value": "true"
         }
+      }
+    },
+    "azuredevops_project_pipeline_settings": {
+      "enforce_job_scope": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Limit job authorization scope to current project for non-release pipelines",
+        "Computed": true
+      },
+      "enforce_referenced_repo_scoped_token": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Protect access to repositories in YAML pipelines",
+        "Computed": true
+      },
+      "enforce_settable_var": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Limit variables that can be set at queue time",
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "publish_pipeline_metadata": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Publish metadata from pipelines",
+        "Computed": true
+      },
+      "status_badges_are_private": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Disable anonymous access to badges",
+        "Computed": true
       }
     },
     "azuredevops_repository_policy_author_email_pattern": {
