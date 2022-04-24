@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.2.0",
+  "version": "v3.3.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -21543,6 +21543,30 @@
         "Type": "String",
         "Optional": true
       },
+      "service_principal_linked_key_vault_key": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "linked_service_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "secret_name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "storage_kind": {
+        "Type": "String",
+        "Optional": true
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true
@@ -23051,6 +23075,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "user_name": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "azurerm_data_factory_linked_service_synapse": {
@@ -41599,6 +41627,22 @@
           }
         }
       },
+      "microsoft_defender": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "log_analytics_workspace_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -48322,10 +48366,10 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "site_config.0.application_stack.0.dotnet_version",
-                      "site_config.0.application_stack.0.php_version",
+                      "site_config.0.application_stack.0.java_version",
                       "site_config.0.application_stack.0.node_version",
-                      "site_config.0.application_stack.0.ruby_version",
-                      "site_config.0.application_stack.0.java_version"
+                      "site_config.0.application_stack.0.php_version",
+                      "site_config.0.application_stack.0.ruby_version"
                     ]
                   },
                   "ruby_version": {
@@ -49721,10 +49765,10 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "site_config.0.application_stack.0.dotnet_version",
-                      "site_config.0.application_stack.0.php_version",
+                      "site_config.0.application_stack.0.java_version",
                       "site_config.0.application_stack.0.node_version",
-                      "site_config.0.application_stack.0.ruby_version",
-                      "site_config.0.application_stack.0.java_version"
+                      "site_config.0.application_stack.0.php_version",
+                      "site_config.0.application_stack.0.ruby_version"
                     ]
                   },
                   "ruby_version": {
@@ -65784,6 +65828,7 @@
       "__timeouts__": [
         "create",
         "read",
+        "update",
         "delete"
       ],
       "client_protocol": {
@@ -65812,6 +65857,20 @@
         "Default": {
           "Type": "string",
           "Value": "VolatileLRU"
+        }
+      },
+      "linked_database_group_nickname": {
+        "Type": "String",
+        "Optional": true
+      },
+      "linked_database_id": {
+        "Type": "Set",
+        "Optional": true,
+        "MaxItems": 5,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "module": {
@@ -71296,6 +71355,92 @@
         "Computed": true
       }
     },
+    "azurerm_spring_cloud_container_deployment": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "arguments": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "commands": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "environment_variables": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "image": {
+        "Type": "String",
+        "Required": true
+      },
+      "instance_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "language_framework": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "quota": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cpu": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "memory": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "server": {
+        "Type": "String",
+        "Required": true
+      },
+      "spring_cloud_app_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_spring_cloud_custom_domain": {
       "__timeouts__": [
         "create",
@@ -71676,6 +71821,10 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "service_registry_enabled": {
+        "Type": "Bool",
+        "Optional": true
       },
       "sku_name": {
         "Type": "String",
@@ -75441,6 +75590,22 @@
         "Type": "String",
         "Required": true
       },
+      "max_batch_count": {
+        "Type": "Float",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10000"
+        }
+      },
+      "max_writer_count": {
+        "Type": "Float",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -75602,6 +75767,15 @@
         "Type": "String",
         "Required": true
       },
+      "system_property_columns": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "topic_name": {
         "Type": "String",
         "Required": true
@@ -75657,6 +75831,15 @@
       "batch_size": {
         "Type": "Int",
         "Required": true
+      },
+      "columns_to_remove": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "name": {
         "Type": "String",
@@ -76020,8 +76203,7 @@
       ],
       "address_prefixes": {
         "Type": "List",
-        "Optional": true,
-        "Computed": true,
+        "Required": true,
         "MinItems": 1,
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -97883,6 +98065,21 @@
         "Type": "String",
         "Computed": true
       },
+      "microsoft_defender": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "log_analytics_workspace_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -104913,6 +105110,19 @@
         "Type": "String",
         "Required": true
       },
+      "linked_database_group_nickname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "linked_database_id": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -107103,6 +107313,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "nfsv3_enabled": {
+        "Type": "Bool",
+        "Computed": true
       },
       "primary_access_key": {
         "Type": "String",

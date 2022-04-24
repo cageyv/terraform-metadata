@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.30.2",
+  "version": "v0.31.0",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -532,6 +532,10 @@
             }
           }
         }
+      },
+      "sso_team_id": {
+        "Type": "String",
+        "Optional": true
       },
       "visibility": {
         "Type": "String",
@@ -1107,6 +1111,10 @@
       "organization": {
         "Type": "String",
         "Required": true
+      },
+      "sso_team_id": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "tfe_team_access": {

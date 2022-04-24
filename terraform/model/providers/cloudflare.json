@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.12.2",
+  "version": "v3.13.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -2230,6 +2230,10 @@
       }
     },
     "cloudflare_byo_ip_prefix": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
       "advertisement": {
         "Type": "String",
         "Optional": true,
@@ -5339,6 +5343,22 @@
               "Type": "String",
               "Computed": true
             },
+            "logging": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Optional": true
+                  }
+                }
+              }
+            },
             "ratelimit": {
               "Type": "List",
               "Optional": true,
@@ -6365,6 +6385,10 @@
       }
     },
     "cloudflare_worker_cron_trigger": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
       "schedules": {
         "Type": "Set",
         "Required": true,

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "vault",
   "type": "provider",
-  "version": "v3.4.1",
+  "version": "v3.5.0",
   "provider": {
     "add_address_to_env": {
       "Type": "String",
@@ -146,6 +146,12 @@
       "Optional": true,
       "Description": "Set this to true only if the target Vault server is an insecure development instance.",
       "DefaultFunc": "ENV(VAULT_SKIP_VERIFY)"
+    },
+    "tls_server_name": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Name to use as the SNI host when connecting via TLS.",
+      "DefaultFunc": "ENV(VAULT_TLS_SERVER_NAME)"
     },
     "token": {
       "Type": "String",
@@ -2367,10 +2373,44 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "ca_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a PEM-encoded CA cert file to use to verify the Elasticsearch server's identity"
+            },
+            "ca_path": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a directory of PEM-encoded CA cert files to use to verify the Elasticsearch server's identity"
+            },
+            "client_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the certificate for the Elasticsearch client to present for communication"
+            },
+            "client_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the key for the Elasticsearch client to use for communication"
+            },
+            "insecure": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to disable certificate verification",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "password": {
               "Type": "String",
               "Required": true,
               "Description": "The password to be used in the connection URL"
+            },
+            "tls_server_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "This, if set, is used to set the SNI host when connecting via TLS"
             },
             "url": {
               "Type": "String",
@@ -2381,6 +2421,11 @@
               "Type": "String",
               "Required": true,
               "Description": "The username to be used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
             }
           }
         }
@@ -2416,11 +2461,6 @@
               "Type": "String",
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
-            },
-            "disable_escaping": {
-              "Type": "Bool",
-              "Optional": true,
-              "Description": "Disable special character escaping in username and password"
             },
             "max_connection_lifetime": {
               "Type": "Int",
@@ -3141,11 +3181,6 @@
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
             },
-            "disable_escaping": {
-              "Type": "Bool",
-              "Optional": true,
-              "Description": "Disable special character escaping in username and password"
-            },
             "max_connection_lifetime": {
               "Type": "Int",
               "Optional": true,
@@ -3214,11 +3249,6 @@
               "Type": "String",
               "Optional": true,
               "Description": "Connection string to use to connect to the database."
-            },
-            "disable_escaping": {
-              "Type": "Bool",
-              "Optional": true,
-              "Description": "Disable special character escaping in username and password"
             },
             "max_connection_lifetime": {
               "Type": "Int",
@@ -3448,6 +3478,1706 @@
         "Type": "String",
         "Required": true,
         "Description": "The database username that this role corresponds to."
+      }
+    },
+    "vault_database_secrets_mount": {
+      "accessor": {
+        "Type": "String",
+        "Description": "Accessor of the mount",
+        "Computed": true
+      },
+      "audit_non_hmac_request_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the request data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "audit_non_hmac_response_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies the list of keys that will not be HMAC'd by audit devices in the response data object.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "cassandra": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the cassandra-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connect_timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of seconds to use as a connection timeout.",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "hosts": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Cassandra hosts to connect to.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The password to use when authenticating with Cassandra."
+            },
+            "pem_bundle": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Concatenated PEM blocks containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "pem_json": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies JSON containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The transport port to use to connect to Cassandra.",
+              "Default": {
+                "Type": "int",
+                "Value": "9042"
+              }
+            },
+            "protocol_version": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The CQL protocol version to use.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to use TLS when connecting to Cassandra.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The username to use when authenticating with Cassandra."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "couchbase": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the couchbase-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "base64_pem": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required if `tls` is `true`. Specifies the certificate authority of the Couchbase server, as a PEM certificate that has been base64 encoded."
+            },
+            "bucket_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required for Couchbase versions prior to 6.5.0. This is only used to verify vault's connection to the server."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "hosts": {
+              "Type": "List",
+              "Required": true,
+              "Description": "A set of Couchbase URIs to connect to. Must use `couchbases://` scheme if `tls` is `true`.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": " Specifies whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the password corresponding to the given username."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies whether to use TLS when connecting to Couchbase.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the username for Vault to use."
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration for tokens and secrets in seconds",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount"
+      },
+      "elasticsearch": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the elasticsearch-database-plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "ca_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a PEM-encoded CA cert file to use to verify the Elasticsearch server's identity"
+            },
+            "ca_path": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to a directory of PEM-encoded CA cert files to use to verify the Elasticsearch server's identity"
+            },
+            "client_cert": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the certificate for the Elasticsearch client to present for communication"
+            },
+            "client_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The path to the key for the Elasticsearch client to use for communication"
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "insecure": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to disable certificate verification",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The password to be used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls_server_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "This, if set, is used to set the SNI host when connecting via TLS"
+            },
+            "url": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The URL for Elasticsearch's API"
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The username to be used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "engine_count": {
+        "Type": "Int",
+        "Description": "Total number of database secret engines configured under the mount.",
+        "Computed": true
+      },
+      "external_entropy_access": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable the secrets engine to access Vault's external entropy source",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "hana": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the hana-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "influxdb": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the influxdb-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connect_timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of seconds to use as a connection timeout.",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "host": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Influxdb host to connect to."
+            },
+            "insecure_tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to skip verification of the server certificate when using TLS.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the password corresponding to the given username."
+            },
+            "pem_bundle": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Concatenated PEM blocks containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "pem_json": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies JSON containing a certificate and private key; a certificate, private key, and issuing CA certificate; or just a CA certificate."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The transport port to use to connect to Influxdb.",
+              "Default": {
+                "Type": "int",
+                "Value": "8086"
+              }
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether to use TLS when connecting to Influxdb.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Specifies the username to use for superuser access."
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Template describing how dynamic usernames are generated."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "local": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Local mount flag that can be explicitly set to true to enforce local mount in HA environment"
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for tokens and secrets in seconds",
+        "Computed": true
+      },
+      "mongodb": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mongodb-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mongodbatlas": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mongodbatlas-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "private_key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Private Programmatic API Key used to connect with MongoDB Atlas API."
+            },
+            "project_id": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Project ID the Database User should be created within."
+            },
+            "public_key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Public Programmatic API Key used to authenticate with the MongoDB Atlas API."
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mssql": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mssql-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "contained_db": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Set to true when the target is a Contained Database, e.g. AzureSQL."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "disable_escaping": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable special character escaping in username and password"
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tls_ca": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "x509 CA file for validating the certificate presented by the MySQL server. Must be PEM encoded."
+            },
+            "tls_certificate_key": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "x509 certificate for connecting to the database. This must be a PEM encoded version of the private key and the certificate combined."
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql_aurora": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-aurora-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql_legacy": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-legacy-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "mysql_rds": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-rds-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Specifies mount type specific options that are passed to the backend"
+      },
+      "oracle": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the oracle-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Where the secret backend will be mounted"
+      },
+      "postgresql": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the postgresql-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "redshift": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the redshift-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "seal_wrap": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable seal wrapping for the mount, causing values stored by the mount to be wrapped by the seal's encryption capability",
+        "Computed": true
+      },
+      "snowflake": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the snowflake-database-plugin plugin.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of roles that are allowed to use this connection.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A map of sensitive data to pass to the endpoint. Useful for templated connection strings."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database.",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Name of the database connection."
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential password used in the connection URL"
+            },
+            "plugin_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the name of the plugin to use for this connection. Must be prefixed with the name of one of the supported database engine types.",
+              "Computed": true
+            },
+            "root_rotation_statements": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of database statements to be executed to rotate the root user's credentials.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root credential username used in the connection URL"
+            },
+            "username_template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Username generation template."
+            },
+            "verify_connection": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies if the connection is verified during initial configuration.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
       }
     },
     "vault_egp_policy": {
@@ -4359,7 +6089,7 @@
       "exclusive": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Should the resource manage member entity ids exclusively? Beware of race conditions when disabling exclusive management",
+        "Description": "Should the resource manage member entity ids \nexclusively? Beware of race conditions when disabling exclusive management",
         "Default": {
           "Type": "bool",
           "Value": "true"
@@ -4373,7 +6103,8 @@
       "group_name": {
         "Type": "String",
         "Description": "Name of the group.",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "The value for group_name may not always be accurate, \nuse \"data.vault_identity_group.*.group_name\", \"vault_identity_group.*.group_name\" instead"
       },
       "member_entity_ids": {
         "Type": "Set",
@@ -5735,6 +7466,192 @@
         "Description": "A format string for mapping Identity names to MFA method names. Values to substitute should be placed in `{{}}`."
       }
     },
+    "vault_mfa_okta": {
+      "api_token": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Okta API key."
+      },
+      "base_url": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "If set, will be used as the base domain for API requests.",
+        "Default": {
+          "Type": "string",
+          "Value": "okta.com"
+        }
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID computed by Vault.",
+        "Computed": true
+      },
+      "mount_accessor": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The mount to tie this method to for use in automatic mappings. The mapping will use the Name field of Aliases associated with this mount as the username in the mapping."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the MFA method."
+      },
+      "org_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the organization to be used in the Okta API."
+      },
+      "primary_email": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If set to true, the username will only match the primary email for the account.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "username_format": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A format string for mapping Identity names to MFA method names. Values to substitute should be placed in `{{}}`."
+      }
+    },
+    "vault_mfa_pingid": {
+      "admin_url": {
+        "Type": "String",
+        "Description": "Admin URL computed by Vault.",
+        "Computed": true
+      },
+      "authenticator_url": {
+        "Type": "String",
+        "Description": "Authenticator URL computed by Vault.",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID computed by Vault.",
+        "Computed": true
+      },
+      "idp_url": {
+        "Type": "String",
+        "Description": "IDP URL computed by Vault.",
+        "Computed": true
+      },
+      "mount_accessor": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The mount to tie this method to for use in automatic mappings. The mapping will use the Name field of Aliases associated with this mount as the username in the mapping."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the MFA method."
+      },
+      "namespace_id": {
+        "Type": "String",
+        "Description": "Namespace ID computed by Vault.",
+        "Computed": true
+      },
+      "org_alias": {
+        "Type": "String",
+        "Description": "Org Alias computed by Vault.",
+        "Computed": true
+      },
+      "settings_file_base64": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A base64-encoded third-party settings file retrieved from PingID's configuration page."
+      },
+      "type": {
+        "Type": "String",
+        "Description": "Type of configuration computed by Vault.",
+        "Computed": true
+      },
+      "use_signature": {
+        "Type": "Bool",
+        "Description": "If set, enables use of PingID signature. Computed by Vault",
+        "Computed": true
+      },
+      "username_format": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A format string for mapping Identity names to MFA method names. Values to substitute should be placed in `{{}}`."
+      }
+    },
+    "vault_mfa_totp": {
+      "algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the hashing algorithm used to generate the TOTP code. Options include 'SHA1', 'SHA256' and 'SHA512'.",
+        "Default": {
+          "Type": "string",
+          "Value": "SHA1"
+        }
+      },
+      "digits": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of digits in the generated TOTP token. This value can either be 6 or 8.",
+        "Default": {
+          "Type": "int",
+          "Value": "6"
+        }
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID computed by Vault.",
+        "Computed": true
+      },
+      "issuer": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the key's issuing organization."
+      },
+      "key_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the size in bytes of the generated key.",
+        "Default": {
+          "Type": "int",
+          "Value": "20"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the MFA method."
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The length of time used to generate a counter for the TOTP token calculation.",
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
+      },
+      "qr_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The pixel size of the generated square QR code.",
+        "Default": {
+          "Type": "int",
+          "Value": "200"
+        }
+      },
+      "skew": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of delay periods that are allowed when validating a TOTP token. This value can either be 0 or 1.",
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      }
+    },
     "vault_mount": {
       "accessor": {
         "Type": "String",
@@ -6242,6 +8159,15 @@
         "Type": "String",
         "Description": "The private key type.",
         "Computed": true
+      },
+      "revoke": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Revoke the certificate upon resource destruction.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "serial_number": {
         "Type": "String",
@@ -7806,9 +9732,48 @@
         "Type": "String",
         "Optional": true
       },
+      "allowed_user_key_config": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed public key types and their relevant configuration",
+        "ConflictsWith": [
+          "allowed_user_key_lengths"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "lengths": {
+              "Type": "List",
+              "Required": true,
+              "Description": "List of allowed key lengths, vault-1.10 and above",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Int"
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Key type, choices:\nrsa, ecdsa, ec, dsa, ed25519, ssh-rsa, ssh-dss, ssh-ed25519, ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521"
+            }
+          }
+        }
+      },
       "allowed_user_key_lengths": {
         "Type": "Map",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "allowed_user_key_config"
+        ],
+        "Deprecated": "Set in allowed_user_key_config",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
       },
       "allowed_users": {
         "Type": "String",
@@ -8276,7 +10241,20 @@
         "Type": "Int",
         "Optional": true,
         "Description": "Amount of time the key should live before being automatically rotated. A value of 0 disables automatic rotation for the key.",
-        "Computed": true
+        "Computed": true,
+        "ConflictsWith": [
+          "auto_rotate_period"
+        ],
+        "Deprecated": "Use auto_rotate_period instead"
+      },
+      "auto_rotate_period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Amount of time the key should live before being automatically rotated. A value of 0 disables automatic rotation for the key.",
+        "Computed": true,
+        "ConflictsWith": [
+          "auto_rotate_interval"
+        ]
       },
       "backend": {
         "Type": "String",
@@ -8840,6 +10818,15 @@
         "Default": {
           "Type": "int",
           "Value": "-1"
+        }
+      },
+      "with_lease_start_time": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If set to true, stores 'lease_start_time' in the TF state.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       }
     },

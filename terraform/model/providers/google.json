@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.17.0",
+  "version": "v4.18.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -7427,6 +7427,16 @@
         "Required": true,
         "Description": "The name of the column family."
       },
+      "gc_rules": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Serialized JSON string for garbage collection policy. Conflicts with \"mode\", \"max_age\" and \"max_version\".",
+        "ConflictsWith": [
+          "mode",
+          "max_age",
+          "max_version"
+        ]
+      },
       "instance_name": {
         "Type": "String",
         "Required": true,
@@ -7437,6 +7447,9 @@
         "Optional": true,
         "Description": "GC policy that applies to all cells older than the given age.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "gc_rules"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -7462,6 +7475,9 @@
         "Type": "List",
         "Optional": true,
         "Description": "GC policy that applies to all versions of a cell except for the most recent.",
+        "ConflictsWith": [
+          "gc_rules"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -7478,7 +7494,10 @@
       "mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "If multiple policies are set, you should choose between UNION OR INTERSECTION."
+        "Description": "If multiple policies are set, you should choose between UNION OR INTERSECTION.",
+        "ConflictsWith": [
+          "gc_rules"
+        ]
       },
       "project": {
         "Type": "String",
@@ -53692,6 +53711,7 @@
     "google_privateca_certificate": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "certificate_authority": {
@@ -54667,6 +54687,7 @@
     "google_privateca_certificate_authority": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "access_urls": {
@@ -55598,6 +55619,139 @@
       "update_time": {
         "Type": "String",
         "Description": "Output only. The time at which this CertificateTemplate was updated.",
+        "Computed": true
+      }
+    },
+    "google_privateca_certificate_template_iam_binding": {
+      "certificate_template": {
+        "Type": "String",
+        "Required": true
+      },
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_privateca_certificate_template_iam_member": {
+      "certificate_template": {
+        "Type": "String",
+        "Required": true
+      },
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_privateca_certificate_template_iam_policy": {
+      "certificate_template": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
@@ -61419,7 +61573,8 @@
       "network": {
         "Type": "String",
         "Optional": true,
-        "Description": "Name or self_link of the VPC network. Required if 'ip_cidr_range' is set."
+        "Description": "Name or self_link of the VPC network. Required if 'ip_cidr_range' is set.",
+        "Computed": true
       },
       "project": {
         "Type": "String",

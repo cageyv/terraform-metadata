@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.20.0",
+  "version": "v2.21.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -1051,7 +1051,7 @@
                   },
                   "included_applications": {
                     "Type": "List",
-                    "Required": true,
+                    "Optional": true,
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
                       "Type": "SchemaElements",
@@ -1113,7 +1113,7 @@
             },
             "locations": {
               "Type": "List",
-              "Required": true,
+              "Optional": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -1143,7 +1143,7 @@
             },
             "platforms": {
               "Type": "List",
-              "Required": true,
+              "Optional": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
