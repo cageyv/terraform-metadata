@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.18.0",
+  "version": "v4.19.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -11715,7 +11715,7 @@
                   "logging": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Option to specify the logging mode, which determines if and where build logs are stored. Possible values: [\"LOGGING_UNSPECIFIED\", \"LEGACY\", \"GCS_ONLY\", \"STACKDRIVER_ONLY\", \"NONE\"]"
+                    "Description": "Option to specify the logging mode, which determines if and where build logs are stored. Possible values: [\"LOGGING_UNSPECIFIED\", \"LEGACY\", \"GCS_ONLY\", \"STACKDRIVER_ONLY\", \"CLOUD_LOGGING_ONLY\", \"NONE\"]"
                   },
                   "machine_type": {
                     "Type": "String",
@@ -20960,7 +20960,7 @@
                   "network_tier": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The networking tier used for configuring this instance template. This field can take the following values: PREMIUM or STANDARD. If this field is not specified, it is assumed to be PREMIUM.",
+                    "Description": "The networking tier used for configuring this instance template. This field can take the following values: PREMIUM, STANDARD, FIXED_STANDARD. If this field is not specified, it is assumed to be PREMIUM.",
                     "Computed": true
                   },
                   "public_ptr_domain_name": {
@@ -25197,7 +25197,7 @@
             },
             "url_mask": {
               "Type": "String",
-              "Required": true,
+              "Optional": true,
               "Description": "A template to parse platform-specific fields from a request URL. URL mask allows for routing to multiple resources\non the same serverless platform without having to create multiple Network Endpoint Groups and backend resources.\nThe fields parsed by this template are platform-specific and are as follows: API Gateway: The gateway ID,\nApp Engine: The service and version, Cloud Functions: The function name, Cloud Run: The service and tag"
             },
             "version": {
@@ -28285,6 +28285,29 @@
                         }
                       }
                     }
+                  }
+                }
+              }
+            },
+            "redirect_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Parameters defining the redirect action. Cannot be specified for any other actions.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "target": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Target for the redirect action. This is required if the type is EXTERNAL_302 and cannot be specified for GOOGLE_RECAPTCHA."
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Type of the redirect action. Available options: EXTERNAL_302: Must specify the corresponding target field in config. GOOGLE_RECAPTCHA: Cannot specify target field in config."
                   }
                 }
               }
@@ -33719,6 +33742,24 @@
               "ConflictsWith": [
                 "enable_autopilot"
               ],
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "gke_backup_agent_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The status of the Backup for GKE Agent addon. It is disabled by default. Set enabled = true to enable.",
+              "Computed": true,
+              "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
               "Elem": {
@@ -46334,6 +46375,11 @@
           }
         }
       },
+      "kms_key_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "KMS key name used for data encryption."
+      },
       "labels": {
         "Type": "Map",
         "Optional": true,
@@ -46416,7 +46462,7 @@
       "tier": {
         "Type": "String",
         "Required": true,
-        "Description": "The service tier of the instance.\nPossible values include: STANDARD, PREMIUM, BASIC_HDD, BASIC_SSD, HIGH_SCALE_SSD and ENTERPRISE (beta only)"
+        "Description": "The service tier of the instance.\nPossible values include: STANDARD, PREMIUM, BASIC_HDD, BASIC_SSD, HIGH_SCALE_SSD and ENTERPRISE"
       },
       "zone": {
         "Type": "String",
@@ -55809,6 +55855,7 @@
                     "Type": "List",
                     "Optional": true,
                     "Description": "Use a list of container images to start the notebook instance.",
+                    "Computed": true,
                     "IsBlock": true,
                     "ConfigImplicitMode": "Block",
                     "Elem": {
@@ -66496,7 +66543,7 @@
             "availability_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For MySQL instances, ensure that\nsettings.backup_configuration.enabled and\nsettings.backup_configuration.binary_log_enabled are both set to true.",
+              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For MySQL and SQL Server instances, ensure that\nsettings.backup_configuration.enabled and\nsettings.backup_configuration.binary_log_enabled are both set to true.\nFor Postgres instances, ensure that settings.backup_configuration.enabled\nand settings.backup_configuration.point_in_time_recovery_enabled\nare both set to true.",
               "Default": {
                 "Type": "string",
                 "Value": "ZONAL"
@@ -73558,7 +73605,7 @@
                   },
                   "network_tier": {
                     "Type": "String",
-                    "Description": "The networking tier used for configuring this instance template. This field can take the following values: PREMIUM or STANDARD. If this field is not specified, it is assumed to be PREMIUM.",
+                    "Description": "The networking tier used for configuring this instance template. This field can take the following values: PREMIUM, STANDARD, FIXED_STANDARD. If this field is not specified, it is assumed to be PREMIUM.",
                     "Computed": true
                   },
                   "public_ptr_domain_name": {
@@ -75069,6 +75116,22 @@
             "gcp_filestore_csi_driver_config": {
               "Type": "List",
               "Description": "The status of the Filestore CSI driver addon, which allows the usage of filestore instance as volumes. Defaults to disabled; set enabled = true to enable.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "gke_backup_agent_config": {
+              "Type": "List",
+              "Description": "The status of the Backup for GKE Agent addon. It is disabled by default. Set enabled = true to enable.",
               "Computed": true,
               "IsBlock": true,
               "ConfigImplicitMode": "ComputedBlock",
@@ -80529,7 +80592,7 @@
             },
             "availability_type": {
               "Type": "String",
-              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For MySQL instances, ensure that\nsettings.backup_configuration.enabled and\nsettings.backup_configuration.binary_log_enabled are both set to true.",
+              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For MySQL and SQL Server instances, ensure that\nsettings.backup_configuration.enabled and\nsettings.backup_configuration.binary_log_enabled are both set to true.\nFor Postgres instances, ensure that settings.backup_configuration.enabled\nand settings.backup_configuration.point_in_time_recovery_enabled\nare both set to true.",
               "Computed": true
             },
             "backup_configuration": {

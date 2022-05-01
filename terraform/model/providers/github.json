@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.23.0",
+  "version": "v4.24.1",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -2234,17 +2234,13 @@
       }
     },
     "github_ref": {
-      "branch": {
-        "Type": "String",
-        "Required": true
-      },
       "etag": {
         "Type": "String",
         "Computed": true
       },
       "ref": {
         "Type": "String",
-        "Computed": true
+        "Required": true
       },
       "repository": {
         "Type": "String",

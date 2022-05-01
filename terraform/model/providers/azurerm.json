@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.3.0",
+  "version": "v3.4.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -19588,6 +19588,14 @@
               "Type": "String",
               "Required": true
             },
+            "dynamic_container_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "dynamic_filename_enabled": {
               "Type": "Bool",
               "Optional": true,
@@ -19893,6 +19901,14 @@
               "Type": "String",
               "Required": true
             },
+            "dynamic_container_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "dynamic_filename_enabled": {
               "Type": "Bool",
               "Optional": true,
@@ -20180,6 +20196,14 @@
               "Type": "String",
               "Required": true
             },
+            "dynamic_container_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "dynamic_filename_enabled": {
               "Type": "Bool",
               "Optional": true,
@@ -20429,6 +20453,14 @@
             "container": {
               "Type": "String",
               "Required": true
+            },
+            "dynamic_container_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "dynamic_filename_enabled": {
               "Type": "Bool",
@@ -41931,6 +41963,14 @@
           "Value": "true"
         }
       },
+      "run_command_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "service_principal": {
         "Type": "List",
         "Optional": true,
@@ -45009,6 +45049,38 @@
           }
         }
       },
+      "sticky_settings": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "storage_account_access_key": {
         "Type": "String",
         "Optional": true,
@@ -47520,6 +47592,38 @@
         "Optional": true,
         "Computed": true,
         "MaxItems": 1,
+        "ConflictsWith": [
+          "termination_notification"
+        ],
+        "Deprecated": "`terminate_notification` has been renamed to `termination_notification` and will be removed in 4.0.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "timeout": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "PT5M"
+              }
+            }
+          }
+        }
+      },
+      "termination_notification": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "terminate_notification"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -48927,6 +49031,38 @@
               "Type": "String",
               "Description": "The Site Credentials Password used for publishing.",
               "Computed": true
+            }
+          }
+        }
+      },
+      "sticky_settings": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             }
           }
         }
@@ -58475,6 +58611,14 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "backup_interval_in_hours": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "12"
+              }
+            },
             "retention_days": {
               "Type": "Int",
               "Required": true
@@ -75306,7 +75450,7 @@
       },
       "streaming_units": {
         "Type": "Int",
-        "Required": true
+        "Optional": true
       },
       "tags": {
         "Type": "Map",
@@ -75320,6 +75464,14 @@
       "transformation_query": {
         "Type": "String",
         "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Cloud"
+        }
       }
     },
     "azurerm_stream_analytics_job_schedule": {
@@ -75450,6 +75602,38 @@
         "Required": true
       },
       "time_format": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_stream_analytics_output_cosmosdb": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "container_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "cosmosdb_account_key": {
+        "Type": "String",
+        "Required": true
+      },
+      "cosmosdb_sql_database_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "document_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "stream_analytics_job_id": {
         "Type": "String",
         "Required": true
       }
@@ -84488,6 +84672,38 @@
           }
         }
       },
+      "sticky_settings": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "storage_account_access_key": {
         "Type": "String",
         "Optional": true,
@@ -86992,6 +87208,38 @@
         "Optional": true,
         "Computed": true,
         "MaxItems": 1,
+        "ConflictsWith": [
+          "termination_notification"
+        ],
+        "Deprecated": "`terminate_notification` has been renamed to `termination_notification` and will be removed in 4.0.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "timeout": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "PT5M"
+              }
+            }
+          }
+        }
+      },
+      "termination_notification": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "terminate_notification"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -88461,6 +88709,38 @@
               "Type": "String",
               "Description": "The Site Credentials Password used for publishing.",
               "Computed": true
+            }
+          }
+        }
+      },
+      "sticky_settings": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             }
           }
         }
@@ -99649,6 +99929,35 @@
           }
         }
       },
+      "sticky_settings": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "storage_account_access_key": {
         "Type": "String",
         "Computed": true
@@ -100805,6 +101114,35 @@
               "Type": "String",
               "Description": "The Site Credentials Password used for publishing.",
               "Computed": true
+            }
+          }
+        }
+      },
+      "sticky_settings": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             }
           }
         }
@@ -110755,6 +111093,35 @@
           }
         }
       },
+      "sticky_settings": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "storage_account_access_key": {
         "Type": "String",
         "Computed": true
@@ -111967,6 +112334,35 @@
               "Type": "String",
               "Description": "The Site Credentials Password used for publishing.",
               "Computed": true
+            }
+          }
+        }
+      },
+      "sticky_settings": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_setting_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "connection_string_names": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             }
           }
         }

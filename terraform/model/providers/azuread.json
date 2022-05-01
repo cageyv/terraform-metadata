@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.21.0",
+  "version": "v2.22.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -3691,6 +3691,18 @@
           "ElementsType": "String"
         }
       },
+      "ignore_missing": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Ignore missing groups and return groups that were found. The data source will still fail if no groups are found",
+        "ConflictsWith": [
+          "return_all"
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "mail_enabled": {
         "Type": "Bool",
         "Optional": true,
@@ -3714,7 +3726,10 @@
       "return_all": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Retrieve all groups with no filter"
+        "Description": "Retrieve all groups with no filter",
+        "ConflictsWith": [
+          "ignore_missing"
+        ]
       },
       "security_enabled": {
         "Type": "Bool",
