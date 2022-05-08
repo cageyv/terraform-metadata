@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.19.0",
+  "version": "v4.20.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -3000,6 +3000,17 @@
         "create",
         "delete"
       ],
+      "consumer_accept_list": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Optional. Customer accept list represents the list of projects (id/number) on customer\nside that can privately connect to the service attachment. It is an optional field\nwhich the customers can provide during the instance creation. By default, the customer\nproject associated with the Apigee organization will be included to the list.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "description": {
         "Type": "String",
         "Optional": true,
@@ -3049,6 +3060,11 @@
       "port": {
         "Type": "String",
         "Description": "Output only. Port number of the exposed Apigee endpoint.",
+        "Computed": true
+      },
+      "service_attachment": {
+        "Type": "String",
+        "Description": "Output only. Resource name of the service attachment created for the instance in\nthe format: projects/*/regions/*/serviceAttachments/* Apigee customers can privately\nforward traffic to this service attachment using the PSC endpoints.",
         "Computed": true
       }
     },
@@ -16802,6 +16818,12 @@
                 "Type": "bool",
                 "Value": "false"
               }
+            },
+            "provisioning_model": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Whether the instance is spot. If this is set as SPOT.",
+              "Computed": true
             }
           }
         }
@@ -17533,6 +17555,12 @@
               "Type": "Bool",
               "Optional": true,
               "Description": "Whether the instance is preemptible.",
+              "Computed": true
+            },
+            "provisioning_model": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Whether the instance is spot. If this is set as SPOT.",
               "Computed": true
             }
           }
@@ -18756,6 +18784,12 @@
                 "Type": "bool",
                 "Value": "false"
               }
+            },
+            "provisioning_model": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Whether the instance is spot. If this is set as SPOT.",
+              "Computed": true
             }
           }
         }
@@ -53842,6 +53876,7 @@
               "Type": "List",
               "Description": "Describes some of the technical fields in a certificate.",
               "Computed": true,
+              "Deprecated": "Deprecated in favor of `x509_description`.",
               "IsBlock": true,
               "ConfigImplicitMode": "ComputedBlock",
               "Elem": {
@@ -54232,6 +54267,249 @@
                     "Type": "String",
                     "Description": "Optional. The value of this KeyId encoded in lowercase hexadecimal. This is most likely the 160 bit SHA-1 hash of the public key.",
                     "Computed": true
+                  }
+                }
+              }
+            },
+            "x509_description": {
+              "Type": "List",
+              "Description": "A structured description of the issued X.509 certificate.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "additional_extensions": {
+                    "Type": "List",
+                    "Description": "Describes custom X.509 extensions.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "critical": {
+                          "Type": "Bool",
+                          "Description": "Indicates whether or not this extension is critical (i.e., if the client does not know how to\nhandle this extension, the client should consider this to be an error).",
+                          "Computed": true
+                        },
+                        "object_id": {
+                          "Type": "List",
+                          "Description": "Describes values that are relevant in a CA certificate.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "object_id_path": {
+                                "Type": "List",
+                                "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                                "Computed": true,
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "Int"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "value": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "The value of this X.509 extension. A base64-encoded string."
+                        }
+                      }
+                    }
+                  },
+                  "aia_ocsp_servers": {
+                    "Type": "List",
+                    "Description": "Describes Online Certificate Status Protocol (OCSP) endpoint addresses that appear in the\n\"Authority Information Access\" extension in the certificate.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "ca_options": {
+                    "Type": "List",
+                    "Description": "Describes values that are relevant in a CA certificate.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "is_ca": {
+                          "Type": "Bool",
+                          "Description": "When true, the \"CA\" in Basic Constraints extension will be set to true.",
+                          "Computed": true
+                        },
+                        "max_issuer_path_length": {
+                          "Type": "Int",
+                          "Description": "Refers to the \"path length constraint\" in Basic Constraints extension. For a CA certificate, this value describes the depth of\nsubordinate CA certificates that are allowed. If this value is less than 0, the request will fail.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "key_usage": {
+                    "Type": "List",
+                    "Description": "Indicates the intended use for keys that correspond to a certificate.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "base_key_usage": {
+                          "Type": "List",
+                          "Description": "Describes high-level ways in which a key may be used.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "cert_sign": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to sign certificates.",
+                                "Computed": true
+                              },
+                              "content_commitment": {
+                                "Type": "Bool",
+                                "Description": "The key may be used for cryptographic commitments. Note that this may also be referred to as \"non-repudiation\".",
+                                "Computed": true
+                              },
+                              "crl_sign": {
+                                "Type": "Bool",
+                                "Description": "The key may be used sign certificate revocation lists.",
+                                "Computed": true
+                              },
+                              "data_encipherment": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to encipher data.",
+                                "Computed": true
+                              },
+                              "decipher_only": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to decipher only.",
+                                "Computed": true
+                              },
+                              "digital_signature": {
+                                "Type": "Bool",
+                                "Description": "The key may be used for digital signatures.",
+                                "Computed": true
+                              },
+                              "encipher_only": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to encipher only.",
+                                "Computed": true
+                              },
+                              "key_agreement": {
+                                "Type": "Bool",
+                                "Description": "The key may be used in a key agreement protocol.",
+                                "Computed": true
+                              },
+                              "key_encipherment": {
+                                "Type": "Bool",
+                                "Description": "The key may be used to encipher other keys.",
+                                "Computed": true
+                              }
+                            }
+                          }
+                        },
+                        "extended_key_usage": {
+                          "Type": "List",
+                          "Description": "Describes high-level ways in which a key may be used.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "client_auth": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as \"TLS WWW client authentication\", though regularly used for non-WWW TLS.",
+                                "Computed": true
+                              },
+                              "code_signing": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as \"Signing of downloadable executable code client authentication\".",
+                                "Computed": true
+                              },
+                              "email_protection": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as \"Email protection\".",
+                                "Computed": true
+                              },
+                              "ocsp_signing": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as \"Signing OCSP responses\".",
+                                "Computed": true
+                              },
+                              "server_auth": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as \"TLS WWW server authentication\", though regularly used for non-WWW TLS.",
+                                "Computed": true
+                              },
+                              "time_stamping": {
+                                "Type": "Bool",
+                                "Description": "Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as \"Binding the hash of an object to a time\".",
+                                "Computed": true
+                              }
+                            }
+                          }
+                        },
+                        "unknown_extended_key_usages": {
+                          "Type": "List",
+                          "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                          "Computed": true,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "ComputedBlock",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "object_id_path": {
+                                "Type": "List",
+                                "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                                "Computed": true,
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "Int"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "policy_ids": {
+                    "Type": "List",
+                    "Description": "Describes the X.509 certificate policy object identifiers, per https://tools.ietf.org/html/rfc5280#section-4.2.1.4.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "object_id_path": {
+                          "Type": "List",
+                          "Description": "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "Int"
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -54663,6 +54941,11 @@
         "Description": "The time that this resource was created on the server.\nThis is in RFC3339 text format.",
         "Computed": true
       },
+      "issuer_certificate_authority": {
+        "Type": "String",
+        "Description": "The resource name of the issuing CertificateAuthority in the format projects/*/locations/*/caPools/*/certificateAuthorities/*.",
+        "Computed": true
+      },
       "labels": {
         "Type": "Map",
         "Optional": true,
@@ -54697,10 +54980,21 @@
         "Description": "Output only. The pem-encoded, signed X.509 certificate.",
         "Computed": true
       },
+      "pem_certificate_chain": {
+        "Type": "List",
+        "Description": "The chain that may be used to verify the X.509 certificate. Expected to be in issuer-to-root order according to RFC 5246.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "pem_certificates": {
         "Type": "List",
         "Description": "Required. Expected to be in leaf-to-root order according to RFC 5246.",
         "Computed": true,
+        "Deprecated": "Deprecated in favor of `pem_certificate_chain`.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -55183,6 +55477,14 @@
         "Type": "String",
         "Description": "The time at which this CertificateAuthority was created.\n\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond resolution and up to nine\nfractional digits. Examples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
         "Computed": true
+      },
+      "deletion_protection": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "gcs_bucket": {
         "Type": "String",
@@ -57595,6 +57897,12 @@
         "Description": "The CIDR range of internal addresses that are reserved for this\ninstance. If not provided, the service will choose an unused /29\nblock, for example, 10.0.0.0/29 or 192.168.0.0/29. Ranges must be\nunique and non-overlapping with existing subnets in an authorized\nnetwork.",
         "Computed": true
       },
+      "secondary_ip_range": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. Additional IP range for node placement. Required when enabling read replicas on\nan existing instance. For DIRECT_PEERING mode value must be a CIDR range of size /28, or\n\"auto\". For PRIVATE_SERVICE_ACCESS mode value must be the name of an allocated address \nrange associated with the private service access connection, or \"auto\".",
+        "Computed": true
+      },
       "server_ca_certs": {
         "Type": "List",
         "Description": "List of server CA certificates for the instance.",
@@ -59258,7 +59566,7 @@
             "availability_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For MySQL and SQL Server instances, ensure that\nsettings.backup_configuration.enabled and\nsettings.backup_configuration.binary_log_enabled are both set to true.\nFor Postgres instances, ensure that settings.backup_configuration.enabled\nand settings.backup_configuration.point_in_time_recovery_enabled\nare both set to true.",
+              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For all instances, ensure that\nsettings.backup_configuration.enabled is set to true.\nFor MySQL instances, ensure that settings.backup_configuration.binary_log_enabled is set to true.\nFor Postgres instances, ensure that settings.backup_configuration.point_in_time_recovery_enabled\nis set to true.",
               "Default": {
                 "Type": "string",
                 "Value": "ZONAL"
@@ -59304,7 +59612,7 @@
                   "binary_log_enabled": {
                     "Type": "Bool",
                     "Optional": true,
-                    "Description": "True if binary logging is enabled. If settings.backup_configuration.enabled is false, this must be as well. Cannot be used with Postgres."
+                    "Description": "True if binary logging is enabled. If settings.backup_configuration.enabled is false, this must be as well. Can only be used with MySQL."
                   },
                   "enabled": {
                     "Type": "Bool",
@@ -64192,6 +64500,207 @@
         "Computed": true
       }
     },
+    "google_compute_disk": {
+      "creation_timestamp": {
+        "Type": "String",
+        "Description": "Creation timestamp in RFC3339 text format.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Description": "An optional description of this resource. Provide this property when\nyou create the resource.",
+        "Computed": true
+      },
+      "disk_encryption_key": {
+        "Type": "List",
+        "Description": "Encrypts the disk using a customer-supplied encryption key.\n\nAfter you encrypt a disk with a customer-supplied key, you must\nprovide the same key if you use the disk later (e.g. to create a disk\nsnapshot or an image, or to attach the disk to a virtual machine).\n\nCustomer-supplied encryption keys do not protect access to metadata of\nthe disk.\n\nIf you do not provide an encryption key when creating the disk, then\nthe disk will be encrypted using an automatically generated key and\nyou do not need to provide a key to use the disk later.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kms_key_self_link": {
+              "Type": "String",
+              "Description": "The self link of the encryption key used to encrypt the disk. Also called KmsKeyName\nin the cloud console. Your project's Compute Engine System service account\n('service-{{PROJECT_NUMBER}}@compute-system.iam.gserviceaccount.com') must have\n'roles/cloudkms.cryptoKeyEncrypterDecrypter' to use this feature.\nSee https://cloud.google.com/compute/docs/disks/customer-managed-encryption#encrypt_a_new_persistent_disk_with_your_own_keys",
+              "Computed": true
+            },
+            "kms_key_service_account": {
+              "Type": "String",
+              "Description": "The service account used for the encryption request for the given KMS key.\nIf absent, the Compute Engine Service Agent service account is used.",
+              "Computed": true
+            },
+            "raw_key": {
+              "Type": "String",
+              "Description": "Specifies a 256-bit customer-supplied encryption key, encoded in\nRFC 4648 base64 to either encrypt or decrypt this resource.",
+              "Computed": true
+            },
+            "sha256": {
+              "Type": "String",
+              "Description": "The RFC 4648 base64 encoded SHA-256 hash of the customer-supplied\nencryption key that protects this resource.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "image": {
+        "Type": "String",
+        "Description": "The image from which to initialize this disk. This can be\none of: the image's 'self_link', 'projects/{project}/global/images/{image}',\n'projects/{project}/global/images/family/{family}', 'global/images/{image}',\n'global/images/family/{family}', 'family/{family}', '{project}/{family}',\n'{project}/{image}', '{family}', or '{image}'. If referred by family, the\nimages names must include the family name. If they don't, use the\n[google_compute_image data source](/docs/providers/google/d/compute_image.html).\nFor instance, the image 'centos-6-v20180104' includes its family name 'centos-6'.\nThese images can be referred by family name here.",
+        "Computed": true
+      },
+      "label_fingerprint": {
+        "Type": "String",
+        "Description": "The fingerprint used for optimistic locking of this resource.  Used\ninternally during updates.",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Description": "Labels to apply to this disk.  A list of key-\u003evalue pairs.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "last_attach_timestamp": {
+        "Type": "String",
+        "Description": "Last attach timestamp in RFC3339 text format.",
+        "Computed": true
+      },
+      "last_detach_timestamp": {
+        "Type": "String",
+        "Description": "Last detach timestamp in RFC3339 text format.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource. Provided by the client when the resource is\ncreated. The name must be 1-63 characters long, and comply with\nRFC1035. Specifically, the name must be 1-63 characters long and match\nthe regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the\nfirst character must be a lowercase letter, and all following\ncharacters must be a dash, lowercase letter, or digit, except the last\ncharacter, which cannot be a dash."
+      },
+      "physical_block_size_bytes": {
+        "Type": "Int",
+        "Description": "Physical block size of the persistent disk, in bytes. If not present\nin a request, a default value is used. Currently supported sizes\nare 4096 and 16384, other sizes may be added in the future.\nIf an unsupported value is requested, the error message will list\nthe supported values for the caller's project.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "provisioned_iops": {
+        "Type": "Int",
+        "Description": "Indicates how many IOPS must be provisioned for the disk.",
+        "Computed": true
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Description": "Size of the persistent disk, specified in GB. You can specify this\nfield when creating a persistent disk using the 'image' or\n'snapshot' parameter, or specify it alone to create an empty\npersistent disk.\n\nIf you specify this field along with 'image' or 'snapshot',\nthe value must not be less than the size of the image\nor the size of the snapshot.\n\n~\u003e**NOTE** If you change the size, Terraform updates the disk size\nif upsizing is detected but recreates the disk if downsizing is requested.\nYou can add 'lifecycle.prevent_destroy' in the config to prevent destroying\nand recreating.",
+        "Computed": true
+      },
+      "snapshot": {
+        "Type": "String",
+        "Description": "The source snapshot used to create this disk. You can provide this as\na partial or full URL to the resource. If the snapshot is in another\nproject than this disk, you must supply a full URL. For example, the\nfollowing are valid values:\n\n* 'https://www.googleapis.com/compute/v1/projects/project/global/snapshots/snapshot'\n* 'projects/project/global/snapshots/snapshot'\n* 'global/snapshots/snapshot'\n* 'snapshot'",
+        "Computed": true
+      },
+      "source_image_encryption_key": {
+        "Type": "List",
+        "Description": "The customer-supplied encryption key of the source image. Required if\nthe source image is protected by a customer-supplied encryption key.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kms_key_self_link": {
+              "Type": "String",
+              "Description": "The self link of the encryption key used to encrypt the disk. Also called KmsKeyName\nin the cloud console. Your project's Compute Engine System service account\n('service-{{PROJECT_NUMBER}}@compute-system.iam.gserviceaccount.com') must have\n'roles/cloudkms.cryptoKeyEncrypterDecrypter' to use this feature.\nSee https://cloud.google.com/compute/docs/disks/customer-managed-encryption#encrypt_a_new_persistent_disk_with_your_own_keys",
+              "Computed": true
+            },
+            "kms_key_service_account": {
+              "Type": "String",
+              "Description": "The service account used for the encryption request for the given KMS key.\nIf absent, the Compute Engine Service Agent service account is used.",
+              "Computed": true
+            },
+            "raw_key": {
+              "Type": "String",
+              "Description": "Specifies a 256-bit customer-supplied encryption key, encoded in\nRFC 4648 base64 to either encrypt or decrypt this resource.",
+              "Computed": true
+            },
+            "sha256": {
+              "Type": "String",
+              "Description": "The RFC 4648 base64 encoded SHA-256 hash of the customer-supplied\nencryption key that protects this resource.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "source_image_id": {
+        "Type": "String",
+        "Description": "The ID value of the image used to create this disk. This value\nidentifies the exact image that was used to create this persistent\ndisk. For example, if you created the persistent disk from an image\nthat was later deleted and recreated under the same name, the source\nimage ID would identify the exact version of the image that was used.",
+        "Computed": true
+      },
+      "source_snapshot_encryption_key": {
+        "Type": "List",
+        "Description": "The customer-supplied encryption key of the source snapshot. Required\nif the source snapshot is protected by a customer-supplied encryption\nkey.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kms_key_self_link": {
+              "Type": "String",
+              "Description": "The self link of the encryption key used to encrypt the disk. Also called KmsKeyName\nin the cloud console. Your project's Compute Engine System service account\n('service-{{PROJECT_NUMBER}}@compute-system.iam.gserviceaccount.com') must have\n'roles/cloudkms.cryptoKeyEncrypterDecrypter' to use this feature.\nSee https://cloud.google.com/compute/docs/disks/customer-managed-encryption#encrypt_a_new_persistent_disk_with_your_own_keys",
+              "Computed": true
+            },
+            "kms_key_service_account": {
+              "Type": "String",
+              "Description": "The service account used for the encryption request for the given KMS key.\nIf absent, the Compute Engine Service Agent service account is used.",
+              "Computed": true
+            },
+            "raw_key": {
+              "Type": "String",
+              "Description": "Specifies a 256-bit customer-supplied encryption key, encoded in\nRFC 4648 base64 to either encrypt or decrypt this resource.",
+              "Computed": true
+            },
+            "sha256": {
+              "Type": "String",
+              "Description": "The RFC 4648 base64 encoded SHA-256 hash of the customer-supplied\nencryption key that protects this resource.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "source_snapshot_id": {
+        "Type": "String",
+        "Description": "The unique ID of the snapshot used to create this disk. This value\nidentifies the exact snapshot that was used to create this persistent\ndisk. For example, if you created the persistent disk from a snapshot\nthat was later deleted and recreated under the same name, the source\nsnapshot ID would identify the exact version of the snapshot that was\nused.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "URL of the disk type resource describing which disk type to use to\ncreate the disk. Provide this when creating the disk.",
+        "Computed": true
+      },
+      "users": {
+        "Type": "List",
+        "Description": "Links to the users of the disk (attached instances) in form:\nproject/zones/zone/instances/instance",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A reference to the zone where the disk resides."
+      }
+    },
     "google_compute_forwarding_rule": {
       "all_ports": {
         "Type": "Bool",
@@ -65461,6 +65970,11 @@
               "Type": "Bool",
               "Description": "Whether the instance is preemptible.",
               "Computed": true
+            },
+            "provisioning_model": {
+              "Type": "String",
+              "Description": "Whether the instance is spot. If this is set as SPOT.",
+              "Computed": true
             }
           }
         }
@@ -66139,6 +66653,11 @@
             "preemptible": {
               "Type": "Bool",
               "Description": "Allows instance to be preempted. This defaults to false.",
+              "Computed": true
+            },
+            "provisioning_model": {
+              "Type": "String",
+              "Description": "Whether the instance is spot. If this is set as SPOT.",
               "Computed": true
             }
           }
@@ -70523,6 +71042,10 @@
         "Description": "The time at which this CertificateAuthority was created.\n\nA timestamp in RFC3339 UTC \"Zulu\" format, with nanosecond resolution and up to nine\nfractional digits. Examples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
         "Computed": true
       },
+      "deletion_protection": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "gcs_bucket": {
         "Type": "String",
         "Description": "The name of a Cloud Storage bucket where this CertificateAuthority will publish content,\nsuch as the CA certificate and CRLs. This must be a bucket name, without any prefixes\n(such as 'gs://') or suffixes (such as '.googleapis.com'). For example, to use a bucket named\nmy-bucket, you would simply specify 'my-bucket'. If not specified, a managed bucket will be\ncreated.",
@@ -71201,6 +71724,11 @@
       "reserved_ip_range": {
         "Type": "String",
         "Description": "The CIDR range of internal addresses that are reserved for this\ninstance. If not provided, the service will choose an unused /29\nblock, for example, 10.0.0.0/29 or 192.168.0.0/29. Ranges must be\nunique and non-overlapping with existing subnets in an authorized\nnetwork.",
+        "Computed": true
+      },
+      "secondary_ip_range": {
+        "Type": "String",
+        "Description": "Optional. Additional IP range for node placement. Required when enabling read replicas on\nan existing instance. For DIRECT_PEERING mode value must be a CIDR range of size /28, or\n\"auto\". For PRIVATE_SERVICE_ACCESS mode value must be the name of an allocated address \nrange associated with the private service access connection, or \"auto\".",
         "Computed": true
       },
       "server_ca_certs": {
@@ -72012,7 +72540,7 @@
             },
             "availability_type": {
               "Type": "String",
-              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For MySQL and SQL Server instances, ensure that\nsettings.backup_configuration.enabled and\nsettings.backup_configuration.binary_log_enabled are both set to true.\nFor Postgres instances, ensure that settings.backup_configuration.enabled\nand settings.backup_configuration.point_in_time_recovery_enabled\nare both set to true.",
+              "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For all instances, ensure that\nsettings.backup_configuration.enabled is set to true.\nFor MySQL instances, ensure that settings.backup_configuration.binary_log_enabled is set to true.\nFor Postgres instances, ensure that settings.backup_configuration.point_in_time_recovery_enabled\nis set to true.",
               "Computed": true
             },
             "backup_configuration": {
@@ -72046,7 +72574,7 @@
                   },
                   "binary_log_enabled": {
                     "Type": "Bool",
-                    "Description": "True if binary logging is enabled. If settings.backup_configuration.enabled is false, this must be as well. Cannot be used with Postgres.",
+                    "Description": "True if binary logging is enabled. If settings.backup_configuration.enabled is false, this must be as well. Can only be used with MySQL.",
                     "Computed": true
                   },
                   "enabled": {

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.24.1",
+  "version": "v4.25.0-alpha",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -692,6 +692,20 @@
             }
           }
         }
+      }
+    },
+    "github_emu_group_mapping": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "group_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "team_slug": {
+        "Type": "String",
+        "Required": true
       }
     },
     "github_issue": {

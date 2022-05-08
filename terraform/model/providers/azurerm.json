@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.4.0",
+  "version": "v3.5.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -19938,7 +19938,11 @@
       },
       "column_delimiter": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": ","
+        }
       },
       "compression_codec": {
         "Type": "String",
@@ -19962,11 +19966,19 @@
       },
       "escape_character": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "\\"
+        }
       },
       "first_row_as_header": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "folder": {
         "Type": "String",
@@ -20022,7 +20034,10 @@
       },
       "null_value": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "parameters": {
         "Type": "Map",
@@ -20035,7 +20050,11 @@
       },
       "quote_character": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "\""
+        }
       },
       "row_delimiter": {
         "Type": "String",
@@ -36842,6 +36861,123 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_healthcare_dicom_service": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "authentication": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "audience": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "authority": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "private_endpoint": {
+        "Type": "Set",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "service_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_healthcare_service": {
@@ -59342,6 +59478,68 @@
         "Computed": true
       }
     },
+    "azurerm_mssql_managed_instance_vulnerability_assessment": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "managed_instance_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "recurring_scans": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email_subscription_admins": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "emails": {
+              "Type": "List",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            }
+          }
+        }
+      },
+      "storage_account_access_key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "storage_container_path": {
+        "Type": "String",
+        "Required": true
+      },
+      "storage_container_sas_key": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "azurerm_mssql_outbound_firewall_rule": {
       "__timeouts__": [
         "create",
@@ -68273,6 +68471,39 @@
         "Required": true
       }
     },
+    "azurerm_sentinel_data_connector_aws_s3": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "aws_role_arn": {
+        "Type": "String",
+        "Required": true
+      },
+      "destination_table": {
+        "Type": "String",
+        "Required": true
+      },
+      "log_analytics_workspace_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sqs_urls": {
+        "Type": "List",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_sentinel_data_connector_azure_active_directory": {
       "__timeouts__": [
         "create",
@@ -71468,6 +71699,68 @@
         }
       }
     },
+    "azurerm_spring_cloud_builder": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "build_pack_group": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "build_pack_ids": {
+              "Type": "List",
+              "Optional": true,
+              "MinItems": 1,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "spring_cloud_service_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "stack": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Required": true
+            },
+            "version": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
     "azurerm_spring_cloud_certificate": {
       "__timeouts__": [
         "create",
@@ -71497,6 +71790,87 @@
       "thumbprint": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "azurerm_spring_cloud_configuration_service": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "repository": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "host_key": {
+              "Type": "String",
+              "Optional": true
+            },
+            "host_key_algorithm": {
+              "Type": "String",
+              "Optional": true
+            },
+            "label": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "password": {
+              "Type": "String",
+              "Optional": true
+            },
+            "patterns": {
+              "Type": "Set",
+              "Required": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "private_key": {
+              "Type": "String",
+              "Optional": true
+            },
+            "search_paths": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "strict_host_key_checking": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "uri": {
+              "Type": "String",
+              "Required": true
+            },
+            "username": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "spring_cloud_service_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_spring_cloud_container_deployment": {
@@ -73329,6 +73703,14 @@
           }
         }
       },
+      "cross_tenant_replication_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "custom_domain": {
         "Type": "List",
         "Optional": true,
@@ -73673,6 +74055,7 @@
             "hour_metrics": {
               "Type": "List",
               "Optional": true,
+              "Computed": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -73701,6 +74084,7 @@
             "logging": {
               "Type": "List",
               "Optional": true,
+              "Computed": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -73733,6 +74117,7 @@
             "minute_metrics": {
               "Type": "List",
               "Optional": true,
+              "Computed": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -75830,6 +76215,15 @@
         "Type": "String",
         "Required": true
       },
+      "property_columns": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "queue_name": {
         "Type": "String",
         "Required": true
@@ -75881,6 +76275,15 @@
       "stream_analytics_job_name": {
         "Type": "String",
         "Required": true
+      },
+      "system_property_columns": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azurerm_stream_analytics_output_servicebus_topic": {
@@ -81677,7 +82080,6 @@
       "traffic_selector_policy": {
         "Type": "List",
         "Optional": true,
-        "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -96580,6 +96982,111 @@
       "tls_min_version": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "azurerm_healthcare_dicom_service": {
+      "__timeouts__": [
+        "read"
+      ],
+      "authentication": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "audience": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "authority": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "identity": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "private_endpoint": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "service_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_healthcare_service": {
