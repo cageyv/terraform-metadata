@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.5.0",
+  "version": "v3.6.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -14608,6 +14608,90 @@
         }
       }
     },
+    "azurerm_confidential_ledger": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "azuread_based_service_principal": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ledger_role_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "principal_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "certificate_based_security_principal": {
+        "Type": "List",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ledger_role_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "pem_public_key": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "identity_service_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ledger_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ledger_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_consumption_budget_management_group": {
       "__timeouts__": [
         "create",
@@ -16143,6 +16227,10 @@
           "Value": "Public"
         }
       },
+      "key_vault_key_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "location": {
         "Type": "String",
         "Required": true
@@ -17656,6 +17744,7 @@
       "__timeouts__": [
         "create",
         "read",
+        "update",
         "delete"
       ],
       "default_admin_password": {
@@ -17677,6 +17766,15 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azurerm_cosmosdb_cassandra_datacenter": {
@@ -44913,7 +45011,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -45075,7 +45173,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -46182,7 +46280,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -46344,7 +46442,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -46721,6 +46819,14 @@
                   "option": {
                     "Type": "String",
                     "Required": true
+                  },
+                  "placement": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "CacheDisk"
+                    }
                   }
                 }
               }
@@ -48914,7 +49020,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -49067,7 +49173,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -50349,7 +50455,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -50502,7 +50608,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -54024,6 +54130,29 @@
       "zone": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "azurerm_managed_disk_sas_token": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "access_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "duration_in_seconds": {
+        "Type": "Int",
+        "Required": true
+      },
+      "managed_disk_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "sas_url": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "azurerm_management_group": {
@@ -58655,8 +58784,7 @@
       },
       "license_type": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "long_term_retention_policy": {
         "Type": "List",
@@ -71342,6 +71470,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "trusted_launch_enabled": {
+        "Type": "Bool",
+        "Computed": true
       }
     },
     "azurerm_source_control_token": {
@@ -71699,6 +71831,56 @@
         }
       }
     },
+    "azurerm_spring_cloud_build_pack_binding": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "binding_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "launch": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "properties": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "secrets": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "spring_cloud_builder_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_spring_cloud_builder": {
       "__timeouts__": [
         "create",
@@ -71975,6 +72157,212 @@
         "Required": true
       },
       "spring_cloud_app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "thumbprint": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "azurerm_spring_cloud_gateway": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "api_metadata": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "documentation_url": {
+              "Type": "String",
+              "Optional": true
+            },
+            "server_url": {
+              "Type": "String",
+              "Optional": true
+            },
+            "title": {
+              "Type": "String",
+              "Optional": true
+            },
+            "version": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "cors": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_headers": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_methods": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_origins": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "credentials_allowed": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "exposed_headers": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "max_age_seconds": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "https_only": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "instance_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "quota": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cpu": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "1"
+              }
+            },
+            "memory": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "2Gi"
+              }
+            }
+          }
+        }
+      },
+      "spring_cloud_service_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "sso": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "client_secret": {
+              "Type": "String",
+              "Optional": true
+            },
+            "issuer_uri": {
+              "Type": "String",
+              "Optional": true
+            },
+            "scope": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azurerm_spring_cloud_gateway_custom_domain": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "spring_cloud_gateway_id": {
         "Type": "String",
         "Required": true
       },
@@ -75112,7 +75500,7 @@
                 "Info": {
                   "blob_types": {
                     "Type": "Set",
-                    "Optional": true,
+                    "Required": true,
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
                       "Type": "SchemaElements",
@@ -75266,6 +75654,10 @@
         "update",
         "delete"
       ],
+      "access_tier": {
+        "Type": "String",
+        "Optional": true
+      },
       "acl": {
         "Type": "Set",
         "Optional": true,
@@ -75648,6 +76040,14 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "configuration_parameter": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "type": {
               "Type": "String",
               "Required": true
@@ -75700,6 +76100,14 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "configuration_parameter": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "type": {
               "Type": "String",
               "Required": true
@@ -76200,6 +76608,38 @@
         "Required": true
       },
       "user": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_stream_analytics_output_powerbi": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "dataset": {
+        "Type": "String",
+        "Required": true
+      },
+      "group_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "stream_analytics_job_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "table": {
         "Type": "String",
         "Required": true
       }
@@ -81971,6 +82411,26 @@
         "Optional": true,
         "Computed": true
       },
+      "custom_bgp_addresses": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "primary": {
+              "Type": "String",
+              "Required": true
+            },
+            "secondary": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "dpd_timeout_seconds": {
         "Type": "Int",
         "Optional": true
@@ -84802,7 +85262,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -84959,7 +85419,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -86021,7 +86481,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -86178,7 +86638,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -86568,6 +87028,14 @@
                   "option": {
                     "Type": "String",
                     "Required": true
+                  },
+                  "placement": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "CacheDisk"
+                    }
                   }
                 }
               }
@@ -88812,7 +89280,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -88965,7 +89433,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -90277,7 +90745,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -90426,7 +90894,7 @@
                   "ip_address": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32`"
+                    "Description": "The CIDR notation of the IP or IP Range to match. For example: `10.0.0.0/24` or `192.168.10.1/32` or `fe80::/64`"
                   },
                   "name": {
                     "Type": "String",
@@ -93740,6 +94208,86 @@
       "sku_name": {
         "Type": "String",
         "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azurerm_confidential_ledger": {
+      "__timeouts__": [
+        "read"
+      ],
+      "azuread_based_service_principal": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ledger_role_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "certificate_based_security_principal": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ledger_role_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "pem_public_key": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "identity_service_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ledger_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ledger_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
       },
       "tags": {
         "Type": "Map",
@@ -107489,6 +108037,10 @@
       },
       "time_created": {
         "Type": "String",
+        "Computed": true
+      },
+      "trusted_launch_enabled": {
+        "Type": "Bool",
         "Computed": true
       }
     },

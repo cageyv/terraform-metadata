@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.20.0",
+  "version": "v4.21.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -10652,7 +10652,7 @@
                                           "name": {
                                             "Type": "String",
                                             "Required": true,
-                                            "Description": "The name of the secret in Cloud Secret Manager. By default, the secret\nis assumed to be in the same project.\nIf the secret is in another project, you must define an alias.\nYou set the \u003calias\u003e in this field, and create an annotation with the\nfollowing structure\n\"run.googleapis.com/secrets\" = \"\u003calias\u003e:projects/\u003cproject-id|project-number\u003e/secrets/\u003csecret-name\u003e\".\nIf multiple alias definitions are needed, they must be separated by\ncommas in the annotation field."
+                                            "Description": "The name of the secret in Cloud Secret Manager. By default, the secret is assumed to be in the same project. \nIf the secret is in another project, you must define an alias. \nAn alias definition has the form: :projects/\u003cproject-id|project-number\u003e/secrets/. \nIf multiple alias definitions are needed, they must be separated by commas. \nThe alias definitions must be set on the run.googleapis.com/secrets annotation."
                                           }
                                         }
                                       }
@@ -12863,6 +12863,11 @@
         "Optional": true,
         "Description": "Description of the function."
       },
+      "docker_repository": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "User managed repository created in Artifact Registry optionally with a customer managed encryption key. If specified, deployments will use Artifact Registry for storing images built with Cloud Build."
+      },
       "entry_point": {
         "Type": "String",
         "Optional": true,
@@ -12933,6 +12938,11 @@
           "Type": "string",
           "Value": "ALLOW_ALL"
         }
+      },
+      "kms_key_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Resource name of a KMS crypto key (managed by the user) used to encrypt/decrypt function resources."
       },
       "labels": {
         "Type": "Map",
@@ -16671,6 +16681,30 @@
         "Description": "[Output Only] Server-defined URL for the resource.",
         "Computed": true
       },
+      "service_directory_registrations": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Service Directory resources to register this forwarding rule with. Currently, only supports a single Service Directory resource.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "namespace": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Service Directory namespace to register the forwarding rule under.",
+              "Computed": true
+            },
+            "service": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Service Directory service to register the forwarding rule under."
+            }
+          }
+        }
+      },
       "service_label": {
         "Type": "String",
         "Optional": true,
@@ -18008,7 +18042,7 @@
                   "type": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The Google Compute Engine disk type. One of pd-standard, pd-ssd or pd-balanced.",
+                    "Description": "The Google Compute Engine disk type. Such as pd-standard, pd-ssd or pd-balanced.",
                     "Computed": true
                   }
                 }
@@ -18754,7 +18788,7 @@
                   "type": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The Google Compute Engine disk type. One of pd-standard, pd-ssd or pd-balanced.",
+                    "Description": "The Google Compute Engine disk type. Such as pd-standard, pd-ssd or pd-balanced.",
                     "Computed": true
                   }
                 }
@@ -19501,7 +19535,7 @@
                   "type": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The Google Compute Engine disk type. One of pd-standard, pd-ssd or pd-balanced.",
+                    "Description": "The Google Compute Engine disk type. Such as pd-standard, pd-ssd or pd-balanced.",
                     "Computed": true
                   }
                 }
@@ -20811,7 +20845,7 @@
             "disk_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "The Google Compute Engine disk type. Can be either \"pd-ssd\", \"local-ssd\", \"pd-balanced\" or \"pd-standard\".",
+              "Description": "The Google Compute Engine disk type. Such as \"pd-ssd\", \"local-ssd\", \"pd-balanced\" or \"pd-standard\".",
               "Computed": true
             },
             "interface": {
@@ -32389,7 +32423,7 @@
             "admin_users": {
               "Type": "List",
               "Required": true,
-              "Description": "Users to perform operations as a cluster admin. A managed ClusterRoleBinding will be created to grant the `cluster-admin` ClusterRole to the users. At most one user can be specified. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
+              "Description": "Users to perform operations as a cluster admin. A managed ClusterRoleBinding will be created to grant the `cluster-admin` ClusterRole to the users. Up to ten admin users can be provided. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
               "Elem": {
@@ -32485,6 +32519,26 @@
               "Type": "String",
               "Required": true,
               "Description": "The name of the AWS IAM instance pofile to assign to each control plane replica."
+            },
+            "instance_placement": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Details of placement information for an instance.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "tenancy": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The tenancy for the instance. Possible values: TENANCY_UNSPECIFIED, DEFAULT, DEDICATED, HOST",
+                    "Computed": true
+                  }
+                }
+              }
             },
             "instance_type": {
               "Type": "String",
@@ -32694,6 +32748,45 @@
         "Required": true,
         "Description": "The location for the resource"
       },
+      "logging_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Logging configuration.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "component_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Configuration of the logging components.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enable_components": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Components of the logging configuration to be enabled.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true,
@@ -32868,6 +32961,32 @@
               "Required": true,
               "Description": "The name of the AWS IAM role assigned to nodes in the pool."
             },
+            "image_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The OS image type to use on node pool instances.",
+              "Computed": true
+            },
+            "instance_placement": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Details of placement information for an instance.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "tenancy": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The tenancy for the instance. Possible values: TENANCY_UNSPECIFIED, DEFAULT, DEDICATED, HOST",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "instance_type": {
               "Type": "String",
               "Optional": true,
@@ -32882,6 +33001,29 @@
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
+              }
+            },
+            "proxy_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Proxy configuration for outbound HTTP(S) traffic.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "secret_arn": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The ARN of the AWS Secret Manager secret that contains the HTTP(S) proxy configuration."
+                  },
+                  "secret_version": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The version string of the AWS Secret Manager secret that contains the HTTP(S) proxy configuration."
+                  }
+                }
               }
             },
             "root_volume": {
@@ -33140,7 +33282,7 @@
             "admin_users": {
               "Type": "List",
               "Required": true,
-              "Description": "Users that can perform operations as a cluster admin. A new ClusterRoleBinding will be created to grant the cluster-admin ClusterRole to the users. At most one user can be specified. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
+              "Description": "Users that can perform operations as a cluster admin. A new ClusterRoleBinding will be created to grant the cluster-admin ClusterRole to the users. Up to ten admin users can be provided. For more info on RBAC, see https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
               "Elem": {
@@ -33376,6 +33518,45 @@
         "Required": true,
         "Description": "The location for the resource"
       },
+      "logging_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Logging configuration.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "component_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Configuration of the logging components.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enable_components": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Components of the logging configuration to be enabled.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true,
@@ -33538,6 +33719,35 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "image_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The OS image type to use on node pool instances.",
+              "Computed": true
+            },
+            "proxy_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Proxy configuration for outbound HTTP(S) traffic.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "resource_group_id": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The ARM ID the of the resource group containing proxy keyvault. Resource group ids are formatted as `/subscriptions/\u003csubscription-id\u003e/resourceGroups/\u003cresource-group-name\u003e`"
+                  },
+                  "secret_id": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The URL the of the proxy setting secret with its version. Secret ids are formatted as `https:\u003ckey-vault-name\u003e.vault.azure.net/secrets/\u003csecret-name\u003e/\u003csecret-version\u003e`."
+                  }
+                }
+              }
+            },
             "root_volume": {
               "Type": "List",
               "Optional": true,
@@ -34668,7 +34878,7 @@
             "disk_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Type of the disk attached to each node.",
+              "Description": "Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd",
               "Computed": true
             },
             "ephemeral_storage_config": {
@@ -35175,7 +35385,7 @@
                   "disk_type": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Type of the disk attached to each node.",
+                    "Description": "Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd",
                     "Computed": true
                   },
                   "ephemeral_storage_config": {
@@ -36032,7 +36242,7 @@
             "disk_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Type of the disk attached to each node.",
+              "Description": "Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd",
               "Computed": true
             },
             "ephemeral_storage_config": {
@@ -39999,7 +40209,7 @@
                         "boot_disk_type": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "The disk type of the primary disk attached to each node. One of \"pd-ssd\" or \"pd-standard\". Defaults to \"pd-standard\".",
+                          "Description": "The disk type of the primary disk attached to each node. Such as \"pd-ssd\" or \"pd-standard\". Defaults to \"pd-standard\".",
                           "Default": {
                             "Type": "string",
                             "Value": "pd-standard"
@@ -40100,7 +40310,7 @@
                         "boot_disk_type": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "The disk type of the primary disk attached to each preemptible worker node. One of \"pd-ssd\" or \"pd-standard\". Defaults to \"pd-standard\".",
+                          "Description": "The disk type of the primary disk attached to each preemptible worker node. Such as \"pd-ssd\" or \"pd-standard\". Defaults to \"pd-standard\".",
                           "Default": {
                             "Type": "string",
                             "Value": "pd-standard"
@@ -40353,7 +40563,7 @@
                         "boot_disk_type": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "The disk type of the primary disk attached to each node. One of \"pd-ssd\" or \"pd-standard\". Defaults to \"pd-standard\".",
+                          "Description": "The disk type of the primary disk attached to each node. Such as \"pd-ssd\" or \"pd-standard\". Defaults to \"pd-standard\".",
                           "Default": {
                             "Type": "string",
                             "Value": "pd-standard"
@@ -45578,9 +45788,74 @@
         "Description": "The ID of the project in which the resource belongs. If it is not provided, the provider project is used.",
         "Computed": true
       },
+      "routing_policy": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The configuration for steering traffic based on query. You can specify either Weighted Round Robin(WRR) type or Geolocation(GEO) type.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "geo": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The configuration for Geo location based routing policy.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "location": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The location name defined in Google Cloud."
+                  },
+                  "rrdatas": {
+                    "Type": "List",
+                    "Required": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "wrr": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The configuration for Weighted Round Robin based routing policy.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "rrdatas": {
+                    "Type": "List",
+                    "Required": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "weight": {
+                    "Type": "Float",
+                    "Required": true,
+                    "Description": "The ratio of traffic routed to the target."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "rrdatas": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "The string data for the records in this record set whose meaning depends on the DNS type. For TXT record, if the string data contains spaces, add surrounding \\\" if you don't want your string to get split on spaces. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add \\\"\\\" inside the Terraform configuration string (e.g. \"first255characters\\\"\\\"morecharacters\").",
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -46245,7 +46520,7 @@
             "value": {
               "Type": "String",
               "Required": true,
-              "Description": "Required. The value for the attribute."
+              "Description": "Required. The value for the attribute. See https://cloud.google.com/eventarc/docs/creating-triggers#trigger-gcloud for available values."
             }
           }
         }
@@ -70270,7 +70545,7 @@
                                           },
                                           "name": {
                                             "Type": "String",
-                                            "Description": "The name of the secret in Cloud Secret Manager. By default, the secret\nis assumed to be in the same project.\nIf the secret is in another project, you must define an alias.\nYou set the \u003calias\u003e in this field, and create an annotation with the\nfollowing structure\n\"run.googleapis.com/secrets\" = \"\u003calias\u003e:projects/\u003cproject-id|project-number\u003e/secrets/\u003csecret-name\u003e\".\nIf multiple alias definitions are needed, they must be separated by\ncommas in the annotation field.",
+                                            "Description": "The name of the secret in Cloud Secret Manager. By default, the secret is assumed to be in the same project. \nIf the secret is in another project, you must define an alias. \nAn alias definition has the form: :projects/\u003cproject-id|project-number\u003e/secrets/. \nIf multiple alias definitions are needed, they must be separated by commas. \nThe alias definitions must be set on the run.googleapis.com/secrets annotation.",
                                             "Computed": true
                                           }
                                         }
@@ -70592,6 +70867,11 @@
         "Description": "Description of the function.",
         "Computed": true
       },
+      "docker_repository": {
+        "Type": "String",
+        "Description": "User managed repository created in Artifact Registry optionally with a customer managed encryption key. If specified, deployments will use Artifact Registry for storing images built with Cloud Build.",
+        "Computed": true
+      },
       "entry_point": {
         "Type": "String",
         "Description": "Name of the function that will be executed when the Google Cloud Function is triggered.",
@@ -70649,6 +70929,11 @@
       "ingress_settings": {
         "Type": "String",
         "Description": "String value that controls what traffic can reach the function. Allowed values are ALLOW_ALL and ALLOW_INTERNAL_ONLY. Changes to this field will recreate the cloud function.",
+        "Computed": true
+      },
+      "kms_key_name": {
+        "Type": "String",
+        "Description": "Resource name of a KMS crypto key (managed by the user) used to encrypt/decrypt function resources.",
         "Computed": true
       },
       "labels": {
@@ -72489,6 +72774,28 @@
         "Description": "[Output Only] Server-defined URL for the resource.",
         "Computed": true
       },
+      "service_directory_registrations": {
+        "Type": "List",
+        "Description": "Service Directory resources to register this forwarding rule with. Currently, only supports a single Service Directory resource.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "namespace": {
+              "Type": "String",
+              "Description": "Service Directory namespace to register the forwarding rule under.",
+              "Computed": true
+            },
+            "service": {
+              "Type": "String",
+              "Description": "Service Directory service to register the forwarding rule under.",
+              "Computed": true
+            }
+          }
+        }
+      },
       "service_label": {
         "Type": "String",
         "Description": "An optional prefix to the service name for this Forwarding Rule. If specified, the prefix is the first label of the fully qualified service name. The label must be 1-63 characters long, and comply with [RFC1035](https://www.ietf.org/rfc/rfc1035.txt). Specifically, the label must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash. This field is only used for internal load balancing.",
@@ -73241,7 +73548,7 @@
                   },
                   "type": {
                     "Type": "String",
-                    "Description": "The Google Compute Engine disk type. One of pd-standard, pd-ssd or pd-balanced.",
+                    "Description": "The Google Compute Engine disk type. Such as pd-standard, pd-ssd or pd-balanced.",
                     "Computed": true
                   }
                 }
@@ -73973,7 +74280,7 @@
             },
             "disk_type": {
               "Type": "String",
-              "Description": "The Google Compute Engine disk type. Can be either \"pd-ssd\", \"local-ssd\", \"pd-balanced\" or \"pd-standard\".",
+              "Description": "The Google Compute Engine disk type. Such as \"pd-ssd\", \"local-ssd\", \"pd-balanced\" or \"pd-standard\".",
               "Computed": true
             },
             "interface": {
@@ -76375,7 +76682,7 @@
             },
             "disk_type": {
               "Type": "String",
-              "Description": "Type of the disk attached to each node.",
+              "Description": "Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd",
               "Computed": true
             },
             "ephemeral_storage_config": {
@@ -76822,7 +77129,7 @@
                   },
                   "disk_type": {
                     "Type": "String",
-                    "Description": "Type of the disk attached to each node.",
+                    "Description": "Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd",
                     "Computed": true
                   },
                   "ephemeral_storage_config": {
