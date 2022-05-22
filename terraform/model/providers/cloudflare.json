@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v3.13.0",
+  "version": "v3.15.0",
   "provider": {
     "account_id": {
       "Type": "String",
@@ -2348,6 +2348,14 @@
         "Type": "Int",
         "Optional": true
       },
+      "wait_for_active_status": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "zone_id": {
         "Type": "String",
         "Required": true
@@ -2741,6 +2749,10 @@
         "Required": true
       },
       "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "expiration": {
         "Type": "String",
         "Optional": true
       },
@@ -4018,6 +4030,15 @@
                 "ElementsType": "String"
               }
             },
+            "slo": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "status": {
               "Type": "Set",
               "Optional": true,
@@ -5082,6 +5103,10 @@
                       }
                     }
                   },
+                  "host_header": {
+                    "Type": "String",
+                    "Optional": true
+                  },
                   "id": {
                     "Type": "String",
                     "Optional": true
@@ -5101,6 +5126,26 @@
                       "Info": {
                         "public_key": {
                           "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "host": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "port": {
+                          "Type": "Int",
                           "Optional": true
                         }
                       }
@@ -6120,6 +6165,24 @@
       "version": {
         "Type": "Int",
         "Computed": true
+      }
+    },
+    "cloudflare_tunnel_route": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "comment": {
+        "Type": "String",
+        "Optional": true
+      },
+      "network": {
+        "Type": "String",
+        "Required": true
+      },
+      "tunnel_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "cloudflare_waf_group": {

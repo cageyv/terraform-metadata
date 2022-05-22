@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.6.0",
+  "version": "v3.7.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -374,6 +374,18 @@
       "Description": "The path to a custom endpoint for Managed Service Identity - in most circumstances this should be detected automatically. ",
       "DefaultFunc": "ENV(ARM_MSI_ENDPOINT)"
     },
+    "oidc_request_token": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The bearer token for the request to the OIDC provider. For use When authenticating as a Service Principal using OpenID Connect.",
+      "DefaultFunc": "MENV(ARM_OIDC_REQUEST_TOKEN,ACTIONS_ID_TOKEN_REQUEST_TOKEN)"
+    },
+    "oidc_request_url": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The URL for the OIDC provider from which to request an ID token. For use When authenticating as a Service Principal using OpenID Connect.",
+      "DefaultFunc": "MENV(ARM_OIDC_REQUEST_URL,ACTIONS_ID_TOKEN_REQUEST_URL)"
+    },
     "partner_id": {
       "Type": "String",
       "Optional": true,
@@ -409,6 +421,12 @@
       "Optional": true,
       "Description": "Allowed Managed Service Identity be used for Authentication.",
       "DefaultFunc": "ENV(ARM_USE_MSI)"
+    },
+    "use_oidc": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Allow OpenID Connect to be used for authentication",
+      "DefaultFunc": "ENV(ARM_USE_OIDC)"
     }
   },
   "resources": {
@@ -26914,6 +26932,135 @@
         }
       }
     },
+    "azurerm_elastic_cloud_elasticsearch": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "elastic_cloud_deployment_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elastic_cloud_email_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "elastic_cloud_sso_default_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elastic_cloud_user_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elasticsearch_service_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "kibana_service_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "kibana_sso_uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "logs": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "filtering_tag": {
+              "Type": "List",
+              "Optional": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "action": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "send_activity_logs": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "send_azuread_logs": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "send_subscription_logs": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            }
+          }
+        }
+      },
+      "monitoring_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_eventgrid_domain": {
       "__timeouts__": [
         "create",
@@ -37078,6 +37225,171 @@
         "Required": true
       }
     },
+    "azurerm_healthcare_fhir_service": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "access_policy_object_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "authentication": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "audience": {
+              "Type": "String",
+              "Required": true
+            },
+            "authority": {
+              "Type": "String",
+              "Required": true
+            },
+            "smart_proxy_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "configuration_export_storage_account_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "container_registry_login_server_url": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "cors": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_headers": {
+              "Type": "Set",
+              "Required": true,
+              "MaxItems": 64,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_methods": {
+              "Type": "Set",
+              "Required": true,
+              "MaxItems": 64,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_origins": {
+              "Type": "Set",
+              "Required": true,
+              "MaxItems": 64,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "credentials_allowed": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "max_age_in_seconds": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "kind": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "fhir-R4"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_healthcare_service": {
       "__timeouts__": [
         "create",
@@ -44810,7 +45122,7 @@
                   "powershell_core_version": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The version of PowerShell Core to use. Possibles values are `7`."
+                    "Description": "The version of PowerShell Core to use. Possibles values are `7`, and `7.2`"
                   },
                   "python_version": {
                     "Type": "String",
@@ -46075,7 +46387,7 @@
                   "powershell_core_version": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The version of PowerShell Core to use. Possibles values are `7`."
+                    "Description": "The version of PowerShell Core to use. Possibles values are `7`, and `7.2`"
                   },
                   "python_version": {
                     "Type": "String",
@@ -59429,6 +59741,14 @@
         "Type": "String",
         "Required": true
       },
+      "maintenance_configuration_name": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "SQL_Default"
+        }
+      },
       "minimum_tls_version": {
         "Type": "String",
         "Optional": true,
@@ -71556,6 +71876,11 @@
         "update",
         "delete"
       ],
+      "addon_json": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "custom_persistent_disk": {
         "Type": "List",
         "Optional": true,
@@ -71618,6 +71943,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "principal_id": {
               "Type": "String",
               "Computed": true
@@ -72731,6 +73065,10 @@
       "service_registry_enabled": {
         "Type": "Bool",
         "Optional": true
+      },
+      "service_registry_id": {
+        "Type": "String",
+        "Computed": true
       },
       "sku_name": {
         "Type": "String",
@@ -82580,6 +82918,84 @@
         "Required": true
       }
     },
+    "azurerm_virtual_network_gateway_nat_rule": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "external_mapping": {
+        "Type": "List",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_space": {
+              "Type": "String",
+              "Required": true
+            },
+            "port_range": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "internal_mapping": {
+        "Type": "List",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_space": {
+              "Type": "String",
+              "Required": true
+            },
+            "port_range": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "ip_configuration_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "EgressSnat"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Static"
+        }
+      },
+      "virtual_network_gateway_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_virtual_network_peering": {
       "__timeouts__": [
         "create",
@@ -85081,7 +85497,7 @@
                   "powershell_core_version": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The PowerShell Core version to use. Possible values are `7`."
+                    "Description": "The PowerShell Core version to use. Possible values are `7`, and `7.2`"
                   },
                   "use_custom_runtime": {
                     "Type": "Bool",
@@ -86296,7 +86712,7 @@
                   "powershell_core_version": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "The PowerShell Core version to use. Possible values are `7`."
+                    "Description": "The PowerShell Core version to use. Possible values are `7`, and `7.2`"
                   },
                   "use_custom_runtime": {
                     "Type": "Bool",
@@ -96038,6 +96454,115 @@
         }
       }
     },
+    "azurerm_elastic_cloud_elasticsearch": {
+      "__timeouts__": [
+        "read"
+      ],
+      "elastic_cloud_deployment_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elastic_cloud_email_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elastic_cloud_sso_default_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elastic_cloud_user_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "elasticsearch_service_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "kibana_service_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "kibana_sso_uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "logs": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "filtering_tag": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "action": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "send_activity_logs": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "send_azuread_logs": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "send_subscription_logs": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "monitoring_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_eventgrid_domain": {
       "__timeouts__": [
         "read"
@@ -97626,6 +98151,150 @@
       "tags": {
         "Type": "Map",
         "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_healthcare_fhir_service": {
+      "__timeouts__": [
+        "read"
+      ],
+      "access_policy_object_ids": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "authentication": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "audience": {
+              "Type": "String",
+              "Computed": true
+            },
+            "authority": {
+              "Type": "String",
+              "Computed": true
+            },
+            "smart_proxy_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "configuration_export_storage_account_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "container_registry_login_server_url": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "cors": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_headers": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_methods": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_origins": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "credentials_allowed": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "max_age_in_seconds": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "identity": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "kind": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -108106,6 +108775,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "identity_ids": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "principal_id": {
               "Type": "String",
               "Computed": true
@@ -110489,6 +111167,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
             "name": {
               "Type": "String",
               "Computed": true
