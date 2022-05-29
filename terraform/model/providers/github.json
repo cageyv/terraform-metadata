@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.25.0-alpha",
+  "version": "v4.26.0",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -692,6 +692,94 @@
             }
           }
         }
+      }
+    },
+    "github_dependabot_organization_secret": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "encrypted_value": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "plaintext_value"
+        ]
+      },
+      "plaintext_value": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "encrypted_value"
+        ]
+      },
+      "secret_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "selected_repository_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "visibility": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "github_dependabot_organization_secret_repositories": {
+      "secret_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "selected_repository_ids": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      }
+    },
+    "github_dependabot_secret": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "encrypted_value": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "plaintext_value"
+        ]
+      },
+      "plaintext_value": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "encrypted_value"
+        ]
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "secret_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "github_emu_group_mapping": {
@@ -1927,6 +2015,20 @@
       "owner": {
         "Type": "String",
         "Required": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "github_dependabot_public_key": {
+      "key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "key_id": {
+        "Type": "String",
+        "Computed": true
       },
       "repository": {
         "Type": "String",

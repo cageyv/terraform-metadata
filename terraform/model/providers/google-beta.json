@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.21.0",
+  "version": "v4.22.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -125,6 +125,11 @@
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_BINARY_AUTHORIZATION_CUSTOM_ENDPOINT)"
     },
+    "certificate_manager_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_CERTIFICATE_MANAGER_CUSTOM_ENDPOINT)"
+    },
     "cloud_asset_custom_endpoint": {
       "Type": "String",
       "Optional": true,
@@ -179,6 +184,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_CLOUD_TASKS_CUSTOM_ENDPOINT)"
+    },
+    "clouddeploy_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_CLOUDDEPLOY_CUSTOM_ENDPOINT)"
     },
     "cloudfunctions2_custom_endpoint": {
       "Type": "String",
@@ -480,10 +490,10 @@
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_RESOURCE_MANAGER_CUSTOM_ENDPOINT)"
     },
-    "resource_manager_v2_custom_endpoint": {
+    "resource_manager_v3_custom_endpoint": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "MENV(GOOGLE_RESOURCE_MANAGER_V2_CUSTOM_ENDPOINT)"
+      "DefaultFunc": "MENV(GOOGLE_RESOURCE_MANAGER_V3_CUSTOM_ENDPOINT)"
     },
     "runtime_config_custom_endpoint": {
       "Type": "String",
@@ -6073,9 +6083,27 @@
         "update",
         "delete"
       ],
+      "cloud_resource": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Cloud Resource properties.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "service_account_id": {
+              "Type": "String",
+              "Description": "The account ID of the service created for the purpose of this connection.",
+              "Computed": true
+            }
+          }
+        }
+      },
       "cloud_sql": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "Cloud SQL properties.",
         "MaxItems": 1,
         "IsBlock": true,
@@ -9603,6 +9631,172 @@
         "Computed": true
       }
     },
+    "google_certificate_manager_certificate": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A human-readable description of the resource."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Set of label tags associated with the EdgeCache resource.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "managed": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configuration and state of a Managed Certificate.\nCertificate Manager provisions and renews Managed Certificates\nautomatically, for as long as it's authorized to do so.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dns_authorizations": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Authorizations that will be used for performing domain authorization",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "domains": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The domains for which a managed SSL certificate will be generated.\nWildcard domains are only supported with DNS challenge resolution",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "state": {
+              "Type": "String",
+              "Description": "State of the managed certificate resource.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A user-defined name of the certificate. Certificate names must be unique\nThe name must be 1-64 characters long, and match the regular expression [a-zA-Z][a-zA-Z0-9_-]* which means the first character must be a letter,\nand all following characters must be a dash, underscore, letter or digit."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "scope": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The scope of the certificate.\n\nCertificates with default scope are served from core Google data centers.\nIf unsure, choose this option.\n\nCertificates with scope EDGE_CACHE are special-purposed certificates,\nserved from non-core Google data centers.\nCurrently allowed only for managed certificates. Default value: \"DEFAULT\" Possible values: [\"DEFAULT\", \"EDGE_CACHE\"]",
+        "Default": {
+          "Type": "string",
+          "Value": "DEFAULT"
+        }
+      },
+      "self_managed": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Certificate data for a SelfManaged Certificate.\nSelfManaged Certificates are uploaded by the user. Updating such\ncertificates before they expire remains the user's responsibility.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "certificate_pem": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The certificate chain in PEM-encoded form.\n\nLeaf certificate comes first, followed by intermediate ones if any."
+            },
+            "private_key_pem": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The private key of the leaf certificate in PEM-encoded form."
+            }
+          }
+        }
+      }
+    },
+    "google_certificate_manager_dns_authorization": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A human-readable description of the resource."
+      },
+      "dns_resource_record": {
+        "Type": "List",
+        "Description": "The structure describing the DNS Resource Record that needs to be added\nto DNS configuration for the authorization to be usable by\ncertificate.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "data": {
+              "Type": "String",
+              "Description": "Data of the DNS Resource Record.",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Description": "Fully qualified name of the DNS Resource Record.",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Description": "Type of the DNS Resource Record.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "domain": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A domain which is being authorized. A DnsAuthorization resource covers a\nsingle domain and its wildcard, e.g. authorization for \"example.com\" can\nbe used to issue certificates for \"example.com\" and \"*.example.com\"."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Set of label tags associated with the EdgeCache resource.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource; provided by the client when the resource is created.\nThe name must be 1-64 characters long, and match the regular expression [a-zA-Z][a-zA-Z0-9_-]* which means the first character must be a letter,\nand all following characters must be a dash, underscore, letter or digit."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_cloud_asset_folder_feed": {
       "__timeouts__": [
         "create",
@@ -10968,6 +11162,16 @@
               "Type": "String",
               "Optional": true,
               "Description": "RevisionName of a specific revision to which to send this portion of traffic."
+            },
+            "tag": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Tag is optionally used to expose a dedicated url for referencing this target exclusively."
+            },
+            "url": {
+              "Type": "String",
+              "Description": "URL displays the URL for accessing tagged traffic targets. URL is displayed in status, \nand is disallowed on spec. URL must contain a scheme (e.g. http://) and a hostname, \nbut may not contain anything else (e.g. basic auth, url path, etc.)",
+              "Computed": true
             }
           }
         }
@@ -12512,6 +12716,342 @@
         }
       }
     },
+    "google_clouddeploy_delivery_pipeline": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "annotations": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "condition": {
+        "Type": "List",
+        "Description": "Output only. Information around the state of the Delivery Pipeline.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "pipeline_ready_condition": {
+              "Type": "List",
+              "Description": "Details around the Pipeline's overall status.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "status": {
+                    "Type": "Bool",
+                    "Description": "True if the Pipeline is in a valid state. Otherwise at least one condition in `PipelineCondition` is in an invalid state. Iterate over those conditions and see which condition(s) has status = false to find out what is wrong with the Pipeline.",
+                    "Computed": true
+                  },
+                  "update_time": {
+                    "Type": "String",
+                    "Description": "Last time the condition was updated.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "targets_present_condition": {
+              "Type": "List",
+              "Description": "Detalis around targets enumerated in the pipeline.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "missing_targets": {
+                    "Type": "List",
+                    "Description": "The list of Target names that are missing. For example, projects/{project_id}/locations/{location_name}/targets/{target_name}.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "status": {
+                    "Type": "Bool",
+                    "Description": "True if there aren't any missing Targets.",
+                    "Computed": true
+                  },
+                  "update_time": {
+                    "Type": "String",
+                    "Description": "Last time the condition was updated.",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. Time at which the pipeline was created.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of the `DeliveryPipeline`. Max length is 255 characters."
+      },
+      "etag": {
+        "Type": "String",
+        "Description": "This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be \u003c= 128 bytes.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location for the resource"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the `DeliveryPipeline`. Format is [a-z][a-z0-9\\-]{0,62}."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "serial_pipeline": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "SerialPipeline defines a sequential set of stages for a `DeliveryPipeline`.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "stages": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Each stage specifies configuration for a `Target`. The ordering of this list defines the promotion flow.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "profiles": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Skaffold profiles to use when rendering the manifest for this stage's `Target`.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "target_id": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The target_id to which this stage points. This field refers exclusively to the last segment of a target name. For example, this field would just be `my-target` (rather than `projects/project/locations/location/targets/my-target`). The location of the `Target` is inferred to be the same as the location of the `DeliveryPipeline` that contains this `Stage`."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "Output only. Unique identifier of the `DeliveryPipeline`.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. Most recent time at which the pipeline was updated.",
+        "Computed": true
+      }
+    },
+    "google_clouddeploy_target": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "annotations": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Optional. User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "anthos_cluster": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Information specifying an Anthos Cluster.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "gke"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "membership": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Membership of the GKE Hub-registered cluster to which to apply the Skaffold configuration. Format is `projects/{project}/locations/{location}/memberships/{membership_name}`."
+            }
+          }
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. Time at which the `Target` was created.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. Description of the `Target`. Max length is 255 characters."
+      },
+      "etag": {
+        "Type": "String",
+        "Description": "Optional. This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.",
+        "Computed": true
+      },
+      "execution_configs": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configurations for all execution that relates to this `Target`. Each `ExecutionEnvironmentUsage` value may only be used in a single configuration; using the same value multiple times is an error. When one or more configurations are specified, they must include the `RENDER` and `DEPLOY` `ExecutionEnvironmentUsage` values. When no configurations are specified, execution will use the default specified in `DefaultPool`.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "artifact_storage": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket (\"gs://my-bucket\") or a path within a bucket (\"gs://my-bucket/my-dir\"). If unspecified, a default bucket located in the same region will be used."
+            },
+            "service_account": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used."
+            },
+            "usages": {
+              "Type": "List",
+              "Required": true,
+              "Description": "Required. Usages when this configuration should be applied.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "worker_pool": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. The resource name of the `WorkerPool`, with the format `projects/{project}/locations/{location}/workerPools/{worker_pool}`. If this optional field is unspecified, the default Cloud Build pool will be used."
+            }
+          }
+        }
+      },
+      "gke": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Information specifying a GKE Cluster.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "anthos_cluster"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cluster": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Information specifying a GKE Cluster. Format is `projects/{project_id}/locations/{location_id}/clusters/{cluster_id}."
+            },
+            "internal_ip": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Optional. If true, `cluster` is accessed using the private IP address of the control plane endpoint. Otherwise, the default IP address of the control plane endpoint is used. The default IP address is the private IP address for clusters with private control-plane endpoints and the public IP address otherwise. Only specify this option when `cluster` is a [private GKE cluster](https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept)."
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Optional. Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be \u003c= 128 bytes.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location for the resource"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the `Target`. Format is [a-z][a-z0-9\\-]{0,62}."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "require_approval": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Optional. Whether or not the `Target` requires approval."
+      },
+      "target_id": {
+        "Type": "String",
+        "Description": "Output only. Resource id of the `Target`.",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "Output only. Unique identifier of the `Target`.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. Most recent time at which the `Target` was updated.",
+        "Computed": true
+      }
+    },
     "google_cloudfunctions2_function": {
       "__timeouts__": [
         "create",
@@ -12923,6 +13463,12 @@
             }
           }
         }
+      },
+      "https_trigger_security_level": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The security level for the function. Defaults to SECURE_OPTIONAL. Valid only if trigger_http is used.",
+        "Computed": true
       },
       "https_trigger_url": {
         "Type": "String",
@@ -20468,7 +21014,12 @@
             "minimal_action": {
               "Type": "String",
               "Required": true,
-              "Description": "Minimal action to be taken on an instance. You can specify either RESTART to restart existing instances or REPLACE to delete and create new instances from the target template. If you specify a RESTART, the Updater will attempt to perform that action only. However, if the Updater determines that the minimal action you specify is not enough to perform the update, it might perform a more disruptive action."
+              "Description": "Minimal action to be taken on an instance. You can specify either REFRESH to update without stopping instances, RESTART to restart existing instances or REPLACE to delete and create new instances from the target template. If you specify a REFRESH, the Updater will attempt to perform that action only. However, if the Updater determines that the minimal action you specify is not enough to perform the update, it might perform a more disruptive action."
+            },
+            "most_disruptive_allowed_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Most disruptive action that is allowed to be taken on an instance. You can specify either NONE to forbid any actions, REFRESH to allow actions that do not need instance restart, RESTART to allow actions that can be applied without instance replacing or REPLACE to allow all possible actions. If the Updater determines that the minimal update action needed is more disruptive than most disruptive allowed action you specify it will not perform the update at all."
             },
             "replacement_method": {
               "Type": "String",
@@ -25047,7 +25598,12 @@
             "minimal_action": {
               "Type": "String",
               "Required": true,
-              "Description": "Minimal action to be taken on an instance. You can specify either RESTART to restart existing instances or REPLACE to delete and create new instances from the target template. If you specify a RESTART, the Updater will attempt to perform that action only. However, if the Updater determines that the minimal action you specify is not enough to perform the update, it might perform a more disruptive action."
+              "Description": "Minimal action to be taken on an instance. You can specify either REFRESH to update without stopping instances, RESTART to restart existing instances or REPLACE to delete and create new instances from the target template. If you specify a REFRESH, the Updater will attempt to perform that action only. However, if the Updater determines that the minimal action you specify is not enough to perform the update, it might perform a more disruptive action."
+            },
+            "most_disruptive_allowed_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Most disruptive action that is allowed to be taken on an instance. You can specify either NONE to forbid any actions, REFRESH to allow actions that do not need instance restart, RESTART to allow actions that can be applied without instance replacing or REPLACE to allow all possible actions. If the Updater determines that the minimal update action needed is more disruptive than most disruptive allowed action you specify it will not perform the update at all."
             },
             "replacement_method": {
               "Type": "String",
@@ -25136,6 +25692,11 @@
         "Optional": true,
         "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "cloud_run",
+          "cloud_function",
+          "serverless_deployment"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -25164,6 +25725,11 @@
         "Optional": true,
         "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "cloud_run",
+          "app_engine",
+          "serverless_deployment"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -25187,6 +25753,11 @@
         "Optional": true,
         "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "app_engine",
+          "cloud_function",
+          "serverless_deployment"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -25223,7 +25794,7 @@
       "network_endpoint_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "Type of network endpoints in this network endpoint group. Defaults to SERVERLESS Default value: \"SERVERLESS\" Possible values: [\"SERVERLESS\"]",
+        "Description": "Type of network endpoints in this network endpoint group. Defaults to SERVERLESS Default value: \"SERVERLESS\" Possible values: [\"SERVERLESS\", \"PRIVATE_SERVICE_CONNECT\"]",
         "Default": {
           "Type": "string",
           "Value": "SERVERLESS"
@@ -25233,6 +25804,11 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "psc_target_service": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The target service url used to set up private service connection to\na Google API or a PSC Producer Service Attachment."
       },
       "region": {
         "Type": "String",
@@ -25248,6 +25824,11 @@
         "Optional": true,
         "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloudRun, appEngine, cloudFunction or serverlessDeployment may be set.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "cloud_run",
+          "app_engine",
+          "cloud_function"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -27779,6 +28360,15 @@
           "ElementsType": "String"
         }
       },
+      "enable_dynamic_port_allocation": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable Dynamic Port Allocation.\nIf minPorts is set, minPortsPerVm must be set to a power of two greater than or equal to 32. \nIf minPortsPerVm is not set, a minimum of 32 ports will be allocated to a VM from this NAT config.\n\nMutually exclusive with enableEndpointIndependentMapping.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "enable_endpoint_independent_mapping": {
         "Type": "Bool",
         "Optional": true,
@@ -28172,7 +28762,10 @@
             "description": {
               "Type": "String",
               "Optional": true,
-              "Description": "An optional description of this rule. Max size is 64."
+              "Description": "An optional description of this rule. Max size is 64.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "match": {
               "Type": "List",
@@ -28230,7 +28823,10 @@
                   "versioned_expr": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Predefined rule expression. If this field is specified, config must also be specified. Available options:   SRC_IPS_V1: Must specify the corresponding src_ip_ranges field in config."
+                    "Description": "Predefined rule expression. If this field is specified, config must also be specified. Available options:   SRC_IPS_V1: Must specify the corresponding src_ip_ranges field in config.",
+                    "Default": {
+                      "Type": "string"
+                    }
                   }
                 }
               }
@@ -28464,6 +29060,16 @@
         "Type": "String",
         "Optional": true,
         "Description": "An optional description of this resource."
+      },
+      "domain_names": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "If specified, the domain name will be used during the integration between\nthe PSC connected endpoints and the Cloud DNS. For example, this is a\nvalid domain name: \"p.mycompany.com.\". Current max number of domain names\nsupported is 1.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "enable_proxy_protocol": {
         "Type": "Bool",
@@ -34642,6 +35248,24 @@
                     "Type": "String",
                     "Required": true
                   },
+                  "exclusion_options": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Maintenance exclusion related options.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "scope": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "The scope of automatic upgrades to restrict in the exclusion window."
+                        }
+                      }
+                    }
+                  },
                   "start_time": {
                     "Type": "String",
                     "Required": true
@@ -35890,7 +36514,8 @@
             "master_ipv4_cidr_block": {
               "Type": "String",
               "Optional": true,
-              "Description": "The IP range in CIDR notation to use for the hosted master network. This range will be used for assigning private IP addresses to the cluster master(s) and the ILB VIP. This range must not overlap with any other ranges in use within the cluster's network, and it must be a /28 subnet. See Private Cluster Limitations for more details. This field only applies to private clusters, when enable_private_nodes is true."
+              "Description": "The IP range in CIDR notation to use for the hosted master network. This range will be used for assigning private IP addresses to the cluster master(s) and the ILB VIP. This range must not overlap with any other ranges in use within the cluster's network, and it must be a /28 subnet. See Private Cluster Limitations for more details. This field only applies to private clusters, when enable_private_nodes is true.",
+              "Computed": true
             },
             "peering_name": {
               "Type": "String",
@@ -53895,6 +54520,12 @@
         "update",
         "delete"
       ],
+      "checker_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The checker type to use for the check. If the monitored resource type is servicedirectory_service, checkerType must be set to VPC_CHECKERS. Possible values: [\"STATIC_IP_CHECKERS\", \"VPC_CHECKERS\"]",
+        "Computed": true
+      },
       "content_matchers": {
         "Type": "List",
         "Optional": true,
@@ -62311,6 +62942,10 @@
           "Value": "true"
         }
       },
+      "desired_state": {
+        "Type": "String",
+        "Optional": true
+      },
       "gcs_bucket": {
         "Type": "String",
         "Optional": true,
@@ -67123,6 +67758,23 @@
                 "Value": "ALWAYS"
               }
             },
+            "active_directory_config": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "domain": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Domain name of the Active Directory for SQL Server (e.g., mydomain.com)."
+                  }
+                }
+              }
+            },
             "availability_type": {
               "Type": "String",
               "Optional": true,
@@ -67233,7 +67885,7 @@
             "disk_autoresize": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Configuration to increase storage size automatically.  Note that future terraform apply calls will attempt to resize the disk to the value specified in disk_size - if this is set, do not set disk_size.",
+              "Description": "Enables auto-resizing of the storage size. Defaults to true. Set to false if you want to set disk_size.",
               "Default": {
                 "Type": "bool",
                 "Value": "true"
@@ -67251,7 +67903,7 @@
             "disk_size": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The size of data disk, in GB. Size of a running instance cannot be reduced but can be increased.",
+              "Description": "The size of data disk, in GB. Size of a running instance cannot be reduced but can be increased. If you want to set this field, set disk_autoresize to false.",
               "Computed": true
             },
             "disk_type": {
@@ -68116,10 +68768,7 @@
       "content": {
         "Type": "String",
         "Optional": true,
-        "Description": "Data as string to be uploaded. Must be defined if source is not. Note: The content field is marked as sensitive. To view the raw contents of the object, please define an output.",
-        "ConflictsWith": [
-          "source"
-        ]
+        "Description": "Data as string to be uploaded. Must be defined if source is not. Note: The content field is marked as sensitive. To view the raw contents of the object, please define an output."
       },
       "content_disposition": {
         "Type": "String",
@@ -68237,10 +68886,7 @@
       "source": {
         "Type": "String",
         "Optional": true,
-        "Description": "A path to the data you want to upload. Must be defined if content is not.",
-        "ConflictsWith": [
-          "content"
-        ]
+        "Description": "A path to the data you want to upload. Must be defined if content is not."
       },
       "storage_class": {
         "Type": "String",
@@ -70846,6 +71492,16 @@
               "Type": "String",
               "Description": "RevisionName of a specific revision to which to send this portion of traffic.",
               "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Description": "Tag is optionally used to expose a dedicated url for referencing this target exclusively.",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Description": "URL displays the URL for accessing tagged traffic targets. URL is displayed in status, \nand is disallowed on spec. URL must contain a scheme (e.g. http://) and a hostname, \nbut may not contain anything else (e.g. basic auth, url path, etc.)",
+              "Computed": true
             }
           }
         }
@@ -70920,6 +71576,11 @@
             }
           }
         }
+      },
+      "https_trigger_security_level": {
+        "Type": "String",
+        "Description": "The security level for the function. Defaults to SECURE_OPTIONAL. Valid only if trigger_http is used.",
+        "Computed": true
       },
       "https_trigger_url": {
         "Type": "String",
@@ -76475,6 +77136,23 @@
                     "Type": "String",
                     "Computed": true
                   },
+                  "exclusion_options": {
+                    "Type": "List",
+                    "Description": "Maintenance exclusion related options.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "scope": {
+                          "Type": "String",
+                          "Description": "The scope of automatic upgrades to restrict in the exclusion window.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
                   "start_time": {
                     "Type": "String",
                     "Computed": true
@@ -79892,6 +80570,10 @@
         "Type": "Bool",
         "Computed": true
       },
+      "desired_state": {
+        "Type": "String",
+        "Computed": true
+      },
       "gcs_bucket": {
         "Type": "String",
         "Description": "The name of a Cloud Storage bucket where this CertificateAuthority will publish content,\nsuch as the CA certificate and CRLs. This must be a bucket name, without any prefixes\n(such as 'gs://') or suffixes (such as '.googleapis.com'). For example, to use a bucket named\nmy-bucket, you would simply specify 'my-bucket'. If not specified, a managed bucket will be\ncreated.",
@@ -81435,6 +82117,22 @@
               "Description": "This specifies when the instance should be active. Can be either ALWAYS, NEVER or ON_DEMAND.",
               "Computed": true
             },
+            "active_directory_config": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "domain": {
+                    "Type": "String",
+                    "Description": "Domain name of the Active Directory for SQL Server (e.g., mydomain.com).",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "availability_type": {
               "Type": "String",
               "Description": "The availability type of the Cloud SQL instance, high availability\n(REGIONAL) or single zone (ZONAL). For all instances, ensure that\nsettings.backup_configuration.enabled is set to true.\nFor MySQL instances, ensure that settings.backup_configuration.binary_log_enabled is set to true.\nFor Postgres instances, ensure that settings.backup_configuration.point_in_time_recovery_enabled\nis set to true.",
@@ -81530,7 +82228,7 @@
             },
             "disk_autoresize": {
               "Type": "Bool",
-              "Description": "Configuration to increase storage size automatically.  Note that future terraform apply calls will attempt to resize the disk to the value specified in disk_size - if this is set, do not set disk_size.",
+              "Description": "Enables auto-resizing of the storage size. Defaults to true. Set to false if you want to set disk_size.",
               "Computed": true
             },
             "disk_autoresize_limit": {
@@ -81540,7 +82238,7 @@
             },
             "disk_size": {
               "Type": "Int",
-              "Description": "The size of data disk, in GB. Size of a running instance cannot be reduced but can be increased.",
+              "Description": "The size of data disk, in GB. Size of a running instance cannot be reduced but can be increased. If you want to set this field, set disk_autoresize to false.",
               "Computed": true
             },
             "disk_type": {

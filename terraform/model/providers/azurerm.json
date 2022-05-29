@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.7.0",
+  "version": "v3.8.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -503,6 +503,10 @@
       "deployment_id": {
         "Type": "String",
         "Computed": true
+      },
+      "domain_configuration_type": {
+        "Type": "String",
+        "Optional": true
       },
       "domain_name": {
         "Type": "String",
@@ -11571,7 +11575,8 @@
       },
       "source_vm_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true
       }
     },
     "azurerm_bastion_host": {
@@ -12930,7 +12935,12 @@
       },
       "isolated_network_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "public_network_access_enabled"
+        ],
+        "Deprecated": "`isolated_network_enabled` will be removed in favour of the property `public_network_access_enabled` in version 4.0 of the AzureRM Provider."
       },
       "location": {
         "Type": "String",
@@ -12943,6 +12953,14 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "isolated_network_enabled"
+        ]
       },
       "resource_group_name": {
         "Type": "String",
@@ -13013,6 +13031,7 @@
       "tags": {
         "Type": "Map",
         "Optional": true,
+        "Deprecated": "This property has been deprecated as the API no longer supports tags and will be removed in version 4.0 of the provider.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -19350,7 +19369,16 @@
       },
       "script": {
         "Type": "String",
-        "Required": true
+        "Optional": true
+      },
+      "script_lines": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "sink": {
         "Type": "List",
@@ -19548,9 +19576,59 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "dataset": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "parameters": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
             "description": {
               "Type": "String",
               "Optional": true
+            },
+            "linked_service": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "parameters": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
             },
             "name": {
               "Type": "String",
@@ -23816,6 +23894,10 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "time_zone": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "azurerm_data_factory_trigger_tumbling_window": {
@@ -47145,7 +47227,10 @@
             },
             "disk_encryption_set_id": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.secure_vm_disk_encryption_set_id"
+              ]
             },
             "disk_size_gb": {
               "Type": "Int",
@@ -47156,6 +47241,17 @@
               "Type": "String",
               "Optional": true,
               "Computed": true
+            },
+            "secure_vm_disk_encryption_set_id": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.disk_encryption_set_id"
+              ]
+            },
+            "security_encryption_type": {
+              "Type": "String",
+              "Optional": true
             },
             "storage_account_type": {
               "Type": "String",
@@ -47931,12 +48027,26 @@
             },
             "disk_encryption_set_id": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.secure_vm_disk_encryption_set_id"
+              ]
             },
             "disk_size_gb": {
               "Type": "Int",
               "Optional": true,
               "Computed": true
+            },
+            "secure_vm_disk_encryption_set_id": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.disk_encryption_set_id"
+              ]
+            },
+            "security_encryption_type": {
+              "Type": "String",
+              "Optional": true
             },
             "storage_account_type": {
               "Type": "String",
@@ -49664,6 +49774,12 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "zip_deploy_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The local path and filename of the Zip packaged application to deploy to this Windows Web App. **Note:** Using this value requires `WEBSITE_RUN_FROM_PACKAGE=1` on the App in `app_settings`.",
+        "Computed": true
       }
     },
     "azurerm_linux_web_app_slot": {
@@ -51067,6 +51183,12 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "zip_deploy_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The local path and filename of the Zip packaged application to deploy to this Windows Web App. **Note:** Using this value requires `WEBSITE_RUN_FROM_PACKAGE=1` on the App in `app_settings`.",
+        "Computed": true
       }
     },
     "azurerm_load_test": {
@@ -54257,7 +54379,10 @@
       },
       "disk_encryption_set_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "secure_vm_disk_encryption_set_id"
+        ]
       },
       "disk_iops_read_only": {
         "Type": "Int",
@@ -54403,6 +54528,17 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "secure_vm_disk_encryption_set_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "disk_encryption_set_id"
+        ]
+      },
+      "security_type": {
+        "Type": "String",
+        "Optional": true
       },
       "source_resource_id": {
         "Type": "String",
@@ -60156,6 +60292,25 @@
         }
       },
       "version": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_mssql_server_dns_alias": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "dns_record": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mssql_server_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
         "Type": "String",
         "Required": true
       }
@@ -71869,6 +72024,84 @@
         "Required": true
       }
     },
+    "azurerm_spring_cloud_api_portal": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "gateway_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "https_only_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "instance_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "spring_cloud_service_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "sso": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "client_secret": {
+              "Type": "String",
+              "Optional": true
+            },
+            "issuer_uri": {
+              "Type": "String",
+              "Optional": true
+            },
+            "scope": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "azurerm_spring_cloud_app": {
       "__timeouts__": [
         "create",
@@ -72163,6 +72396,66 @@
           "Type": "bool",
           "Value": "true"
         }
+      }
+    },
+    "azurerm_spring_cloud_build_deployment": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "build_result_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "environment_variables": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "instance_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "quota": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cpu": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "memory": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "spring_cloud_app_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_spring_cloud_build_pack_binding": {
@@ -72705,6 +72998,88 @@
         "Optional": true
       }
     },
+    "azurerm_spring_cloud_gateway_route_config": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "route": {
+        "Type": "Set",
+        "Optional": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "classification_tags": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "filters": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "order": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "predicates": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "sso_validation_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "title": {
+              "Type": "String",
+              "Optional": true
+            },
+            "token_relay": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "uri": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "spring_cloud_app_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "spring_cloud_gateway_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_spring_cloud_java_deployment": {
       "__timeouts__": [
         "create",
@@ -72780,6 +73155,10 @@
         "update",
         "delete"
       ],
+      "build_agent_pool_size": {
+        "Type": "String",
+        "Optional": true
+      },
       "config_server_git_setting": {
         "Type": "List",
         "Optional": true,
@@ -73109,6 +73488,14 @@
               }
             }
           }
+        }
+      },
+      "zone_redundant": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
         }
       }
     },
@@ -75994,7 +76381,8 @@
       ],
       "access_tier": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "acl": {
         "Type": "Set",
@@ -82773,6 +83161,15 @@
         "Type": "Int",
         "Optional": true
       },
+      "egress_nat_rule_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "enable_bgp": {
         "Type": "Bool",
         "Optional": true,
@@ -82786,6 +83183,15 @@
         "Type": "Bool",
         "Optional": true,
         "Computed": true
+      },
+      "ingress_nat_rule_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "ipsec_policy": {
         "Type": "List",
@@ -83312,6 +83718,14 @@
         "update",
         "delete"
       ],
+      "bgp_route_translation_for_nat_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "bgp_settings": {
         "Type": "List",
         "Optional": true,
@@ -83599,6 +84013,25 @@
               "Default": {
                 "Type": "string",
                 "Value": "Default"
+              }
+            },
+            "custom_bgp_address": {
+              "Type": "Set",
+              "Optional": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip_address": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "ip_configuration_id": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
               }
             },
             "egress_nat_rule_ids": {
@@ -87458,7 +87891,10 @@
             },
             "disk_encryption_set_id": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.secure_vm_disk_encryption_set_id"
+              ]
             },
             "disk_size_gb": {
               "Type": "Int",
@@ -87469,6 +87905,17 @@
               "Type": "String",
               "Optional": true,
               "Computed": true
+            },
+            "secure_vm_disk_encryption_set_id": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.disk_encryption_set_id"
+              ]
+            },
+            "security_encryption_type": {
+              "Type": "String",
+              "Optional": true
             },
             "storage_account_type": {
               "Type": "String",
@@ -88275,12 +88722,26 @@
             },
             "disk_encryption_set_id": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.secure_vm_disk_encryption_set_id"
+              ]
             },
             "disk_size_gb": {
               "Type": "Int",
               "Optional": true,
               "Computed": true
+            },
+            "secure_vm_disk_encryption_set_id": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "os_disk.0.disk_encryption_set_id"
+              ]
+            },
+            "security_encryption_type": {
+              "Type": "String",
+              "Optional": true
             },
             "storage_account_type": {
               "Type": "String",
@@ -90074,6 +90535,12 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "zip_deploy_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The local path and filename of the Zip packaged application to deploy to this Windows Web App. **Note:** Using this value requires `WEBSITE_RUN_FROM_PACKAGE=1` on the App in `app_settings`.",
+        "Computed": true
       }
     },
     "azurerm_windows_web_app_slot": {
@@ -91500,6 +91967,12 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "zip_deploy_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The local path and filename of the Zip packaged application to deploy to this Windows Web App. **Note:** Using this value requires `WEBSITE_RUN_FROM_PACKAGE=1` on the App in `app_settings`.",
+        "Computed": true
       }
     }
   },
@@ -106349,13 +106822,17 @@
         "Optional": true,
         "Computed": true
       },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
       "location": {
         "Type": "String",
         "Computed": true
       },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
