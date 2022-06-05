@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.8.0",
+  "version": "v3.9.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -11342,6 +11342,14 @@
               "Type": "String",
               "Required": true
             },
+            "hour_duration": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "hour_interval": {
+              "Type": "Int",
+              "Optional": true
+            },
             "time": {
               "Type": "String",
               "Required": true
@@ -11366,6 +11374,14 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "policy_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "V1"
+        }
       },
       "recovery_vault_name": {
         "Type": "String",
@@ -14330,6 +14346,84 @@
               }
             }
           }
+        }
+      }
+    },
+    "azurerm_cdn_frontdoor_endpoint": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "cdn_frontdoor_profile_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "host_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azurerm_cdn_frontdoor_profile": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_guid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "response_timeout_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "sku_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       }
     },
@@ -23807,13 +23901,46 @@
         "Type": "String",
         "Required": true
       },
+      "pipeline": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "pipeline_parameters"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "parameters": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "pipeline_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true
       },
       "pipeline_parameters": {
         "Type": "Map",
         "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "pipeline"
+        ],
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -51777,10 +51904,7 @@
       "sku": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "PerGB2018"
-        }
+        "Computed": true
       },
       "tags": {
         "Type": "Map",
@@ -61933,6 +62057,11 @@
         "Type": "String",
         "Required": true
       },
+      "network_features": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "pool_name": {
         "Type": "String",
         "Required": true
@@ -66495,6 +66624,39 @@
       "hostname": {
         "Type": "String",
         "Computed": true
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "location": {
         "Type": "String",
@@ -84160,21 +84322,65 @@
         "delete"
       ],
       "external_address_space_mappings": {
-        "Type": "Set",
-        "Required": true,
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "`external_address_space_mappings` will be removed in favour of the property `external_mapping` in version 4.0 of the AzureRM Provider.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
       },
+      "external_mapping": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_space": {
+              "Type": "String",
+              "Required": true
+            },
+            "port_range": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
       "internal_address_space_mappings": {
-        "Type": "Set",
-        "Required": true,
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "`internal_address_space_mappings` will be removed in favour of the property `internal_mapping` in version 4.0 of the AzureRM Provider.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "internal_mapping": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_space": {
+              "Type": "String",
+              "Required": true
+            },
+            "port_range": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
         }
       },
       "ip_configuration_id": {
@@ -84435,6 +84641,61 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_vpn_server_configuration_policy_group": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "is_default": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy": {
+        "Type": "Set",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "priority": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "vpn_server_configuration_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_vpn_site": {
@@ -85103,7 +85364,7 @@
       },
       "event_handler": {
         "Type": "Set",
-        "Required": true,
+        "Optional": true,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -93060,6 +93321,81 @@
         "Computed": true
       }
     },
+    "azurerm_app_configuration_keys": {
+      "__timeouts__": [
+        "read"
+      ],
+      "configuration_store_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "items": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "etag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "key": {
+              "Type": "String",
+              "Computed": true
+            },
+            "label": {
+              "Type": "String",
+              "Computed": true
+            },
+            "locked": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "tags": {
+              "Type": "Map",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vault_key_reference": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "key": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      }
+    },
     "azurerm_app_service": {
       "__timeouts__": [
         "read"
@@ -95005,6 +95341,74 @@
       "version": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azurerm_cdn_frontdoor_endpoint": {
+      "__timeouts__": [
+        "read"
+      ],
+      "enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "host_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "profile_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azurerm_cdn_frontdoor_profile": {
+      "__timeouts__": [
+        "read"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_guid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "response_timeout_seconds": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "sku_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azurerm_cdn_profile": {
@@ -106028,6 +106432,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "network_features": {
+        "Type": "String",
+        "Computed": true
       },
       "pool_name": {
         "Type": "String",
