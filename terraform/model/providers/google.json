@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.23.0",
+  "version": "v4.24.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -13964,6 +13964,39 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "cache_key_policy": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The CacheKeyPolicy for this CdnPolicy.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "include_http_headers": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Allows HTTP request headers (by name) to be used in the\ncache key.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "query_string_whitelist": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Names of query string parameters to include in cache keys.\nDefault parameters are always included. '\u0026' and '=' will\nbe percent encoded and not treated as delimiters.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
             "cache_mode": {
               "Type": "String",
               "Optional": true,
@@ -31940,7 +31973,6 @@
         "Type": "List",
         "Optional": true,
         "Description": "Configuration options for the NetworkPolicy feature.",
-        "Computed": true,
         "MaxItems": 1,
         "ConflictsWith": [
           "enable_autopilot"
@@ -65075,6 +65107,38 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "cache_key_policy": {
+              "Type": "List",
+              "Description": "The CacheKeyPolicy for this CdnPolicy.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "include_http_headers": {
+                    "Type": "List",
+                    "Description": "Allows HTTP request headers (by name) to be used in the\ncache key.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "query_string_whitelist": {
+                    "Type": "List",
+                    "Description": "Names of query string parameters to include in cache keys.\nDefault parameters are always included. '\u0026' and '=' will\nbe percent encoded and not treated as delimiters.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
             "cache_mode": {
               "Type": "String",
               "Description": "Specifies the cache setting for all responses from this backend.\nThe possible values are: USE_ORIGIN_HEADERS, FORCE_CACHE_ALL and CACHE_ALL_STATIC Possible values: [\"USE_ORIGIN_HEADERS\", \"FORCE_CACHE_ALL\", \"CACHE_ALL_STATIC\"]",

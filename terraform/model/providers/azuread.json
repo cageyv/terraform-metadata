@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.22.0",
+  "version": "v2.23.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -53,6 +53,18 @@
       "Description": "The path to a custom endpoint for Managed Identity - in most circumstances this should be detected automatically",
       "DefaultFunc": "ENV(ARM_MSI_ENDPOINT)"
     },
+    "oidc_request_token": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The bearer token for the request to the OIDC provider. For use when authenticating as a Service Principal using OpenID Connect.",
+      "DefaultFunc": "MENV(ARM_OIDC_REQUEST_TOKEN,ACTIONS_ID_TOKEN_REQUEST_TOKEN)"
+    },
+    "oidc_request_url": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The URL for the OIDC provider from which to request an ID token. For use when authenticating as a Service Principal using OpenID Connect.",
+      "DefaultFunc": "MENV(ARM_OIDC_REQUEST_URL,ACTIONS_ID_TOKEN_REQUEST_URL)"
+    },
     "partner_id": {
       "Type": "String",
       "Optional": true,
@@ -76,6 +88,12 @@
       "Optional": true,
       "Description": "Allow Managed Identity to be used for Authentication",
       "DefaultFunc": "ENV(ARM_USE_MSI)"
+    },
+    "use_oidc": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Allow OpenID Connect to be used for authentication",
+      "DefaultFunc": "ENV(ARM_USE_OIDC)"
     }
   },
   "resources": {

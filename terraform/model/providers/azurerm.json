@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.9.0",
+  "version": "v3.10.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -157,6 +157,15 @@
                   "Type": "Bool",
                   "Optional": true,
                   "Description": "When enabled soft-deleted `azurerm_key_vault_certificate` resources will be permanently deleted (e.g purged), when destroyed",
+                  "Default": {
+                    "Type": "bool",
+                    "Value": "true"
+                  }
+                },
+                "purge_soft_deleted_hardware_security_modules_on_destroy": {
+                  "Type": "Bool",
+                  "Optional": true,
+                  "Description": "When enabled soft-deleted `azurerm_key_vault_managed_hardware_security_module` resources will be permanently deleted (e.g purged), when destroyed",
                   "Default": {
                     "Type": "bool",
                     "Value": "true"
@@ -8609,7 +8618,11 @@
             },
             "request_timeout": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "30"
+              }
             },
             "trusted_root_certificate_names": {
               "Type": "List",
@@ -9142,7 +9155,7 @@
             },
             "priority": {
               "Type": "Int",
-              "Optional": true
+              "Required": true
             },
             "redirect_configuration_id": {
               "Type": "String",
@@ -13200,6 +13213,93 @@
         }
       }
     },
+    "azurerm_capacity_reservation": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "capacity_reservation_group_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "capacity": {
+              "Type": "Int",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "azurerm_capacity_reservation_group": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zones": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_cdn_endpoint": {
       "__timeouts__": [
         "create",
@@ -14425,6 +14525,22 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_cdn_frontdoor_rule_set": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "cdn_frontdoor_profile_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_cdn_profile": {
@@ -17878,6 +17994,23 @@
         "update",
         "delete"
       ],
+      "authentication_method": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Cassandra"
+        }
+      },
+      "client_certificate_pems": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "default_admin_password": {
         "Type": "String",
         "Required": true
@@ -17886,6 +18019,48 @@
         "Type": "String",
         "Required": true
       },
+      "external_gossip_certificate_pems": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "external_seed_node_ip_addresses": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "location": {
         "Type": "String",
         "Required": true
@@ -17893,6 +18068,14 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "repair_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "resource_group_name": {
         "Type": "String",
@@ -17905,6 +18088,14 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "3.11"
         }
       }
     },
@@ -37796,6 +37987,10 @@
         "update",
         "delete"
       ],
+      "automatically_rotate_key_to_latest_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "cache_size_in_gb": {
         "Type": "Int",
         "Required": true
@@ -38009,6 +38204,35 @@
             }
           }
         }
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Required": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "key_vault_key_id": {
+        "Type": "String",
+        "Optional": true
       },
       "location": {
         "Type": "String",
@@ -95065,6 +95289,19 @@
                 }
               }
             },
+            "public_address_provisioning_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "public_ips": {
+              "Type": "Set",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "subnet_id": {
               "Type": "String",
               "Computed": true
@@ -95409,6 +95646,27 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_cdn_frontdoor_rule_set": {
+      "__timeouts__": [
+        "read"
+      ],
+      "cdn_frontdoor_profile_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "profile_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_cdn_profile": {

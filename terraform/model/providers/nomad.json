@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "nomad",
   "type": "provider",
-  "version": "v1.4.16",
+  "version": "v1.4.17",
   "provider": {
     "address": {
       "Type": "String",
@@ -338,6 +338,109 @@
           "clone_id"
         ]
       },
+      "topologies": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "segments": {
+              "Type": "Map",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "topology_request": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specify locations (region, zone, rack, etc.) where the provisioned volume is accessible from.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "preferred": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Preferred topologies indicate that the volume should be created in a location accessible from some of the listed topologies.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "topology": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Defines the location for the volume.",
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "segments": {
+                          "Type": "Map",
+                          "Required": true,
+                          "Description": "Define the attributes for the topology request.",
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Required topologies indicate that the volume must be created in a location accessible from all the listed topologies.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "topology": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Defines the location for the volume.",
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "segments": {
+                          "Type": "Map",
+                          "Required": true,
+                          "Description": "Define the attributes for the topology request.",
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "type": {
         "Type": "String",
         "Optional": true,
@@ -372,6 +475,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "consul_token": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Consul token used to submit this job."
       },
       "datacenters": {
         "Type": "Set",
@@ -596,6 +704,11 @@
         "Type": "String",
         "Description": "The type of the job, as derived from the jobspec.",
         "Computed": true
+      },
+      "vault_token": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Vault token used to submit this job."
       }
     },
     "nomad_namespace": {
@@ -914,6 +1027,74 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "topologies": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "segments": {
+              "Type": "Map",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "topology_request": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specify locations (region, zone, rack, etc.) where the provisioned volume is accessible from.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "required": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Required topologies indicate that the volume must be created in a location accessible from all the listed topologies.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "topology": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Defines the location for the volume.",
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "segments": {
+                          "Type": "Map",
+                          "Required": true,
+                          "Description": "Define attributes for the topology request.",
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "type": {
