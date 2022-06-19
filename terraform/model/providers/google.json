@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.24.0",
+  "version": "v4.25.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -7095,6 +7095,11 @@
                 "Value": "NONE"
               }
             },
+            "connection_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The connection specifying the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or S3. The connectionId can have the form \"{{project}}.{{location}}.{{connection_id}}\" or \"projects/{{project}}/locations/{{location}}/connections/{{connection_id}}\"."
+            },
             "csv_options": {
               "Type": "List",
               "Optional": true,
@@ -13118,6 +13123,46 @@
                 }
               }
             },
+            "master_authorized_networks_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Configuration options for the master authorized networks feature. Enabled master authorized networks will disallow all external traffic to access Kubernetes master through HTTPS except traffic from the given CIDR blocks, Google Compute Engine Public IPs and Google Prod IPs.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cidr_blocks": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Description": "cidr_blocks define up to 50 external networks that could access Kubernetes master through HTTPS.",
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cidr_block": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "cidr_block must be specified in CIDR notation."
+                        },
+                        "display_name": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "display_name is a field for users to identify CIDR blocks."
+                        }
+                      }
+                    }
+                  },
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "Whether or not master authorized networks is enabled."
+                  }
+                }
+              }
+            },
             "node_config": {
               "Type": "List",
               "Optional": true,
@@ -14252,6 +14297,16 @@
                     "Type": "Bool",
                     "Optional": true,
                     "Description": "If true requests to different hosts will be cached separately."
+                  },
+                  "include_named_cookies": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Names of cookies to include in cache keys.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
                   },
                   "include_protocol": {
                     "Type": "Bool",
@@ -18511,7 +18566,7 @@
       "instances": {
         "Type": "Set",
         "Optional": true,
-        "Description": "List of instances in the group. They should be given as self_link URLs. When adding instances they must all be in the same network and zone as the instance group.",
+        "Description": "The list of instances in the group, in self_link format. When adding instances they must all be in the same network and zone as the instance group.",
         "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -19984,9 +20039,20 @@
         "Optional": true,
         "Description": "An optional description of this resource. The resource must be\nrecreated to modify this field."
       },
+      "enable_ula_internal_ipv6": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable ULA internal ipv6 on this network. Enabling this feature will assign \na /48 from google defined ULA prefix fd20::/20."
+      },
       "gateway_ipv4": {
         "Type": "String",
         "Description": "The gateway address for default routing out of the network. This value\nis selected by GCP.",
+        "Computed": true
+      },
+      "internal_ipv6_range": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "When enabling ula internal ipv6, caller optionally can specify the /48 range \nthey want from the google defined ULA prefix fd20::/20. The input must be a \nvalid /48 ULA IPv6 address and must be within the fd20::/20. Operation will \nfail if the speficied /48 is already in used by another resource. \nIf the field is not speficied, then a /48 range will be randomly allocated from fd20::/20 and returned via this field.",
         "Computed": true
       },
       "mtu": {
@@ -21140,6 +21206,16 @@
                     "Type": "Bool",
                     "Optional": true,
                     "Description": "If true requests to different hosts will be cached separately."
+                  },
+                  "include_named_cookies": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Names of cookies to include in cache keys.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
                   },
                   "include_protocol": {
                     "Type": "Bool",
@@ -25725,6 +25801,32 @@
         "update",
         "delete"
       ],
+      "advanced_options_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Advanced Options Config of this security policy.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "json_parsing": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "JSON body parsing. Supported values include: \"DISABLED\", \"STANDARD\".",
+              "Computed": true
+            },
+            "log_level": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Logging level. Supported values include: \"NORMAL\", \"VERBOSE\".",
+              "Computed": true
+            }
+          }
+        }
+      },
       "description": {
         "Type": "String",
         "Optional": true,
@@ -26330,7 +26432,7 @@
       "ipv6_access_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "The access type of IPv6 address this subnet holds. It's immutable and can only be specified during creation\nor the first time the subnet is updated into IPV4_IPV6 dual stack. If the ipv6_type is EXTERNAL then this subnet\ncannot enable direct path. Possible values: [\"EXTERNAL\"]"
+        "Description": "The access type of IPv6 address this subnet holds. It's immutable and can only be specified during creation\nor the first time the subnet is updated into IPV4_IPV6 dual stack. If the ipv6_type is EXTERNAL then this subnet\ncannot enable direct path. Possible values: [\"EXTERNAL\", \"INTERNAL\"]"
       },
       "ipv6_cidr_range": {
         "Type": "String",
@@ -32204,6 +32306,15 @@
                 }
               }
             },
+            "spot": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether the nodes are created as spot VM instances.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "tags": {
               "Type": "List",
               "Optional": true,
@@ -32583,6 +32694,15 @@
                           }
                         }
                       }
+                    }
+                  },
+                  "spot": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Whether the nodes are created as spot VM instances.",
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
                     }
                   },
                   "tags": {
@@ -33242,6 +33362,15 @@
                     }
                   }
                 }
+              }
+            },
+            "spot": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether the nodes are created as spot VM instances.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
               }
             },
             "tags": {
@@ -41582,6 +41711,11 @@
         "update",
         "delete"
       ],
+      "creation_time": {
+        "Type": "String",
+        "Description": "The time that this resource was created on the server.\nThis is in RFC3339 text format.",
+        "Computed": true
+      },
       "description": {
         "Type": "String",
         "Optional": true,
@@ -41718,6 +41852,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "managed_zone_id": {
+        "Type": "Int",
+        "Description": "Unique identifier for the resource; defined by the server.",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -48481,6 +48620,16 @@
             }
           }
         }
+      },
+      "user_labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Labels which have been used to annotate the service. Label keys must start\nwith a letter. Label keys and values may contain lowercase letters,\nnumbers, underscores, and dashes. Label keys and values have a maximum\nlength of 63 characters, and must be less than 128 bytes in size. Up to 64\nlabel entries may be stored. For labels which do not have a semantic value,\nthe empty string may be supplied for the label value.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "google_monitoring_dashboard": {
@@ -48960,6 +49109,16 @@
         "Description": "The id to use for this ServiceLevelObjective. If omitted, an id will be generated instead.",
         "Computed": true
       },
+      "user_labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "This field is intended to be used for organizing and identifying the AlertPolicy\nobjects.The field can contain up to 64 entries. Each key and value is limited\nto 63 Unicode characters or 128 bytes, whichever is smaller. Labels and values\ncan contain only lowercase letters, numerals, underscores, and dashes. Keys\nmust begin with a letter.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "windows_based_sli": {
         "Type": "List",
         "Optional": true,
@@ -49275,10 +49434,37 @@
               "Required": true,
               "Description": "String or regex content to match (max 1024 bytes)"
             },
+            "json_path_matcher": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Information needed to perform a JSONPath content match. Used for 'ContentMatcherOption::MATCHES_JSON_PATH' and 'ContentMatcherOption::NOT_MATCHES_JSON_PATH'.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "json_matcher": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Options to perform JSONPath content matching. Default value: \"EXACT_MATCH\" Possible values: [\"EXACT_MATCH\", \"REGEX_MATCH\"]",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "EXACT_MATCH"
+                    }
+                  },
+                  "json_path": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "JSONPath within the response output pointing to the expected 'ContentMatcher::content' to match against."
+                  }
+                }
+              }
+            },
             "matcher": {
               "Type": "String",
               "Optional": true,
-              "Description": "The type of content matcher that will be applied to the server output, compared to the content string when the check is run. Default value: \"CONTAINS_STRING\" Possible values: [\"CONTAINS_STRING\", \"NOT_CONTAINS_STRING\", \"MATCHES_REGEX\", \"NOT_MATCHES_REGEX\"]",
+              "Description": "The type of content matcher that will be applied to the server output, compared to the content string when the check is run. Default value: \"CONTAINS_STRING\" Possible values: [\"CONTAINS_STRING\", \"NOT_CONTAINS_STRING\", \"MATCHES_REGEX\", \"NOT_MATCHES_REGEX\", \"MATCHES_JSON_PATH\", \"NOT_MATCHES_JSON_PATH\"]",
               "Default": {
                 "Type": "string",
                 "Value": "CONTAINS_STRING"
@@ -49391,7 +49577,7 @@
       "monitored_resource": {
         "Type": "List",
         "Optional": true,
-        "Description": "The monitored resource (https://cloud.google.com/monitoring/api/resources) associated with the configuration. The following monitored resource types are supported for uptime checks:  uptime_url  gce_instance  gae_app  aws_ec2_instance  aws_elb_load_balancer",
+        "Description": "The monitored resource (https://cloud.google.com/monitoring/api/resources) associated with the configuration. The following monitored resource types are supported for uptime checks:  uptime_url  gce_instance  gae_app  aws_ec2_instance aws_elb_load_balancer  k8s_service  servicedirectory_service",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -61303,6 +61489,37 @@
         "Description": "The ID of the project in which the resource belongs. If it is not provided, the provider project is used.",
         "Computed": true
       },
+      "sql_server_user_details": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "disabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "If the user has been disabled.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "server_roles": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The server roles for this user in the database.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "type": {
         "Type": "String",
         "Optional": true,
@@ -64637,6 +64854,45 @@
                 }
               }
             },
+            "master_authorized_networks_config": {
+              "Type": "List",
+              "Description": "Configuration options for the master authorized networks feature. Enabled master authorized networks will disallow all external traffic to access Kubernetes master through HTTPS except traffic from the given CIDR blocks, Google Compute Engine Public IPs and Google Prod IPs.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cidr_blocks": {
+                    "Type": "Set",
+                    "Description": "cidr_blocks define up to 50 external networks that could access Kubernetes master through HTTPS.",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cidr_block": {
+                          "Type": "String",
+                          "Description": "cidr_block must be specified in CIDR notation.",
+                          "Computed": true
+                        },
+                        "display_name": {
+                          "Type": "String",
+                          "Description": "display_name is a field for users to identify CIDR blocks.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "enabled": {
+                    "Type": "Bool",
+                    "Description": "Whether or not master authorized networks is enabled.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "node_config": {
               "Type": "List",
               "Description": "The configuration used for the Kubernetes Engine cluster.",
@@ -65338,6 +65594,16 @@
                     "Type": "Bool",
                     "Description": "If true requests to different hosts will be cached separately.",
                     "Computed": true
+                  },
+                  "include_named_cookies": {
+                    "Type": "List",
+                    "Description": "Names of cookies to include in cache keys.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
                   },
                   "include_protocol": {
                     "Type": "Bool",
@@ -70032,6 +70298,11 @@
                 }
               }
             },
+            "spot": {
+              "Type": "Bool",
+              "Description": "Whether the nodes are created as spot VM instances.",
+              "Computed": true
+            },
             "tags": {
               "Type": "List",
               "Description": "The list of instance tags applied to all nodes.",
@@ -70363,6 +70634,11 @@
                         }
                       }
                     }
+                  },
+                  "spot": {
+                    "Type": "Bool",
+                    "Description": "Whether the nodes are created as spot VM instances.",
+                    "Computed": true
                   },
                   "tags": {
                     "Type": "List",
@@ -71653,6 +71929,16 @@
             }
           }
         }
+      },
+      "user_labels": {
+        "Type": "Map",
+        "Description": "Labels which have been used to annotate the service. Label keys must start\nwith a letter. Label keys and values may contain lowercase letters,\nnumbers, underscores, and dashes. Label keys and values have a maximum\nlength of 63 characters, and must be less than 128 bytes in size. Up to 64\nlabel entries may be stored. For labels which do not have a semantic value,\nthe empty string may be supplied for the label value.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "google_monitoring_cluster_istio_service": {
@@ -71711,6 +71997,16 @@
             }
           }
         }
+      },
+      "user_labels": {
+        "Type": "Map",
+        "Description": "Labels which have been used to annotate the service. Label keys must start\nwith a letter. Label keys and values may contain lowercase letters,\nnumbers, underscores, and dashes. Label keys and values have a maximum\nlength of 63 characters, and must be less than 128 bytes in size. Up to 64\nlabel entries may be stored. For labels which do not have a semantic value,\nthe empty string may be supplied for the label value.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "google_monitoring_istio_canonical_service": {
@@ -71764,6 +72060,16 @@
             }
           }
         }
+      },
+      "user_labels": {
+        "Type": "Map",
+        "Description": "Labels which have been used to annotate the service. Label keys must start\nwith a letter. Label keys and values may contain lowercase letters,\nnumbers, underscores, and dashes. Label keys and values have a maximum\nlength of 63 characters, and must be less than 128 bytes in size. Up to 64\nlabel entries may be stored. For labels which do not have a semantic value,\nthe empty string may be supplied for the label value.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "google_monitoring_mesh_istio_service": {
@@ -71816,6 +72122,16 @@
               "Computed": true
             }
           }
+        }
+      },
+      "user_labels": {
+        "Type": "Map",
+        "Description": "Labels which have been used to annotate the service. Label keys must start\nwith a letter. Label keys and values may contain lowercase letters,\nnumbers, underscores, and dashes. Label keys and values have a maximum\nlength of 63 characters, and must be less than 128 bytes in size. Up to 64\nlabel entries may be stored. For labels which do not have a semantic value,\nthe empty string may be supplied for the label value.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       }
     },
