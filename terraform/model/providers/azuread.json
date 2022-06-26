@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.24.0",
+  "version": "v2.25.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -1449,6 +1449,40 @@
         "Optional": true,
         "Description": "The object ID of the template associated with the directory role",
         "Computed": true
+      }
+    },
+    "azuread_directory_role_assignment": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "app_scope_object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identifier of the app-specific scope when the assignment scope is app-specific",
+        "ConflictsWith": [
+          "directory_scope_object_id"
+        ]
+      },
+      "directory_scope_object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The object ID of a directory object representing the scope of the assignment",
+        "ConflictsWith": [
+          "app_scope_object_id"
+        ]
+      },
+      "principal_object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The object ID of the member principal"
+      },
+      "role_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The object ID of the directory role for this assignment"
       }
     },
     "azuread_directory_role_member": {

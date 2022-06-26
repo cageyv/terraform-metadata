@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.10.0",
+  "version": "v3.11.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -39215,7 +39215,7 @@
         "Computed": true
       },
       "id_properties": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -39406,7 +39406,7 @@
         "Type": "String",
         "Optional": true,
         "Default": {
-          "Type": "iotcentral.AppSku",
+          "Type": "string",
           "Value": "ST1"
         }
       },
@@ -104885,6 +104885,10 @@
         "Type": "String",
         "Computed": true
       },
+      "disk_access_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "disk_encryption_set_id": {
         "Type": "String",
         "Computed": true
@@ -104908,6 +104912,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "network_access_policy": {
+        "Type": "String",
+        "Computed": true
       },
       "os_type": {
         "Type": "String",
@@ -104978,6 +104986,23 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_management_group_template_deployment": {
+      "__timeouts__": [
+        "read"
+      ],
+      "management_group_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "output_content": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "azurerm_maps_account": {
@@ -107284,6 +107309,107 @@
         "Computed": true
       }
     },
+    "azurerm_policy_assignment": {
+      "__timeouts__": [
+        "read"
+      ],
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "enforce": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "identity": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "metadata": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "non_compliance_message": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content": {
+              "Type": "String",
+              "Computed": true
+            },
+            "policy_definition_reference_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "not_scopes": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "parameters": {
+        "Type": "String",
+        "Computed": true
+      },
+      "policy_definition_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "scope_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_policy_definition": {
       "__timeouts__": [
         "read"
@@ -108367,6 +108493,23 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurerm_resource_group_template_deployment": {
+      "__timeouts__": [
+        "read"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "output_content": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_resources": {
@@ -110512,6 +110655,38 @@
         "Type": "Bool",
         "Computed": true
       },
+      "identity": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "infrastructure_encryption_enabled": {
         "Type": "Bool",
         "Computed": true
@@ -111520,6 +111695,19 @@
         "Computed": true
       }
     },
+    "azurerm_subscription_template_deployment": {
+      "__timeouts__": [
+        "read"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "output_content": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "azurerm_subscriptions": {
       "__timeouts__": [
         "read"
@@ -111671,6 +111859,19 @@
       "version": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azurerm_tenant_template_deployment": {
+      "__timeouts__": [
+        "read"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "output_content": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "azurerm_traffic_manager_geographical_location": {

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.25.0",
+  "version": "v4.26.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -271,6 +271,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_DNS_CUSTOM_ENDPOINT)"
+    },
+    "document_ai_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_DOCUMENT_AI_CUSTOM_ENDPOINT)"
     },
     "essential_contacts_custom_endpoint": {
       "Type": "String",
@@ -1438,6 +1443,16 @@
                     "Elem": {
                       "Type": "SchemaInfo",
                       "Info": {
+                        "external_resources": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Description": "A list of external resources that are allowed to be accessed. A request\nmatches if it contains an external resource in this list (Example:\ns3://bucket/path). Currently '*' is not allowed.",
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
                         "operations": {
                           "Type": "List",
                           "Optional": true,
@@ -1735,6 +1750,16 @@
                     "Elem": {
                       "Type": "SchemaInfo",
                       "Info": {
+                        "external_resources": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Description": "A list of external resources that are allowed to be accessed. A request\nmatches if it contains an external resource in this list (Example:\ns3://bucket/path). Currently '*' is not allowed.",
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
                         "operations": {
                           "Type": "List",
                           "Optional": true,
@@ -2108,6 +2133,16 @@
                           "Elem": {
                             "Type": "SchemaInfo",
                             "Info": {
+                              "external_resources": {
+                                "Type": "List",
+                                "Optional": true,
+                                "Description": "A list of external resources that are allowed to be accessed. A request\nmatches if it contains an external resource in this list (Example:\ns3://bucket/path). Currently '*' is not allowed.",
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "String"
+                                }
+                              },
                               "operations": {
                                 "Type": "List",
                                 "Optional": true,
@@ -2405,6 +2440,16 @@
                           "Elem": {
                             "Type": "SchemaInfo",
                             "Info": {
+                              "external_resources": {
+                                "Type": "List",
+                                "Optional": true,
+                                "Description": "A list of external resources that are allowed to be accessed. A request\nmatches if it contains an external resource in this list (Example:\ns3://bucket/path). Currently '*' is not allowed.",
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "String"
+                                }
+                              },
                               "operations": {
                                 "Type": "List",
                                 "Optional": true,
@@ -11609,6 +11654,11 @@
           "ElementsType": "String"
         }
       },
+      "include_build_logs": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Build logs will be sent back to GitHub as part of the checkrun\nresult.  Values can be INCLUDE_BUILD_LOGS_UNSPECIFIED or\nINCLUDE_BUILD_LOGS_WITH_STATUS Possible values: [\"INCLUDE_BUILD_LOGS_UNSPECIFIED\", \"INCLUDE_BUILD_LOGS_WITH_STATUS\"]"
+      },
       "included_files": {
         "Type": "List",
         "Optional": true,
@@ -13180,6 +13230,12 @@
                     "Description": "The disk size in GB used for node VMs. Minimum size is 20GB. If unspecified, defaults to 100GB. Cannot be updated. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
                     "Computed": true
                   },
+                  "enable_ip_masq_agent": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Deploys 'ip-masq-agent' daemon set in the GKE cluster and defines nonMasqueradeCIDRs equals to pod IP range so IP masquerading is used for all destination addresses, except between pods traffic. See: https://cloud.google.com/kubernetes-engine/docs/how-to/ip-masquerade-agent",
+                    "Computed": true
+                  },
                   "ip_allocation_policy": {
                     "Type": "List",
                     "Optional": true,
@@ -13326,6 +13382,12 @@
                       "Type": "bool",
                       "Value": "true"
                     }
+                  },
+                  "enable_privately_used_public_ips": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "When enabled, IPs from public (non-RFC1918) ranges can be used for ip_allocation_policy.cluster_ipv4_cidr_block and ip_allocation_policy.service_ipv4_cidr_block.",
+                    "Computed": true
                   },
                   "master_ipv4_cidr_block": {
                     "Type": "String",
@@ -42140,6 +42202,58 @@
         "Description": "The DNS record set type."
       }
     },
+    "google_document_ai_processor": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "display_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The display name. Must be unique."
+      },
+      "kms_key_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The KMS key used for encryption/decryption in CMEK scenarios. See https://cloud.google.com/security-key-management."
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location of the resource."
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The resource name of the processor.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The type of processor. For possible types see the [official list](https://cloud.google.com/document-ai/docs/reference/rest/v1/projects.locations/fetchProcessorTypes#google.cloud.documentai.v1.DocumentProcessorService.FetchProcessorTypes)"
+      }
+    },
+    "google_document_ai_processor_default_version": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "processor": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The processor to set the version on."
+      },
+      "version": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The version to set"
+      }
+    },
     "google_endpoints_service": {
       "__timeouts__": [
         "create",
@@ -64907,6 +65021,11 @@
                     "Description": "The disk size in GB used for node VMs. Minimum size is 20GB. If unspecified, defaults to 100GB. Cannot be updated. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
                     "Computed": true
                   },
+                  "enable_ip_masq_agent": {
+                    "Type": "Bool",
+                    "Description": "Deploys 'ip-masq-agent' daemon set in the GKE cluster and defines nonMasqueradeCIDRs equals to pod IP range so IP masquerading is used for all destination addresses, except between pods traffic. See: https://cloud.google.com/kubernetes-engine/docs/how-to/ip-masquerade-agent",
+                    "Computed": true
+                  },
                   "ip_allocation_policy": {
                     "Type": "List",
                     "Description": "Configuration for controlling how IPs are allocated in the GKE cluster. Cannot be updated.",
@@ -65024,6 +65143,11 @@
                   "enable_private_endpoint": {
                     "Type": "Bool",
                     "Description": "If true, access to the public endpoint of the GKE cluster is denied. If this field is set to true, ip_allocation_policy.use_ip_aliases must be set to true for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.",
+                    "Computed": true
+                  },
+                  "enable_privately_used_public_ips": {
+                    "Type": "Bool",
+                    "Description": "When enabled, IPs from public (non-RFC1918) ranges can be used for ip_allocation_policy.cluster_ipv4_cidr_block and ip_allocation_policy.service_ipv4_cidr_block.",
                     "Computed": true
                   },
                   "master_ipv4_cidr_block": {
