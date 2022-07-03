@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.11.0",
+  "version": "v3.12.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -782,6 +782,40 @@
         "Computed": true
       },
       "subnet_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_active_directory_domain_service_trust": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "domain_service_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true
+      },
+      "trusted_domain_dns_ips": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 2,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "trusted_domain_fqdn": {
         "Type": "String",
         "Required": true
       }
@@ -11838,8 +11872,7 @@
       },
       "storage_account_id": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "tags": {
         "Type": "Map",
@@ -12999,6 +13032,14 @@
         "Type": "String",
         "Required": true
       },
+      "streaming_endpoint_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "tags": {
         "Type": "Map",
         "Optional": true,
@@ -13116,6 +13157,18 @@
       "microsoft_app_id": {
         "Type": "String",
         "Required": true
+      },
+      "microsoft_app_msi_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "microsoft_app_tenant_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "microsoft_app_type": {
+        "Type": "String",
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -15880,6 +15933,10 @@
               "Type": "Float",
               "Required": true
             },
+            "cpu_limit": {
+              "Type": "Float",
+              "Optional": true
+            },
             "environment_variables": {
               "Type": "Map",
               "Optional": true,
@@ -15890,6 +15947,26 @@
               }
             },
             "gpu": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "sku": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "gpu_limit": {
               "Type": "List",
               "Optional": true,
               "MaxItems": 1,
@@ -15980,6 +16057,10 @@
             "memory": {
               "Type": "Float",
               "Required": true
+            },
+            "memory_limit": {
+              "Type": "Float",
+              "Optional": true
             },
             "name": {
               "Type": "String",
@@ -19478,6 +19559,10 @@
           "Type": "bool",
           "Value": "true"
         }
+      },
+      "purview_id": {
+        "Type": "String",
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
@@ -24719,6 +24804,44 @@
         }
       }
     },
+    "azurerm_data_protection_resource_guard": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "vault_critical_operation_exclusion_list": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_data_share": {
       "__timeouts__": [
         "create",
@@ -26476,6 +26599,30 @@
       "host_name": {
         "Type": "String",
         "Computed": true
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "location": {
         "Type": "String",
@@ -41415,6 +41562,14 @@
         "Type": "String",
         "Computed": true
       },
+      "resource_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_versionless_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "tags": {
         "Type": "Map",
         "Optional": true,
@@ -41614,6 +41769,14 @@
       "not_before_date": {
         "Type": "String",
         "Optional": true
+      },
+      "resource_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_versionless_id": {
+        "Type": "String",
+        "Computed": true
       },
       "tags": {
         "Type": "Map",
@@ -49571,6 +49734,7 @@
                         "slow_request": {
                           "Type": "List",
                           "Optional": true,
+                          "MaxItems": 1,
                           "IsBlock": true,
                           "ConfigImplicitMode": "Block",
                           "Elem": {
@@ -50125,6 +50289,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "virtual_network_subnet_id": {
+        "Type": "String",
+        "Optional": true
       },
       "zip_deploy_file": {
         "Type": "String",
@@ -51008,6 +51176,7 @@
                         "slow_request": {
                           "Type": "List",
                           "Optional": true,
+                          "MaxItems": 1,
                           "IsBlock": true,
                           "ConfigImplicitMode": "Block",
                           "Elem": {
@@ -51534,6 +51703,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "virtual_network_subnet_id": {
+        "Type": "String",
+        "Optional": true
       },
       "zip_deploy_file": {
         "Type": "String",
@@ -66326,6 +66499,15 @@
         "Type": "Bool",
         "Optional": true
       },
+      "fqdns": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "load_balancer_frontend_ip_configuration_ids": {
         "Type": "Set",
         "Required": true,
@@ -66636,6 +66818,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "principal_id": {
               "Type": "String",
               "Computed": true
@@ -71619,6 +71810,10 @@
         "update",
         "delete"
       ],
+      "end_of_life_date": {
+        "Type": "String",
+        "Optional": true
+      },
       "exclude_from_latest": {
         "Type": "Bool",
         "Optional": true,
@@ -71651,6 +71846,14 @@
         "Type": "String",
         "Optional": true
       },
+      "replication_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "compute.ReplicationMode",
+          "Value": "Full"
+        }
+      },
       "resource_group_name": {
         "Type": "String",
         "Required": true
@@ -71665,13 +71868,17 @@
         }
       },
       "target_region": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "disk_encryption_set_id": {
+              "Type": "String",
+              "Optional": true
+            },
             "name": {
               "Type": "String",
               "Required": true
@@ -72486,6 +72693,26 @@
       "url": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "azurerm_spring_cloud_api_portal_custom_domain": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "spring_cloud_api_portal_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "thumbprint": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "azurerm_spring_cloud_app": {
@@ -74970,7 +75197,7 @@
       },
       "validation_type": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "azurerm_storage_account": {
@@ -85014,6 +85241,56 @@
         "Type": "String",
         "Required": true
       },
+      "o365_policy": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "traffic_category": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "allow_endpoint_enabled": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
+                  },
+                  "default_endpoint_enabled": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
+                  },
+                  "optimize_endpoint_enabled": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "resource_group_name": {
         "Type": "String",
         "Required": true
@@ -90420,6 +90697,7 @@
                         "slow_request": {
                           "Type": "List",
                           "Optional": true,
+                          "MaxItems": 1,
                           "IsBlock": true,
                           "ConfigImplicitMode": "Block",
                           "Elem": {
@@ -91887,6 +92165,7 @@
                         "slow_request": {
                           "Type": "List",
                           "Optional": true,
+                          "MaxItems": 1,
                           "IsBlock": true,
                           "ConfigImplicitMode": "Block",
                           "Elem": {
@@ -95762,7 +96041,7 @@
       },
       "tags": {
         "Type": "Map",
-        "Computed": true,
+        "Optional": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -100590,6 +100869,14 @@
         "Type": "String",
         "Computed": true
       },
+      "resource_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_versionless_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "tags": {
         "Type": "Map",
         "Computed": true,
@@ -100686,6 +100973,14 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "resource_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_versionless_id": {
+        "Type": "String",
+        "Computed": true
       },
       "tags": {
         "Type": "Map",
@@ -104049,6 +104344,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "virtual_network_subnet_id": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "azurerm_local_network_gateway": {
@@ -107794,7 +108093,7 @@
       },
       "tags": {
         "Type": "Map",
-        "Computed": true,
+        "Optional": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -110039,6 +110338,15 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azurerm_spring_cloud_app": {

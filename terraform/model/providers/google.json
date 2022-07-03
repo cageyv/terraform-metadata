@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.26.0",
+  "version": "v4.27.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -12122,6 +12122,11 @@
           }
         }
       },
+      "suspended": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "When suspended, no new releases or rollouts can be created, but in-progress ones will complete."
+      },
       "uid": {
         "Type": "String",
         "Description": "Output only. Unique identifier of the `DeliveryPipeline`.",
@@ -15942,6 +15947,16 @@
         "Description": "The project this resource belongs in.",
         "Computed": true
       },
+      "psc_connection_id": {
+        "Type": "String",
+        "Description": "The PSC connection id of the PSC Forwarding Rule.",
+        "Computed": true
+      },
+      "psc_connection_status": {
+        "Type": "String",
+        "Description": "The PSC connection status of the PSC Forwarding Rule. Possible values: STATUS_UNSPECIFIED, PENDING, ACCEPTED, REJECTED, CLOSED",
+        "Computed": true
+      },
       "region": {
         "Type": "String",
         "Optional": true,
@@ -16177,6 +16192,16 @@
         "Type": "String",
         "Optional": true,
         "Description": "The project this resource belongs in.",
+        "Computed": true
+      },
+      "psc_connection_id": {
+        "Type": "String",
+        "Description": "The PSC connection id of the PSC Forwarding Rule.",
+        "Computed": true
+      },
+      "psc_connection_status": {
+        "Type": "String",
+        "Description": "The PSC connection status of the PSC Forwarding Rule. Possible values: STATUS_UNSPECIFIED, PENDING, ACCEPTED, REJECTED, CLOSED",
         "Computed": true
       },
       "self_link": {
@@ -25543,11 +25568,8 @@
       "enable_dynamic_port_allocation": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable Dynamic Port Allocation.\nIf minPorts is set, minPortsPerVm must be set to a power of two greater than or equal to 32. \nIf minPortsPerVm is not set, a minimum of 32 ports will be allocated to a VM from this NAT config.\n\nMutually exclusive with enableEndpointIndependentMapping.",
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Description": "Enable Dynamic Port Allocation.\nIf minPortsPerVm is set, minPortsPerVm must be set to a power of two greater than or equal to 32.\nIf minPortsPerVm is not set, a minimum of 32 ports will be allocated to a VM from this NAT config.\nIf maxPortsPerVm is set, maxPortsPerVm must be set to a power of two greater than minPortsPerVm.\nIf maxPortsPerVm is not set, a maximum of 65536 ports will be allocated to a VM from this NAT config.\n\nMutually exclusive with enableEndpointIndependentMapping.",
+        "Computed": true
       },
       "enable_endpoint_independent_mapping": {
         "Type": "Bool",
@@ -25589,6 +25611,11 @@
             }
           }
         }
+      },
+      "max_ports_per_vm": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum number of ports allocated to a VM from this NAT.\nThis field can only be set when enableDynamicPortAllocation is enabled."
       },
       "min_ports_per_vm": {
         "Type": "Int",
@@ -66526,6 +66553,16 @@
         "Optional": true,
         "Description": "The project this resource belongs in."
       },
+      "psc_connection_id": {
+        "Type": "String",
+        "Description": "The PSC connection id of the PSC Forwarding Rule.",
+        "Computed": true
+      },
+      "psc_connection_status": {
+        "Type": "String",
+        "Description": "The PSC connection status of the PSC Forwarding Rule. Possible values: STATUS_UNSPECIFIED, PENDING, ACCEPTED, REJECTED, CLOSED",
+        "Computed": true
+      },
       "region": {
         "Type": "String",
         "Optional": true,
@@ -66701,6 +66738,16 @@
         "Type": "String",
         "Optional": true,
         "Description": "The project this resource belongs in."
+      },
+      "psc_connection_id": {
+        "Type": "String",
+        "Description": "The PSC connection id of the PSC Forwarding Rule.",
+        "Computed": true
+      },
+      "psc_connection_status": {
+        "Type": "String",
+        "Description": "The PSC connection status of the PSC Forwarding Rule. Possible values: STATUS_UNSPECIFIED, PENDING, ACCEPTED, REJECTED, CLOSED",
+        "Computed": true
       },
       "self_link": {
         "Type": "String",
