@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.12.0",
+  "version": "v3.13.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -9189,7 +9189,7 @@
             },
             "priority": {
               "Type": "Int",
-              "Required": true
+              "Optional": true
             },
             "redirect_configuration_id": {
               "Type": "String",
@@ -18195,6 +18195,14 @@
           "Value": "true"
         }
       },
+      "backup_storage_customer_key_uri": {
+        "Type": "String",
+        "Optional": true
+      },
+      "base64_encoded_yaml_fragment": {
+        "Type": "String",
+        "Optional": true
+      },
       "cassandra_cluster_id": {
         "Type": "String",
         "Required": true
@@ -18207,9 +18215,21 @@
         "Type": "Int",
         "Optional": true
       },
+      "disk_sku": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "P30"
+        }
+      },
       "location": {
         "Type": "String",
         "Required": true
+      },
+      "managed_disk_customer_key_uri": {
+        "Type": "String",
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -23851,6 +23871,7 @@
       "fqdns": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -29965,6 +29986,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "principal_id": {
               "Type": "String",
               "Computed": true
@@ -32005,6 +32035,95 @@
       "priority": {
         "Type": "Int",
         "Required": true
+      }
+    },
+    "azurerm_fluid_relay_server": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "frs_tenant_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identity_ids": {
+              "Type": "Set",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "orderer_endpoints": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "storage_endpoints": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "storage_sku": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azurerm_frontdoor": {
@@ -36700,6 +36819,34 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "network": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connection_direction": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "Inbound"
+              }
+            },
+            "private_link_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            }
+          }
+        }
       },
       "resource_group_name": {
         "Type": "String",
@@ -42011,6 +42158,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "capacity_reservation_group_id": {
+              "Type": "String",
+              "Optional": true
+            },
             "enable_auto_scaling": {
               "Type": "Bool",
               "Optional": true
@@ -43183,6 +43334,10 @@
         "update",
         "delete"
       ],
+      "capacity_reservation_group_id": {
+        "Type": "String",
+        "Optional": true
+      },
       "enable_auto_scaling": {
         "Type": "Bool",
         "Optional": true
@@ -44481,6 +44636,15 @@
           "ElementsType": "String"
         }
       },
+      "inbound_nat_rules": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "load_balancing_rules": {
         "Type": "List",
         "Computed": true,
@@ -44546,6 +44710,29 @@
       "backend_address_pool_id": {
         "Type": "String",
         "Required": true
+      },
+      "inbound_nat_rule_port_mapping": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "backend_port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "frontend_port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "inbound_nat_rule_name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       },
       "ip_address": {
         "Type": "String",
@@ -44627,6 +44814,13 @@
         "update",
         "delete"
       ],
+      "backend_address_pool_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "frontend_port"
+        ]
+      },
       "backend_ip_configuration_id": {
         "Type": "String",
         "Computed": true
@@ -44654,7 +44848,26 @@
       },
       "frontend_port": {
         "Type": "Int",
-        "Required": true
+        "Optional": true,
+        "ConflictsWith": [
+          "frontend_port_start",
+          "frontend_port_end",
+          "backend_address_pool_id"
+        ]
+      },
+      "frontend_port_end": {
+        "Type": "Int",
+        "Optional": true,
+        "ConflictsWith": [
+          "frontend_port"
+        ]
+      },
+      "frontend_port_start": {
+        "Type": "Int",
+        "Optional": true,
+        "ConflictsWith": [
+          "frontend_port"
+        ]
       },
       "idle_timeout_in_minutes": {
         "Type": "Int",
@@ -47568,6 +47781,7 @@
         "Type": "String",
         "Optional": true,
         "ConflictsWith": [
+          "capacity_reservation_group_id",
           "virtual_machine_scale_set_id",
           "zone"
         ]
@@ -47587,6 +47801,14 @@
             }
           }
         }
+      },
+      "capacity_reservation_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "availability_set_id",
+          "proximity_placement_group_id"
+        ]
       },
       "computer_name": {
         "Type": "String",
@@ -47853,7 +48075,10 @@
       },
       "proximity_placement_group_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "capacity_reservation_group_id"
+        ]
       },
       "public_ip_address": {
         "Type": "String",
@@ -53809,6 +54034,67 @@
       "single_sign_on_url": {
         "Type": "String",
         "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "user": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "String",
+              "Required": true
+            },
+            "first_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "last_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "phone_number": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "azurerm_logz_sub_account": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "logz_monitor_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
       },
       "tags": {
         "Type": "Map",
@@ -73018,6 +73304,11 @@
         "update",
         "delete"
       ],
+      "addon_json": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "build_result_id": {
         "Type": "String",
         "Required": true
@@ -73302,6 +73593,11 @@
         "update",
         "delete"
       ],
+      "addon_json": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "arguments": {
         "Type": "List",
         "Optional": true,
@@ -88472,6 +88768,7 @@
         "Type": "String",
         "Optional": true,
         "ConflictsWith": [
+          "capacity_reservation_group_id",
           "virtual_machine_scale_set_id",
           "zone"
         ]
@@ -88491,6 +88788,14 @@
             }
           }
         }
+      },
+      "capacity_reservation_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "availability_set_id",
+          "proximity_placement_group_id"
+        ]
       },
       "computer_name": {
         "Type": "String",
@@ -88765,7 +89070,10 @@
       },
       "proximity_placement_group_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "capacity_reservation_group_id"
+        ]
       },
       "public_ip_address": {
         "Type": "String",
@@ -96635,6 +96943,10 @@
         "Type": "String",
         "Computed": true
       },
+      "data_endpoint_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "location": {
         "Type": "String",
         "Computed": true
@@ -102011,6 +102323,29 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "inbound_nat_rule_port_mapping": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "backend_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "frontend_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "inbound_nat_rule_name": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "ip_address": {
               "Type": "String",
               "Computed": true
@@ -102039,6 +102374,15 @@
               "Computed": true
             }
           }
+        }
+      },
+      "inbound_nat_rules": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "load_balancing_rules": {
@@ -108515,6 +108859,66 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azurerm_public_maintenance_configurations": {
+      "__timeouts__": [
+        "read"
+      ],
+      "configs": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "duration": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "location": {
+              "Type": "String",
+              "Computed": true
+            },
+            "maintenance_scope": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "recur_every": {
+              "Type": "String",
+              "Computed": true
+            },
+            "time_zone": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true
+      },
+      "recur_every": {
+        "Type": "String",
+        "Optional": true
+      },
+      "scope": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "azurerm_recovery_services_vault": {

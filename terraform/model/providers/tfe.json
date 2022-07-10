@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.31.0",
+  "version": "v0.33.0",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -228,6 +228,43 @@
         }
       },
       "organization": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_organization_run_task": {
+      "category": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "task"
+        }
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "hmac_key": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
         "Type": "String",
         "Required": true
       }
@@ -514,6 +551,14 @@
                 "Value": "false"
               }
             },
+            "manage_run_tasks": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
             "manage_vcs_settings": {
               "Type": "Bool",
               "Optional": true,
@@ -561,6 +606,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "run_tasks": {
+              "Type": "Bool",
+              "Required": true
+            },
             "runs": {
               "Type": "String",
               "Required": true
@@ -897,10 +946,26 @@
         "Optional": true,
         "Computed": true
       },
+      "trigger_patterns": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "trigger_prefixes"
+        ],
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "trigger_prefixes": {
         "Type": "List",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "trigger_patterns"
+        ],
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -946,6 +1011,30 @@
         "Default": {
           "Type": "string"
         }
+      }
+    },
+    "tfe_workspace_run_task": {
+      "enforcement_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "task_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_workspace_variable_set": {
+      "variable_set_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
       }
     }
   },
@@ -1064,6 +1153,28 @@
         "Computed": true
       }
     },
+    "tfe_organization_run_task": {
+      "category": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "tfe_organizations": {
       "admin": {
         "Type": "Bool",
@@ -1130,6 +1241,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "run_tasks": {
+              "Type": "Bool",
+              "Computed": true
+            },
             "runs": {
               "Type": "String",
               "Computed": true
@@ -1403,6 +1518,15 @@
         "Type": "String",
         "Computed": true
       },
+      "trigger_patterns": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "trigger_prefixes": {
         "Type": "List",
         "Computed": true,
@@ -1445,6 +1569,15 @@
       }
     },
     "tfe_workspace_ids": {
+      "exclude_tags": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "full_names": {
         "Type": "Map",
         "Computed": true
@@ -1474,6 +1607,20 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "tfe_workspace_run_task": {
+      "enforcement_level": {
+        "Type": "String",
+        "Computed": true
+      },
+      "task_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
       }
     }
   }

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.25.0",
+  "version": "v2.26.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -1458,30 +1458,59 @@
         "update",
         "delete"
       ],
+      "app_scope_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identifier of the app-specific scope when the assignment scope is app-specific",
+        "Computed": true,
+        "ConflictsWith": [
+          "app_scope_object_id",
+          "directory_scope_id",
+          "directory_scope_object_id"
+        ]
+      },
       "app_scope_object_id": {
         "Type": "String",
         "Optional": true,
         "Description": "Identifier of the app-specific scope when the assignment scope is app-specific",
+        "Computed": true,
         "ConflictsWith": [
+          "app_scope_id",
+          "directory_scope_id",
+          "directory_scope_object_id"
+        ],
+        "Deprecated": "`app_scope_object_id` has been renamed to `app_scope_id` and will be removed in version 3.0 or the AzureAD Provider"
+      },
+      "directory_scope_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identifier of the directory object representing the scope of the assignment",
+        "Computed": true,
+        "ConflictsWith": [
+          "app_scope_id",
+          "app_scope_object_id",
           "directory_scope_object_id"
         ]
       },
       "directory_scope_object_id": {
         "Type": "String",
         "Optional": true,
-        "Description": "The object ID of a directory object representing the scope of the assignment",
+        "Description": "Identifier of the directory object representing the scope of the assignment",
+        "Computed": true,
         "ConflictsWith": [
-          "app_scope_object_id"
+          "app_scope_id",
+          "app_scope_object_id",
+          "directory_scope_id"
         ]
       },
       "principal_object_id": {
         "Type": "String",
-        "Optional": true,
+        "Required": true,
         "Description": "The object ID of the member principal"
       },
       "role_id": {
         "Type": "String",
-        "Optional": true,
+        "Required": true,
         "Description": "The object ID of the directory role for this assignment"
       }
     },
