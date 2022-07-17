@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuredevops",
   "type": "provider",
-  "version": "v0.2.1",
+  "version": "v0.2.2",
   "provider": {
     "org_service_url": {
       "Type": "String",
@@ -2394,6 +2394,26 @@
           "ElementsType": "String"
         }
       },
+      "azurerm_management_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Azure managementGroup Id which should be used.",
+        "DefaultFunc": "ENV(ARM_MGMT_GROUP_ID)",
+        "ConflictsWith": [
+          "azurerm_subscription_id",
+          "resource_group"
+        ]
+      },
+      "azurerm_management_group_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Azure managementGroup name which should be used.",
+        "DefaultFunc": "ENV(ARM_MGMT_GROUP_NAME)",
+        "ConflictsWith": [
+          "azurerm_subscription_id",
+          "resource_group"
+        ]
+      },
       "azurerm_spn_tenantid": {
         "Type": "String",
         "Required": true,
@@ -2402,15 +2422,21 @@
       },
       "azurerm_subscription_id": {
         "Type": "String",
-        "Required": true,
+        "Optional": true,
         "Description": "The Azure subscription Id which should be used.",
-        "DefaultFunc": "ENV(ARM_SUBSCRIPTION_ID)"
+        "DefaultFunc": "ENV(ARM_SUBSCRIPTION_ID)",
+        "ConflictsWith": [
+          "azurerm_management_group_id"
+        ]
       },
       "azurerm_subscription_name": {
         "Type": "String",
-        "Required": true,
+        "Optional": true,
         "Description": "The Azure subscription name which should be used.",
-        "DefaultFunc": "ENV(ARM_SUBSCRIPTION_NAME)"
+        "DefaultFunc": "ENV(ARM_SUBSCRIPTION_NAME)",
+        "ConflictsWith": [
+          "azurerm_management_group_id"
+        ]
       },
       "credentials": {
         "Type": "List",
@@ -2459,7 +2485,8 @@
         "Optional": true,
         "Description": "Scope Resource Group",
         "ConflictsWith": [
-          "credentials"
+          "credentials",
+          "azurerm_management_group_id"
         ]
       },
       "service_endpoint_name": {
@@ -2850,6 +2877,58 @@
         "Required": true
       }
     },
+    "azuredevops_serviceendpoint_incomingwebhook": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "authorization": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Managed by Terraform"
+        }
+      },
+      "http_header": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional http header name on which checksum will be sent.",
+        "DefaultFunc": "ENV(AZDO_INCOMING_WEBHOOK_SERVICE_CONNECTION_HTTP_HEADER)"
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "secret": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional secret for the webhook. WebHook service will use this secret to calculate the payload checksum.",
+        "DefaultFunc": "ENV(AZDO_INCOMING_WEBHOOK_SERVICE_CONNECTION_SECRET)"
+      },
+      "service_endpoint_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "webhook_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the WebHook.",
+        "DefaultFunc": "ENV(AZDO_INCOMING_WEBHOOK_SERVICE_CONNECTION_WEBHOOK_NAME)"
+      }
+    },
     "azuredevops_serviceendpoint_kubernetes": {
       "__timeouts__": [
         "create",
@@ -2991,9 +3070,10 @@
         "Required": true
       },
       "service_account": {
-        "Type": "Set",
+        "Type": "List",
         "Optional": true,
         "Description": "'ServiceAccount'-type of configuration",
+        "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -3076,6 +3156,56 @@
         "Type": "String",
         "Required": true,
         "Description": "Url for the npm registry"
+      }
+    },
+    "azuredevops_serviceendpoint_octopusdeploy": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "api_key": {
+        "Type": "String",
+        "Required": true
+      },
+      "authorization": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Managed by Terraform"
+        }
+      },
+      "ignore_ssl_error": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_endpoint_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azuredevops_serviceendpoint_permissions": {
@@ -3207,11 +3337,6 @@
               "Required": true,
               "Description": "Password for the Azure Active Directory account."
             },
-            "password_hash": {
-              "Type": "String",
-              "Description": "A bcrypted hash of the attribute 'password'",
-              "Computed": true
-            },
             "server_certificate_common_name": {
               "Type": "String",
               "Optional": true,
@@ -3258,20 +3383,10 @@
               "Required": true,
               "Description": "Base64 encoding of the cluster's client certificate file."
             },
-            "client_certificate_hash": {
-              "Type": "String",
-              "Description": "A bcrypted hash of the attribute 'client_certificate'",
-              "Computed": true
-            },
             "client_certificate_password": {
               "Type": "String",
               "Optional": true,
               "Description": "Password for the certificate."
-            },
-            "client_certificate_password_hash": {
-              "Type": "String",
-              "Description": "A bcrypted hash of the attribute 'client_certificate_password'",
-              "Computed": true
             },
             "server_certificate_common_name": {
               "Type": "String",
@@ -3910,6 +4025,395 @@
       "project_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "azuredevops_build_definition": {
+      "agent_pool_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ci_trigger": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "override": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "batch": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "branch_filter": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "exclude": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "include": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "max_concurrent_builds_per_branch": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "path_filter": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "exclude": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "include": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "polling_interval": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "polling_job_id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "use_yaml": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "\\"
+        }
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "pull_request_trigger": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "comment_required": {
+              "Type": "String",
+              "Computed": true
+            },
+            "forks": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "share_secrets": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "initial_branch": {
+              "Type": "String",
+              "Computed": true
+            },
+            "override": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "auto_cancel": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "branch_filter": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "exclude": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "include": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "path_filter": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "exclude": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "include": {
+                          "Type": "Set",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "use_yaml": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "repository": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "branch_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "github_enterprise_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "repo_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "repo_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "report_build_status": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "service_connection_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "yml_path": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "revision": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "schedules": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "branch_filter": {
+              "Type": "Set",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exclude": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "include": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "days_to_build": {
+              "Type": "List",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "schedule_job_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "schedule_only_with_changes": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "start_hours": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "start_minutes": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "time_zone": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "variable": {
+        "Type": "Set",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow_override": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "is_secret": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "secret_value": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "variable_groups": {
+        "Type": "Set",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
       }
     },
     "azuredevops_client_config": {
