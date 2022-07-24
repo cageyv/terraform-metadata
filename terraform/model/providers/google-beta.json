@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.28.0",
+  "version": "v4.29.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -3982,7 +3982,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "The resource name of the key. The name must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the name must match the regular expression: [a-z]([a-z0-9-]{0,61}[a-z0-9])?."
+        "Description": "The resource name of the key. The name must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the name must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`."
       },
       "project": {
         "Type": "String",
@@ -6619,7 +6619,7 @@
       "params": {
         "Type": "Map",
         "Required": true,
-        "Description": "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer'\nsection for each data source. For example the parameters for Cloud Storage transfers are listed here:\nhttps://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq",
+        "Description": "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer'\nsection for each data source. For example the parameters for Cloud Storage transfers are listed here:\nhttps://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq\n\n**NOTE** : If you are attempting to update a parameter that cannot be updated (due to api limitations) [please force recreation of the resource](https://www.terraform.io/cli/state/taint#forcing-re-creation-of-resources).",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -13524,6 +13524,7 @@
         "Type": "List",
         "Optional": true,
         "Description": "Configurations for all execution that relates to this `Target`. Each `ExecutionEnvironmentUsage` value may only be used in a single configuration; using the same value multiple times is an error. When one or more configurations are specified, they must include the `RENDER` and `DEPLOY` `ExecutionEnvironmentUsage` values. When no configurations are specified, execution will use the default specified in `DefaultPool`.",
+        "Computed": true,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -13532,12 +13533,14 @@
             "artifact_storage": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket (\"gs://my-bucket\") or a path within a bucket (\"gs://my-bucket/my-dir\"). If unspecified, a default bucket located in the same region will be used."
+              "Description": "Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket (\"gs://my-bucket\") or a path within a bucket (\"gs://my-bucket/my-dir\"). If unspecified, a default bucket located in the same region will be used.",
+              "Computed": true
             },
             "service_account": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used."
+              "Description": "Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used.",
+              "Computed": true
             },
             "usages": {
               "Type": "List",
@@ -14861,6 +14864,139 @@
         "Type": "Map",
         "Optional": true,
         "Description": "A PubSub topic to publish device state updates."
+      }
+    },
+    "google_cloudiot_registry_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_cloudiot_registry_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_cloudiot_registry_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     },
     "google_composer_environment": {
@@ -17088,7 +17224,8 @@
       "provisioned_iops": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Indicates how many IOPS must be provisioned for the disk."
+        "Description": "Indicates how many IOPS must be provisioned for the disk.",
+        "Computed": true
       },
       "resource_policies": {
         "Type": "List",
@@ -30208,6 +30345,124 @@
         "Computed": true
       }
     },
+    "google_compute_snapshot_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_snapshot_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_snapshot_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_compute_ssl_certificate": {
       "__timeouts__": [
         "create",
@@ -35658,6 +35913,40 @@
           }
         }
       },
+      "binary_authorization": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configuration options for the Binary Authorization feature.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "enable_binary_authorization"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Enable Binary Authorization for this cluster.",
+              "ConflictsWith": [
+                "enable_autopilot",
+                "binary_authorization.0.evaluation_mode"
+              ],
+              "Deprecated": "Deprecated in favor of evaluation_mode."
+            },
+            "evaluation_mode": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Mode of operation for Binary Authorization policy evaluation.",
+              "ConflictsWith": [
+                "binary_authorization.0.enabled"
+              ]
+            }
+          }
+        }
+      },
       "cluster_autoscaling": {
         "Type": "List",
         "Optional": true,
@@ -35920,8 +36209,10 @@
         "Optional": true,
         "Description": "Enable Binary Authorization for this cluster. If enabled, all container images will be validated by Google Binary Authorization.",
         "ConflictsWith": [
-          "enable_autopilot"
+          "enable_autopilot",
+          "binary_authorization"
         ],
+        "Deprecated": "Deprecated in favor of binary_authorization.",
         "Default": {
           "Type": "bool",
           "Value": "false"
@@ -43563,6 +43854,15 @@
         "Description": "A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.",
         "Computed": true
       },
+      "database_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The database type that the Metastore service stores its data. Default value: \"MYSQL\" Possible values: [\"MYSQL\", \"SPANNER\"]",
+        "Default": {
+          "Type": "string",
+          "Value": "MYSQL"
+        }
+      },
       "encryption_config": {
         "Type": "List",
         "Optional": true,
@@ -43605,6 +43905,15 @@
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
+              }
+            },
+            "endpoint_protocol": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The protocol to use for the metastore service endpoint. If unspecified, defaults to 'THRIFT'. Default value: \"THRIFT\" Possible values: [\"THRIFT\", \"GRPC\"]",
+              "Default": {
+                "Type": "string",
+                "Value": "THRIFT"
               }
             },
             "kerberos_config": {
@@ -43669,7 +43978,7 @@
       "location": {
         "Type": "String",
         "Optional": true,
-        "Description": "The  location where the autoscaling policy should reside.\nThe default value is 'global'.",
+        "Description": "The location where the metastore service should reside.\nThe default value is 'global'.",
         "Default": {
           "Type": "string",
           "Value": "global"
@@ -43678,7 +43987,7 @@
       "maintenance_window": {
         "Type": "List",
         "Optional": true,
-        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.",
+        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.\nMaintenance window is not needed for services with the 'SPANNER' database type.",
         "MaxItems": 1,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -43720,6 +44029,15 @@
         "Optional": true,
         "Computed": true
       },
+      "release_channel": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The release channel of the service. If unspecified, defaults to 'STABLE'. Default value: \"STABLE\" Possible values: [\"CANARY\", \"STABLE\"]",
+        "Default": {
+          "Type": "string",
+          "Value": "STABLE"
+        }
+      },
       "service_id": {
         "Type": "String",
         "Required": true,
@@ -43739,6 +44057,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "The tier of the service. Possible values: [\"DEVELOPER\", \"ENTERPRISE\"]",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "The globally unique resource identifier of the metastore service.",
         "Computed": true
       }
     },
@@ -48928,7 +49251,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "Format: `projects/{project_id}/releases/{release_id}`"
+        "Description": "Format: `projects/{project_id}/releases/{release_id}`\\Firestore Rules Releases will **always** have the name 'cloud.firestore'"
       },
       "project": {
         "Type": "String",
@@ -48939,7 +49262,7 @@
       "ruleset_name": {
         "Type": "String",
         "Required": true,
-        "Description": "Name of the `Ruleset` referred to by this `Release`. The `Ruleset` must exist the `Release` to be created."
+        "Description": "Name of the `Ruleset` referred to by this `Release`. The `Ruleset` must exist for the `Release` to be created."
       },
       "update_time": {
         "Type": "String",
@@ -53130,7 +53453,7 @@
       "purpose": {
         "Type": "String",
         "Optional": true,
-        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\"]",
+        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\", \"MAC\"]",
         "Default": {
           "Type": "string",
           "Value": "ENCRYPT_DECRYPT"
@@ -78539,6 +78862,28 @@
           }
         }
       },
+      "binary_authorization": {
+        "Type": "List",
+        "Description": "Configuration options for the Binary Authorization feature.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Description": "Enable Binary Authorization for this cluster.",
+              "Computed": true
+            },
+            "evaluation_mode": {
+              "Type": "String",
+              "Description": "Mode of operation for Binary Authorization policy evaluation.",
+              "Computed": true
+            }
+          }
+        }
+      },
       "cluster_autoscaling": {
         "Type": "List",
         "Description": "Per-cluster configuration of Node Auto-Provisioning with Cluster Autoscaler to automatically adjust the size of the cluster and create/delete node pools based on the current needs of the cluster's workload. See the guide to using Node Auto-Provisioning for more details.",
@@ -80356,6 +80701,11 @@
         "Description": "A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.",
         "Computed": true
       },
+      "database_type": {
+        "Type": "String",
+        "Description": "The database type that the Metastore service stores its data. Default value: \"MYSQL\" Possible values: [\"MYSQL\", \"SPANNER\"]",
+        "Computed": true
+      },
       "encryption_config": {
         "Type": "List",
         "Description": "Information used to configure the Dataproc Metastore service to encrypt\ncustomer data at rest.",
@@ -80396,6 +80746,11 @@
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
+            },
+            "endpoint_protocol": {
+              "Type": "String",
+              "Description": "The protocol to use for the metastore service endpoint. If unspecified, defaults to 'THRIFT'. Default value: \"THRIFT\" Possible values: [\"THRIFT\", \"GRPC\"]",
+              "Computed": true
             },
             "kerberos_config": {
               "Type": "List",
@@ -80457,11 +80812,11 @@
       "location": {
         "Type": "String",
         "Required": true,
-        "Description": "The  location where the autoscaling policy should reside.\nThe default value is 'global'."
+        "Description": "The location where the metastore service should reside.\nThe default value is 'global'."
       },
       "maintenance_window": {
         "Type": "List",
-        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.",
+        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.\nMaintenance window is not needed for services with the 'SPANNER' database type.",
         "Computed": true,
         "IsBlock": true,
         "ConfigImplicitMode": "ComputedBlock",
@@ -80500,6 +80855,11 @@
         "Type": "String",
         "Optional": true
       },
+      "release_channel": {
+        "Type": "String",
+        "Description": "The release channel of the service. If unspecified, defaults to 'STABLE'. Default value: \"STABLE\" Possible values: [\"CANARY\", \"STABLE\"]",
+        "Computed": true
+      },
       "service_id": {
         "Type": "String",
         "Required": true,
@@ -80518,6 +80878,11 @@
       "tier": {
         "Type": "String",
         "Description": "The tier of the service. Possible values: [\"DEVELOPER\", \"ENTERPRISE\"]",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "The globally unique resource identifier of the metastore service.",
         "Computed": true
       }
     },
@@ -81439,7 +81804,7 @@
       },
       "purpose": {
         "Type": "String",
-        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\"]",
+        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\", \"MAC\"]",
         "Computed": true
       },
       "rotation_period": {

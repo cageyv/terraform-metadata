@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.28.0",
+  "version": "v4.29.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -41,6 +41,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_APP_ENGINE_CUSTOM_ENDPOINT)"
+    },
+    "artifact_registry_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_ARTIFACT_REGISTRY_CUSTOM_ENDPOINT)"
     },
     "assured_workloads_custom_endpoint": {
       "Type": "String",
@@ -247,6 +252,11 @@
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_DATAPROC_CUSTOM_ENDPOINT)"
     },
+    "dataproc_metastore_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_DATAPROC_METASTORE_CUSTOM_ENDPOINT)"
+    },
     "datastore_custom_endpoint": {
       "Type": "String",
       "Optional": true,
@@ -316,6 +326,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_HEALTHCARE_CUSTOM_ENDPOINT)"
+    },
+    "iam_beta_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_IAM_BETA_CUSTOM_ENDPOINT)"
     },
     "iam_credentials_custom_endpoint": {
       "Type": "String",
@@ -3235,7 +3250,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "The resource name of the key. The name must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the name must match the regular expression: [a-z]([a-z0-9-]{0,61}[a-z0-9])?."
+        "Description": "The resource name of the key. The name must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the name must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`."
       },
       "project": {
         "Type": "String",
@@ -5112,6 +5127,229 @@
         }
       }
     },
+    "google_artifact_registry_repository": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "The time when the repository was created.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The user-provided description of the repository."
+      },
+      "format": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The format of packages that are stored in the repository. Supported formats\ncan be found [here](https://cloud.google.com/artifact-registry/docs/supported-formats).\nYou can only create alpha formats if you are a member of the\n[alpha user group](https://cloud.google.com/artifact-registry/docs/supported-formats#alpha-access)."
+      },
+      "kms_key_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Cloud KMS resource name of the customer managed encryption key that’s\nused to encrypt the contents of the Repository. Has the form:\n'projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key'.\nThis value may not be changed after the Repository has been created."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Labels with user-defined metadata.\nThis field may contain up to 64 entries. Label keys and values may be no\nlonger than 63 characters. Label keys must begin with a lowercase letter\nand may only contain lowercase letters, numeric characters, underscores,\nand dashes.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the location this repository is located in.",
+        "Computed": true
+      },
+      "maven_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "MavenRepositoryConfig is maven related repository details.\nProvides additional configuration details for repositories of the maven\nformat type.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow_snapshot_overwrites": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "The repository with this flag will allow publishing the same\nsnapshot versions."
+            },
+            "version_policy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Version policy defines the versions that the registry will accept. Default value: \"VERSION_POLICY_UNSPECIFIED\" Possible values: [\"VERSION_POLICY_UNSPECIFIED\", \"RELEASE\", \"SNAPSHOT\"]",
+              "Default": {
+                "Type": "string",
+                "Value": "VERSION_POLICY_UNSPECIFIED"
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The name of the repository, for example:\n\"projects/p1/locations/us-central1/repositories/repo1\"",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "repository_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The last part of the repository name, for example:\n\"repo1\""
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "The time when the repository was last updated.",
+        "Computed": true
+      }
+    },
+    "google_artifact_registry_repository_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_artifact_registry_repository_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_artifact_registry_repository_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_assured_workloads_workload": {
       "__timeouts__": [
         "create",
@@ -5649,7 +5887,7 @@
       "params": {
         "Type": "Map",
         "Required": true,
-        "Description": "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer'\nsection for each data source. For example the parameters for Cloud Storage transfers are listed here:\nhttps://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq",
+        "Description": "Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer'\nsection for each data source. For example the parameters for Cloud Storage transfers are listed here:\nhttps://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq\n\n**NOTE** : If you are attempting to update a parameter that cannot be updated (due to api limitations) [please force recreation of the resource](https://www.terraform.io/cli/state/taint#forcing-re-creation-of-resources).",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -12530,6 +12768,7 @@
         "Type": "List",
         "Optional": true,
         "Description": "Configurations for all execution that relates to this `Target`. Each `ExecutionEnvironmentUsage` value may only be used in a single configuration; using the same value multiple times is an error. When one or more configurations are specified, they must include the `RENDER` and `DEPLOY` `ExecutionEnvironmentUsage` values. When no configurations are specified, execution will use the default specified in `DefaultPool`.",
+        "Computed": true,
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -12538,12 +12777,14 @@
             "artifact_storage": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket (\"gs://my-bucket\") or a path within a bucket (\"gs://my-bucket/my-dir\"). If unspecified, a default bucket located in the same region will be used."
+              "Description": "Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket (\"gs://my-bucket\") or a path within a bucket (\"gs://my-bucket/my-dir\"). If unspecified, a default bucket located in the same region will be used.",
+              "Computed": true
             },
             "service_account": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used."
+              "Description": "Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used.",
+              "Computed": true
             },
             "usages": {
               "Type": "List",
@@ -13407,6 +13648,139 @@
         "Type": "Map",
         "Optional": true,
         "Description": "A PubSub topic to publish device state updates."
+      }
+    },
+    "google_cloudiot_registry_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_cloudiot_registry_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_cloudiot_registry_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     },
     "google_composer_environment": {
@@ -15404,7 +15778,8 @@
       "provisioned_iops": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Indicates how many IOPS must be provisioned for the disk."
+        "Description": "Indicates how many IOPS must be provisioned for the disk.",
+        "Computed": true
       },
       "self_link": {
         "Type": "String",
@@ -26693,6 +27068,124 @@
         "Computed": true
       }
     },
+    "google_compute_snapshot_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_snapshot_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_snapshot_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_compute_ssl_certificate": {
       "__timeouts__": [
         "create",
@@ -31914,6 +32407,40 @@
           }
         }
       },
+      "binary_authorization": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configuration options for the Binary Authorization feature.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "enable_binary_authorization"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Enable Binary Authorization for this cluster.",
+              "ConflictsWith": [
+                "enable_autopilot",
+                "binary_authorization.0.evaluation_mode"
+              ],
+              "Deprecated": "Deprecated in favor of evaluation_mode."
+            },
+            "evaluation_mode": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Mode of operation for Binary Authorization policy evaluation.",
+              "ConflictsWith": [
+                "binary_authorization.0.enabled"
+              ]
+            }
+          }
+        }
+      },
       "cluster_autoscaling": {
         "Type": "List",
         "Optional": true,
@@ -32143,8 +32670,10 @@
         "Optional": true,
         "Description": "Enable Binary Authorization for this cluster. If enabled, all container images will be validated by Google Binary Authorization.",
         "ConflictsWith": [
-          "enable_autopilot"
+          "enable_autopilot",
+          "binary_authorization"
         ],
+        "Deprecated": "Deprecated in favor of binary_authorization.",
         "Default": {
           "Type": "bool",
           "Value": "false"
@@ -37457,6 +37986,24 @@
                 }
               }
             },
+            "metastore_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Specifies a Metastore configuration.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "dataproc_metastore_service": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Resource name of an existing Dataproc Metastore service."
+                  }
+                }
+              }
+            },
             "preemptible_worker_config": {
               "Type": "List",
               "Optional": true,
@@ -37834,6 +38381,261 @@
         "Default": {
           "Type": "string",
           "Value": "global"
+        }
+      },
+      "virtual_cluster_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The virtual cluster config is used when creating a Dataproc cluster that does not directly control the underlying compute resources, for example, when creating a Dataproc-on-GKE cluster. Dataproc may set default values, and values may change when clusters are updated. Exactly one of config or virtualClusterConfig must be specified.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auxiliary_services_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Auxiliary services configuration for a Cluster.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "metastore_config": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "The Hive Metastore configuration for this workload.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dataproc_metastore_service": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "The Hive Metastore configuration for this workload."
+                        }
+                      }
+                    }
+                  },
+                  "spark_history_server_config": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "The Spark History Server configuration for the workload.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dataproc_cluster": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Resource name of an existing Dataproc Cluster to act as a Spark History Server for the workload."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "kubernetes_cluster_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The configuration for running the Dataproc cluster on Kubernetes.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "gke_cluster_config": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "The configuration for running the Dataproc cluster on GKE.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "gke_cluster_target": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "A target GKE cluster to deploy to. It must be in the same project and region as the Dataproc cluster (the GKE cluster can be zonal or regional). Format: 'projects/{project}/locations/{location}/clusters/{cluster_id}'"
+                        },
+                        "node_pool_target": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Description": "GKE node pools where workloads will be scheduled. At least one node pool must be assigned the DEFAULT GkeNodePoolTarget.Role. If a GkeNodePoolTarget is not specified, Dataproc constructs a DEFAULT GkeNodePoolTarget.",
+                          "MinItems": 1,
+                          "IsBlock": true,
+                          "ConfigImplicitMode": "Block",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "node_pool": {
+                                "Type": "String",
+                                "Required": true,
+                                "Description": "The target GKE node pool. Format: 'projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}'"
+                              },
+                              "node_pool_config": {
+                                "Type": "List",
+                                "Optional": true,
+                                "Description": "Input only. The configuration for the GKE node pool.",
+                                "Computed": true,
+                                "MaxItems": 1,
+                                "IsBlock": true,
+                                "ConfigImplicitMode": "Block",
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "autoscaling": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "Description": "The autoscaler configuration for this node pool. The autoscaler is enabled only when a valid configuration is present.",
+                                      "Computed": true,
+                                      "MaxItems": 1,
+                                      "IsBlock": true,
+                                      "ConfigImplicitMode": "Block",
+                                      "Elem": {
+                                        "Type": "SchemaInfo",
+                                        "Info": {
+                                          "max_node_count": {
+                                            "Type": "Int",
+                                            "Optional": true,
+                                            "Description": "The maximum number of nodes in the node pool. Must be \u003e= minNodeCount, and must be \u003e 0."
+                                          },
+                                          "min_node_count": {
+                                            "Type": "Int",
+                                            "Optional": true,
+                                            "Description": "The minimum number of nodes in the node pool. Must be \u003e= 0 and \u003c= maxNodeCount."
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "config": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "Description": "The node pool configuration.",
+                                      "Computed": true,
+                                      "MaxItems": 1,
+                                      "IsBlock": true,
+                                      "ConfigImplicitMode": "Block",
+                                      "Elem": {
+                                        "Type": "SchemaInfo",
+                                        "Info": {
+                                          "local_ssd_count": {
+                                            "Type": "Int",
+                                            "Optional": true,
+                                            "Description": "The minimum number of nodes in the node pool. Must be \u003e= 0 and \u003c= maxNodeCount."
+                                          },
+                                          "machine_type": {
+                                            "Type": "String",
+                                            "Optional": true,
+                                            "Description": "The name of a Compute Engine machine type."
+                                          },
+                                          "min_cpu_platform": {
+                                            "Type": "String",
+                                            "Optional": true,
+                                            "Description": "Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or a newer CPU platform. Specify the friendly names of CPU platforms, such as \"Intel Haswell\" or \"Intel Sandy Bridge\"."
+                                          },
+                                          "preemptible": {
+                                            "Type": "Bool",
+                                            "Optional": true,
+                                            "Description": "Whether the nodes are created as preemptible VM instances. Preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role)."
+                                          },
+                                          "spot": {
+                                            "Type": "Bool",
+                                            "Optional": true,
+                                            "Description": "Spot flag for enabling Spot VM, which is a rebrand of the existing preemptible flag."
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "locations": {
+                                      "Type": "Set",
+                                      "Required": true,
+                                      "Description": "The list of Compute Engine zones where node pool nodes associated with a Dataproc on GKE virtual cluster will be located.",
+                                      "ConfigImplicitMode": "Attr",
+                                      "Elem": {
+                                        "Type": "SchemaElements",
+                                        "ElementsType": "String"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "roles": {
+                                "Type": "Set",
+                                "Required": true,
+                                "Description": "The roles associated with the GKE node pool.",
+                                "ConfigImplicitMode": "Attr",
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "String"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "kubernetes_namespace": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A namespace within the Kubernetes cluster to deploy into. If this namespace does not exist, it is created. If it exists, Dataproc verifies that another Dataproc VirtualCluster is not installed into it. If not specified, the name of the Dataproc Cluster is used."
+                  },
+                  "kubernetes_software_config": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "The software configuration for this Dataproc cluster running on Kubernetes.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "component_version": {
+                          "Type": "Map",
+                          "Required": true,
+                          "Description": "The components that should be installed in this Dataproc cluster. The key must be a string from the KubernetesComponent enumeration. The value is the version of the software to be installed.",
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "properties": {
+                          "Type": "Map",
+                          "Optional": true,
+                          "Description": "The properties to set on daemon config files. Property keys are specified in prefix:property format, for example spark:spark.kubernetes.container.image.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "staging_bucket": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket."
+            }
+          }
         }
       }
     },
@@ -38859,6 +39661,352 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "google_dataproc_metastore_service": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "artifact_gcs_uri": {
+        "Type": "String",
+        "Description": "A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.",
+        "Computed": true
+      },
+      "database_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The database type that the Metastore service stores its data. Default value: \"MYSQL\" Possible values: [\"MYSQL\", \"SPANNER\"]",
+        "Default": {
+          "Type": "string",
+          "Value": "MYSQL"
+        }
+      },
+      "encryption_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Information used to configure the Dataproc Metastore service to encrypt\ncustomer data at rest.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kms_key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The fully qualified customer provided Cloud KMS key name to use for customer data encryption.\nUse the following format: 'projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)'"
+            }
+          }
+        }
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Description": "The URI of the endpoint used to access the metastore service.",
+        "Computed": true
+      },
+      "hive_metastore_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configuration information specific to running Hive metastore software as the metastore service.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "config_overrides": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "A mapping of Hive metastore configuration key-value pairs to apply to the Hive metastore (configured in hive-site.xml).\nThe mappings override system defaults (some keys cannot be overridden)",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "kerberos_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Information used to configure the Hive metastore service as a service principal in a Kerberos realm.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "keytab": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "A Kerberos keytab file that can be used to authenticate a service principal with a Kerberos Key Distribution Center (KDC).",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cloud_secret": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "The relative resource name of a Secret Manager secret version, in the following form:\n\n\"projects/{projectNumber}/secrets/{secret_id}/versions/{version_id}\"."
+                        }
+                      }
+                    }
+                  },
+                  "krb5_config_gcs_uri": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "A Cloud Storage URI that specifies the path to a krb5.conf file. It is of the form gs://{bucket_name}/path/to/krb5.conf, although the file does not need to be named krb5.conf explicitly."
+                  },
+                  "principal": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "A Kerberos principal that exists in the both the keytab the KDC to authenticate as. A typical principal is of the form \"primary/instance@REALM\", but there is no exact format."
+                  }
+                }
+              }
+            },
+            "version": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Hive metastore schema version."
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "User-defined labels for the metastore service.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The location where the metastore service should reside.\nThe default value is 'global'.",
+        "Default": {
+          "Type": "string",
+          "Value": "global"
+        }
+      },
+      "maintenance_window": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.\nMaintenance window is not needed for services with the 'SPANNER' database type.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day_of_week": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The day of week, when the window starts. Possible values: [\"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\", \"SUNDAY\"]"
+            },
+            "hour_of_day": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "The hour of day (0-23) when the window starts."
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The relative resource name of the metastore service.",
+        "Computed": true
+      },
+      "network": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The relative resource name of the VPC network on which the instance can be accessed. It is specified in the following form:\n\n\"projects/{projectNumber}/global/networks/{network_id}\".",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The TCP port at which the metastore service is reached. Default: 9083.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "release_channel": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The release channel of the service. If unspecified, defaults to 'STABLE'. Default value: \"STABLE\" Possible values: [\"CANARY\", \"STABLE\"]",
+        "Default": {
+          "Type": "string",
+          "Value": "STABLE"
+        }
+      },
+      "service_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the metastore service. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),\nand hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between\n3 and 63 characters."
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The current state of the metastore service.",
+        "Computed": true
+      },
+      "state_message": {
+        "Type": "String",
+        "Description": "Additional information about the current state of the metastore service, if available.",
+        "Computed": true
+      },
+      "tier": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The tier of the service. Possible values: [\"DEVELOPER\", \"ENTERPRISE\"]",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "The globally unique resource identifier of the metastore service.",
+        "Computed": true
+      }
+    },
+    "google_dataproc_metastore_service_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_dataproc_metastore_service_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_dataproc_metastore_service_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "google_dataproc_workflow_template": {
@@ -43640,7 +44788,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "Format: `projects/{project_id}/releases/{release_id}`"
+        "Description": "Format: `projects/{project_id}/releases/{release_id}`\\Firestore Rules Releases will **always** have the name 'cloud.firestore'"
       },
       "project": {
         "Type": "String",
@@ -43651,7 +44799,7 @@
       "ruleset_name": {
         "Type": "String",
         "Required": true,
-        "Description": "Name of the `Ruleset` referred to by this `Release`. The `Ruleset` must exist the `Release` to be created."
+        "Description": "Name of the `Ruleset` referred to by this `Release`. The `Ruleset` must exist for the `Release` to be created."
       },
       "update_time": {
         "Type": "String",
@@ -45673,6 +46821,156 @@
         "Required": true
       }
     },
+    "google_iam_workload_identity_pool": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A description of the pool. Cannot exceed 256 characters."
+      },
+      "disabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Whether the pool is disabled. You cannot use a disabled pool to exchange tokens, or use\nexisting tokens to access resources. If the pool is re-enabled, existing tokens grant\naccess again."
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A display name for the pool. Cannot exceed 32 characters."
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The resource name of the pool as\n'projects/{project_number}/locations/global/workloadIdentityPools/{workload_identity_pool_id}'.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The state of the pool.\n* STATE_UNSPECIFIED: State unspecified.\n* ACTIVE: The pool is active, and may be used in Google Cloud policies.\n* DELETED: The pool is soft-deleted. Soft-deleted pools are permanently deleted after\n  approximately 30 days. You can restore a soft-deleted pool using\n  UndeleteWorkloadIdentityPool. You cannot reuse the ID of a soft-deleted pool until it is\n  permanently deleted. While a pool is deleted, you cannot use it to exchange tokens, or\n  use existing tokens to access resources. If the pool is undeleted, existing tokens grant\n  access again.",
+        "Computed": true
+      },
+      "workload_identity_pool_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID to use for the pool, which becomes the final component of the resource name. This\nvalue should be 4-32 characters, and may contain the characters [a-z0-9-]. The prefix\n'gcp-' is reserved for use by Google, and may not be specified."
+      }
+    },
+    "google_iam_workload_identity_pool_provider": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "attribute_condition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "[A Common Expression Language](https://opensource.google/projects/cel) expression, in\nplain text, to restrict what otherwise valid authentication credentials issued by the\nprovider should not be accepted.\n\nThe expression must output a boolean representing whether to allow the federation.\n\nThe following keywords may be referenced in the expressions:\n  * 'assertion': JSON representing the authentication credential issued by the provider.\n  * 'google': The Google attributes mapped from the assertion in the 'attribute_mappings'.\n  * 'attribute': The custom attributes mapped from the assertion in the 'attribute_mappings'.\n\nThe maximum length of the attribute condition expression is 4096 characters. If\nunspecified, all valid authentication credential are accepted.\n\nThe following example shows how to only allow credentials with a mapped 'google.groups'\nvalue of 'admins':\n'''\n\"'admins' in google.groups\"\n'''"
+      },
+      "attribute_mapping": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Maps attributes from authentication credentials issued by an external identity provider\nto Google Cloud attributes, such as 'subject' and 'segment'.\n\nEach key must be a string specifying the Google Cloud IAM attribute to map to.\n\nThe following keys are supported:\n  * 'google.subject': The principal IAM is authenticating. You can reference this value\n    in IAM bindings. This is also the subject that appears in Cloud Logging logs.\n    Cannot exceed 127 characters.\n  * 'google.groups': Groups the external identity belongs to. You can grant groups\n    access to resources using an IAM 'principalSet' binding; access applies to all\n    members of the group.\n\nYou can also provide custom attributes by specifying 'attribute.{custom_attribute}',\nwhere '{custom_attribute}' is the name of the custom attribute to be mapped. You can\ndefine a maximum of 50 custom attributes. The maximum length of a mapped attribute key\nis 100 characters, and the key may only contain the characters [a-z0-9_].\n\nYou can reference these attributes in IAM policies to define fine-grained access for a\nworkload to Google Cloud resources. For example:\n  * 'google.subject':\n    'principal://iam.googleapis.com/projects/{project}/locations/{location}/workloadIdentityPools/{pool}/subject/{value}'\n  * 'google.groups':\n    'principalSet://iam.googleapis.com/projects/{project}/locations/{location}/workloadIdentityPools/{pool}/group/{value}'\n  * 'attribute.{custom_attribute}':\n    'principalSet://iam.googleapis.com/projects/{project}/locations/{location}/workloadIdentityPools/{pool}/attribute.{custom_attribute}/{value}'\n\nEach value must be a [Common Expression Language](https://opensource.google/projects/cel)\nfunction that maps an identity provider credential to the normalized attribute specified\nby the corresponding map key.\n\nYou can use the 'assertion' keyword in the expression to access a JSON representation of\nthe authentication credential issued by the provider.\n\nThe maximum length of an attribute mapping expression is 2048 characters. When evaluated,\nthe total size of all mapped attributes must not exceed 8KB.\n\nFor AWS providers, the following rules apply:\n  - If no attribute mapping is defined, the following default mapping applies:\n    '''\n    {\n      \"google.subject\":\"assertion.arn\",\n      \"attribute.aws_role\":\n        \"assertion.arn.contains('assumed-role')\"\n        \" ? assertion.arn.extract('{account_arn}assumed-role/')\"\n        \"   + 'assumed-role/'\"\n        \"   + assertion.arn.extract('assumed-role/{role_name}/')\"\n        \" : assertion.arn\",\n    }\n    '''\n  - If any custom attribute mappings are defined, they must include a mapping to the\n    'google.subject' attribute.\n\nFor OIDC providers, the following rules apply:\n  - Custom attribute mappings must be defined, and must include a mapping to the\n    'google.subject' attribute. For example, the following maps the 'sub' claim of the\n    incoming credential to the 'subject' attribute on a Google token.\n    '''\n    {\"google.subject\": \"assertion.sub\"}\n    '''",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "aws": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "An Amazon Web Services identity provider. Not compatible with the property oidc.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "account_id": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The AWS account ID."
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A description for the provider. Cannot exceed 256 characters."
+      },
+      "disabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Whether the provider is disabled. You cannot use a disabled provider to exchange tokens.\nHowever, existing tokens still grant access."
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A display name for the provider. Cannot exceed 32 characters."
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The resource name of the provider as\n'projects/{project_number}/locations/global/workloadIdentityPools/{workload_identity_pool_id}/providers/{workload_identity_pool_provider_id}'.",
+        "Computed": true
+      },
+      "oidc": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "An OpenId Connect 1.0 identity provider. Not compatible with the property aws.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_audiences": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Acceptable values for the 'aud' field (audience) in the OIDC token. Token exchange\nrequests are rejected if the token audience does not match one of the configured\nvalues. Each audience may be at most 256 characters. A maximum of 10 audiences may\nbe configured.\n\nIf this list is empty, the OIDC token audience must be equal to the full canonical\nresource name of the WorkloadIdentityPoolProvider, with or without the HTTPS prefix.\nFor example:\n'''\n//iam.googleapis.com/projects/\u003cproject-number\u003e/locations/\u003clocation\u003e/workloadIdentityPools/\u003cpool-id\u003e/providers/\u003cprovider-id\u003e\nhttps://iam.googleapis.com/projects/\u003cproject-number\u003e/locations/\u003clocation\u003e/workloadIdentityPools/\u003cpool-id\u003e/providers/\u003cprovider-id\u003e\n'''",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "issuer_uri": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The OIDC issuer URL."
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The state of the provider.\n* STATE_UNSPECIFIED: State unspecified.\n* ACTIVE: The provider is active, and may be used to validate authentication credentials.\n* DELETED: The provider is soft-deleted. Soft-deleted providers are permanently deleted\n  after approximately 30 days. You can restore a soft-deleted provider using\n  UndeleteWorkloadIdentityPoolProvider. You cannot reuse the ID of a soft-deleted provider\n  until it is permanently deleted.",
+        "Computed": true
+      },
+      "workload_identity_pool_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID used for the pool, which is the final component of the pool resource name. This\nvalue should be 4-32 characters, and may contain the characters [a-z0-9-]. The prefix\n'gcp-' is reserved for use by Google, and may not be specified."
+      },
+      "workload_identity_pool_provider_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID for the provider, which becomes the final component of the resource name. This\nvalue must be 4-32 characters, and may contain the characters [a-z0-9-]. The prefix\n'gcp-' is reserved for use by Google, and may not be specified."
+      }
+    },
     "google_iap_app_engine_service_iam_binding": {
       "app_id": {
         "Type": "String",
@@ -47164,7 +48462,7 @@
       "purpose": {
         "Type": "String",
         "Optional": true,
-        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\"]",
+        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\", \"MAC\"]",
         "Default": {
           "Type": "string",
           "Value": "ENCRYPT_DECRYPT"
@@ -61558,6 +62856,11 @@
           "Value": "true"
         }
       },
+      "encryption_key_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "first_ip_address": {
         "Type": "String",
         "Description": "The first IPv4 address of any type assigned. This is to support accessing the first address in the list in a terraform output when the resource is configured with a count.",
@@ -70450,6 +71753,28 @@
           }
         }
       },
+      "binary_authorization": {
+        "Type": "List",
+        "Description": "Configuration options for the Binary Authorization feature.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Description": "Enable Binary Authorization for this cluster.",
+              "Computed": true
+            },
+            "evaluation_mode": {
+              "Type": "String",
+              "Description": "Mode of operation for Binary Authorization policy evaluation.",
+              "Computed": true
+            }
+          }
+        }
+      },
       "cluster_autoscaling": {
         "Type": "List",
         "Description": "Per-cluster configuration of Node Auto-Provisioning with Cluster Autoscaler to automatically adjust the size of the cluster and create/delete node pools based on the current needs of the cluster's workload. See the guide to using Node Auto-Provisioning for more details.",
@@ -71941,6 +73266,192 @@
         "Computed": true
       }
     },
+    "google_dataproc_metastore_service": {
+      "artifact_gcs_uri": {
+        "Type": "String",
+        "Description": "A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.",
+        "Computed": true
+      },
+      "database_type": {
+        "Type": "String",
+        "Description": "The database type that the Metastore service stores its data. Default value: \"MYSQL\" Possible values: [\"MYSQL\", \"SPANNER\"]",
+        "Computed": true
+      },
+      "encryption_config": {
+        "Type": "List",
+        "Description": "Information used to configure the Dataproc Metastore service to encrypt\ncustomer data at rest.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kms_key": {
+              "Type": "String",
+              "Description": "The fully qualified customer provided Cloud KMS key name to use for customer data encryption.\nUse the following format: 'projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)'",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Description": "The URI of the endpoint used to access the metastore service.",
+        "Computed": true
+      },
+      "hive_metastore_config": {
+        "Type": "List",
+        "Description": "Configuration information specific to running Hive metastore software as the metastore service.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "config_overrides": {
+              "Type": "Map",
+              "Description": "A mapping of Hive metastore configuration key-value pairs to apply to the Hive metastore (configured in hive-site.xml).\nThe mappings override system defaults (some keys cannot be overridden)",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "kerberos_config": {
+              "Type": "List",
+              "Description": "Information used to configure the Hive metastore service as a service principal in a Kerberos realm.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "keytab": {
+                    "Type": "List",
+                    "Description": "A Kerberos keytab file that can be used to authenticate a service principal with a Kerberos Key Distribution Center (KDC).",
+                    "Computed": true,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "ComputedBlock",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cloud_secret": {
+                          "Type": "String",
+                          "Description": "The relative resource name of a Secret Manager secret version, in the following form:\n\n\"projects/{projectNumber}/secrets/{secret_id}/versions/{version_id}\".",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  },
+                  "krb5_config_gcs_uri": {
+                    "Type": "String",
+                    "Description": "A Cloud Storage URI that specifies the path to a krb5.conf file. It is of the form gs://{bucket_name}/path/to/krb5.conf, although the file does not need to be named krb5.conf explicitly.",
+                    "Computed": true
+                  },
+                  "principal": {
+                    "Type": "String",
+                    "Description": "A Kerberos principal that exists in the both the keytab the KDC to authenticate as. A typical principal is of the form \"primary/instance@REALM\", but there is no exact format.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "version": {
+              "Type": "String",
+              "Description": "The Hive metastore schema version.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Description": "User-defined labels for the metastore service.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location where the metastore service should reside.\nThe default value is 'global'."
+      },
+      "maintenance_window": {
+        "Type": "List",
+        "Description": "The one hour maintenance window of the metastore service.\nThis specifies when the service can be restarted for maintenance purposes in UTC time.\nMaintenance window is not needed for services with the 'SPANNER' database type.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day_of_week": {
+              "Type": "String",
+              "Description": "The day of week, when the window starts. Possible values: [\"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\", \"SATURDAY\", \"SUNDAY\"]",
+              "Computed": true
+            },
+            "hour_of_day": {
+              "Type": "Int",
+              "Description": "The hour of day (0-23) when the window starts.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The relative resource name of the metastore service.",
+        "Computed": true
+      },
+      "network": {
+        "Type": "String",
+        "Description": "The relative resource name of the VPC network on which the instance can be accessed. It is specified in the following form:\n\n\"projects/{projectNumber}/global/networks/{network_id}\".",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Description": "The TCP port at which the metastore service is reached. Default: 9083.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "release_channel": {
+        "Type": "String",
+        "Description": "The release channel of the service. If unspecified, defaults to 'STABLE'. Default value: \"STABLE\" Possible values: [\"CANARY\", \"STABLE\"]",
+        "Computed": true
+      },
+      "service_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the metastore service. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),\nand hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between\n3 and 63 characters."
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The current state of the metastore service.",
+        "Computed": true
+      },
+      "state_message": {
+        "Type": "String",
+        "Description": "Additional information about the current state of the metastore service, if available.",
+        "Computed": true
+      },
+      "tier": {
+        "Type": "String",
+        "Description": "The tier of the service. Possible values: [\"DEVELOPER\", \"ENTERPRISE\"]",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "The globally unique resource identifier of the metastore service.",
+        "Computed": true
+      }
+    },
     "google_dns_keys": {
       "key_signing_keys": {
         "Type": "List",
@@ -72655,7 +74166,7 @@
       },
       "purpose": {
         "Type": "String",
-        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\"]",
+        "Description": "The immutable purpose of this CryptoKey. See the\n[purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)\nfor possible inputs. Default value: \"ENCRYPT_DECRYPT\" Possible values: [\"ENCRYPT_DECRYPT\", \"ASYMMETRIC_SIGN\", \"ASYMMETRIC_DECRYPT\", \"MAC\"]",
         "Computed": true
       },
       "rotation_period": {
@@ -74973,6 +76484,10 @@
       "deletion_protection": {
         "Type": "Bool",
         "Description": "Used to block Terraform from deleting a SQL Instance.",
+        "Computed": true
+      },
+      "encryption_key_name": {
+        "Type": "String",
         "Computed": true
       },
       "first_ip_address": {
