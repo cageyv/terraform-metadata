@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.27.1",
+  "version": "v4.28.0",
   "provider": {
     "app_auth": {
       "Type": "List",

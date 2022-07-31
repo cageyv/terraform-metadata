@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.33.0",
+  "version": "v0.35.0",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -413,19 +413,32 @@
     "tfe_registry_module": {
       "module_provider": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "name": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "organization": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "registry_name": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "vcs_repo": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "MaxItems": 1,
         "MinItems": 1,
         "IsBlock": true,
@@ -949,7 +962,6 @@
       "trigger_patterns": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "ConflictsWith": [
           "trigger_prefixes"
         ],
@@ -962,7 +974,6 @@
       "trigger_prefixes": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "ConflictsWith": [
           "trigger_patterns"
         ],

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.29.0",
+  "version": "v4.30.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -3401,6 +3401,11 @@
             }
           }
         }
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "Output only. Unique id in UUID4 format.",
+        "Computed": true
       }
     },
     "google_app_engine_application": {
@@ -8719,6 +8724,7 @@
               "Type": "List",
               "Optional": true,
               "Description": "The full resource name of a monitoring notification\nchannel in the form\nprojects/{project_id}/notificationChannels/{channel_id}.\nA maximum of 5 channels are allowed.",
+              "MaxItems": 5,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -8957,7 +8963,7 @@
       },
       "threshold_rules": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "Rules that trigger alerts (notifications of thresholds being\ncrossed) when spend exceeds the specified percentages of the\nbudget.",
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -9434,6 +9440,171 @@
             }
           }
         }
+      }
+    },
+    "google_certificate_manager_certificate_map": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Creation timestamp of a Certificate Map. Timestamp is in RFC3339 UTC \"Zulu\" format,\naccurate to nanoseconds with up to nine fractional digits.\nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "One or more paragraphs of text description of a certificate map entry."
+      },
+      "gclb_targets": {
+        "Type": "List",
+        "Description": "A list of target proxies that use this Certificate Map",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_configs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "An IP configuration where this Certificate Map is serving",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip_address": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "An external IP address"
+                  },
+                  "ports": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "A list of ports",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "Int"
+                    }
+                  }
+                }
+              }
+            },
+            "target_https_proxy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Proxy name must be in the format projects/*/locations/*/targetHttpsProxies/*.\nThis field is part of a union field 'target_proxy': Only one of 'targetHttpsProxy' or\n'targetSslProxy' may be set."
+            },
+            "target_ssl_proxy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Proxy name must be in the format projects/*/locations/*/targetSslProxies/*.\nThis field is part of a union field 'target_proxy': Only one of 'targetHttpsProxy' or\n'targetSslProxy' may be set."
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Set of labels associated with a Certificate Map resource.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A user-defined name of the Certificate Map. Certificate Map names must be unique\nglobally and match the pattern 'projects/*/locations/*/certificateMaps/*'."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Update timestamp of a Certificate Map. Timestamp is in RFC3339 UTC \"Zulu\" format,\naccurate to nanoseconds with up to nine fractional digits.\nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      }
+    },
+    "google_certificate_manager_certificate_map_entry": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "certificates": {
+        "Type": "List",
+        "Required": true,
+        "Description": "A set of Certificates defines for the given hostname.\nThere can be defined up to fifteen certificates in each Certificate Map Entry.\nEach certificate must match pattern projects/*/locations/*/certificates/*.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "Creation timestamp of a Certificate Map Entry. Timestamp in RFC3339 UTC \"Zulu\" format, \nwith nanosecond resolution and up to nine fractional digits. \nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "CertificateMapEntry is a list of certificate configurations,\nthat have been issued for a particular hostname"
+      },
+      "hostname": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A Hostname (FQDN, e.g. example.com) or a wildcard hostname expression (*.example.com)\nfor a set of hostnames with common suffix. Used as Server Name Indication (SNI) for\nselecting a proper certificate."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Set of labels associated with a Certificate Map Entry.\nAn object containing a list of \"key\": value pairs.\nExample: { \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "map": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A map entry that is inputted into the cetrificate map"
+      },
+      "matcher": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A predefined matcher for particular cases, other than SNI selection Possible values: [\"MATCHER_UNSPECIFIED\", \"PRIMARY\"]"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A user-defined name of the Certificate Map Entry. Certificate Map Entry \nnames must be unique globally and match pattern \n'projects/*/locations/*/certificateMaps/*/certificateMapEntries/*'"
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "A serving state of this Certificate Map Entry.\n\nThe status is undefined.\n\nThe configuration is serving.\n\nUpdate is in progress. Some frontends may serve this configuration.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Update timestamp of a Certificate Map Entry. Timestamp in RFC3339 UTC \"Zulu\" format, \nwith nanosecond resolution and up to nine fractional digits. \nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
       }
     },
     "google_certificate_manager_dns_authorization": {
@@ -14786,6 +14957,24 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "bypass_cache_on_request_headers": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Bypass the cache when the specified request headers are matched - e.g. Pragma or Authorization headers. Up to 5 headers can be specified. The cache is bypassed for all cdnPolicy.cacheMode settings.",
+              "MaxItems": 5,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "header_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The header field name to match on when bypassing cache. Values are case-insensitive."
+                  }
+                }
+              }
+            },
             "cache_key_policy": {
               "Type": "List",
               "Optional": true,
@@ -14870,6 +15059,11 @@
                   }
                 }
               }
+            },
+            "request_coalescing": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "If true then Cloud CDN will combine multiple concurrent cache fill requests into a small number of requests to the origin."
             },
             "serve_while_stale": {
               "Type": "Int",
@@ -16292,8 +16486,8 @@
         "Optional": true,
         "Description": "If source tags are specified, the firewall will apply only to traffic\nwith source IP that belongs to a tag listed in source tags. Source\ntags cannot be used to control traffic to an instance's external IP\naddress. Because tags are associated with an instance, not an IP\naddress. One or both of sourceRanges and sourceTags may be set. If\nboth properties are set, the firewall will apply to traffic that has\nsource IP address within sourceRanges OR the source IP that belongs to\na tag listed in the sourceTags property. The connection does not need\nto match both properties for the firewall to apply. For INGRESS traffic,\none of 'source_ranges', 'source_tags' or 'source_service_accounts' is required.",
         "ConflictsWith": [
-          "destination_ranges",
           "source_service_accounts",
+          "destination_ranges",
           "target_service_accounts"
         ],
         "ConfigImplicitMode": "Attr",
@@ -18444,6 +18638,11 @@
                 "Value": "true"
               }
             },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted."
+            },
             "min_node_cpus": {
               "Type": "Int",
               "Optional": true
@@ -19181,6 +19380,12 @@
               "Type": "Bool",
               "Optional": true,
               "Description": "Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user).",
+              "Computed": true
+            },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
               "Computed": true
             },
             "min_node_cpus": {
@@ -20414,6 +20619,11 @@
                 "Value": "true"
               }
             },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted."
+            },
             "min_node_cpus": {
               "Type": "Int",
               "Optional": true,
@@ -21357,7 +21567,7 @@
             "ip_protocols": {
               "Type": "List",
               "Optional": true,
-              "Description": "Protocols that apply as a filter on mirrored traffic. Possible values: [\"tcp\", \"udp\", \"icmp\"]",
+              "Description": "Possible IP protocols including tcp, udp, icmp and esp",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -23714,8 +23924,8 @@
         "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
         "ConflictsWith": [
-          "app_engine",
-          "cloud_function"
+          "cloud_function",
+          "app_engine"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -25716,8 +25926,8 @@
         "Description": "Resource policy for instances used for placement configuration.",
         "MaxItems": 1,
         "ConflictsWith": [
-          "snapshot_schedule_policy",
-          "instance_schedule_policy"
+          "instance_schedule_policy",
+          "snapshot_schedule_policy"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -26606,6 +26816,46 @@
         "update",
         "delete"
       ],
+      "adaptive_protection_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Adaptive Protection Config of this security policy.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "layer_7_ddos_defense_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Layer 7 DDoS Defense Config of this security policy",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enable": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "If set to true, enables CAAP for L7 DDoS detection."
+                  },
+                  "rule_visibility": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Rule visibility. Supported values include: \"STANDARD\", \"PREMIUM\".",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "STANDARD"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "advanced_options_config": {
         "Type": "List",
         "Optional": true,
@@ -26750,6 +27000,140 @@
               "Type": "Int",
               "Required": true,
               "Description": "An unique positive integer indicating the priority of evaluation for a rule. Rules are evaluated from highest priority (lowest numerically) to lowest priority (highest numerically) in order."
+            },
+            "rate_limit_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Rate limit threshold for this security policy. Must be specified if the action is \"rate_based_ban\" or \"throttle\". Cannot be specified for any other actions.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ban_duration_sec": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Can only be specified if the action for the rule is \"rate_based_ban\". If specified, determines the time (in seconds) the traffic will continue to be banned by the rate limit after the rate falls below the threshold."
+                  },
+                  "ban_threshold": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Can only be specified if the action for the rule is \"rate_based_ban\". If specified, the key will be banned for the configured 'banDurationSec' when the number of requests that exceed the 'rateLimitThreshold' also exceed this 'banThreshold'.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Number of HTTP(S) requests for calculating the threshold."
+                        },
+                        "interval_sec": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Interval over which the threshold is computed."
+                        }
+                      }
+                    }
+                  },
+                  "conform_action": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Action to take for requests that are under the configured rate limit threshold. Valid option is \"allow\" only."
+                  },
+                  "enforce_on_key": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Determines the key to enforce the rateLimitThreshold on",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "ALL"
+                    }
+                  },
+                  "enforce_on_key_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Rate limit key name applicable only for the following key types: HTTP_HEADER -- Name of the HTTP header whose value is taken as the key value. HTTP_COOKIE -- Name of the HTTP cookie whose value is taken as the key value."
+                  },
+                  "exceed_action": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Action to take for requests that are above the configured rate limit threshold, to either deny with a specified HTTP response code, or redirect to a different endpoint. Valid options are \"deny()\" where valid values for status are 403, 404, 429, and 502, and \"redirect\" where the redirect parameters come from exceedRedirectOptions below."
+                  },
+                  "exceed_redirect_options": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Parameters defining the redirect action that is used as the exceed action. Cannot be specified if the exceed action is not redirect.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "target": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Target for the redirect action. This is required if the type is EXTERNAL_302 and cannot be specified for GOOGLE_RECAPTCHA."
+                        },
+                        "type": {
+                          "Type": "String",
+                          "Required": true,
+                          "Description": "Type of the redirect action."
+                        }
+                      }
+                    }
+                  },
+                  "rate_limit_threshold": {
+                    "Type": "List",
+                    "Required": true,
+                    "Description": "Threshold at which to begin ratelimiting.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Number of HTTP(S) requests for calculating the threshold."
+                        },
+                        "interval_sec": {
+                          "Type": "Int",
+                          "Required": true,
+                          "Description": "Interval over which the threshold is computed."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "redirect_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Parameters defining the redirect action. Cannot be specified for any other actions.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "target": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Target for the redirect action. This is required if the type is EXTERNAL_302 and cannot be specified for GOOGLE_RECAPTCHA."
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Type of the redirect action. Available options: EXTERNAL_302: Must specify the corresponding target field in config. GOOGLE_RECAPTCHA: Cannot specify target field in config."
+                  }
+                }
+              }
             }
           }
         }
@@ -37732,6 +38116,30 @@
                 }
               }
             },
+            "endpoint_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The config settings for port access on the cluster. Structure defined below.",
+              "Computed": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enable_http_port_access": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "The flag to enable http access to specific ports on the cluster from external sources (aka Component Gateway). Defaults to false."
+                  },
+                  "http_ports": {
+                    "Type": "Map",
+                    "Description": "The map of port descriptions to URLs. Will only be populated if enable_http_port_access is true.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "gce_cluster_config": {
               "Type": "List",
               "Optional": true,
@@ -37877,6 +38285,34 @@
                       "Type": "int",
                       "Value": "300"
                     }
+                  }
+                }
+              }
+            },
+            "lifecycle_config": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The settings for auto deletion cluster schedule.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "auto_delete_time": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The time when cluster will be auto-deleted. A timestamp in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds. Example: \"2014-10-02T15:01:23.045123456Z\"."
+                  },
+                  "idle_delete_ttl": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The duration to keep the cluster alive while idling (no jobs running). After this TTL, the cluster will be deleted. Valid range: [10m, 14d]."
+                  },
+                  "idle_start_time": {
+                    "Type": "String",
+                    "Description": "Time when the cluster became idle (most recent job finished) and became eligible for deletion due to idleness.",
+                    "Computed": true
                   }
                 }
               }
@@ -48497,7 +48933,7 @@
             "protection_level": {
               "Type": "String",
               "Optional": true,
-              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\". Defaults to \"SOFTWARE\".",
+              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\", \"EXTERNAL_VPC\". Defaults to \"SOFTWARE\".",
               "Default": {
                 "Type": "string",
                 "Value": "SOFTWARE"
@@ -50295,6 +50731,11 @@
                     "Required": true,
                     "Description": "The amount of time that a time series must\nviolate the threshold to be considered\nfailing. Currently, only values that are a\nmultiple of a minute--e.g., 0, 60, 120, or\n300 seconds--are supported. If an invalid\nvalue is given, an error will be returned.\nWhen choosing a duration, it is useful to\nkeep in mind the frequency of the underlying\ntime series data (which may also be affected\nby any alignments specified in the\naggregations field); a good duration is long\nenough so that a single outlier does not\ngenerate spurious alerts, but short enough\nthat unhealthy states are detected and\nalerted on quickly."
                   },
+                  "evaluation_missing_data": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A condition control that determines how\nmetric-threshold conditions are evaluated when\ndata stops arriving. Possible values: [\"EVALUATION_MISSING_DATA_INACTIVE\", \"EVALUATION_MISSING_DATA_ACTIVE\", \"EVALUATION_MISSING_DATA_NO_OP\"]"
+                  },
                   "query": {
                     "Type": "String",
                     "Required": true,
@@ -50424,6 +50865,11 @@
                     "Type": "String",
                     "Required": true,
                     "Description": "The amount of time that a time series must\nviolate the threshold to be considered\nfailing. Currently, only values that are a\nmultiple of a minute--e.g., 0, 60, 120, or\n300 seconds--are supported. If an invalid\nvalue is given, an error will be returned.\nWhen choosing a duration, it is useful to\nkeep in mind the frequency of the underlying\ntime series data (which may also be affected\nby any alignments specified in the\naggregations field); a good duration is long\nenough so that a single outlier does not\ngenerate spurious alerts, but short enough\nthat unhealthy states are detected and\nalerted on quickly."
+                  },
+                  "evaluation_missing_data": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A condition control that determines how\nmetric-threshold conditions are evaluated when\ndata stops arriving. Possible values: [\"EVALUATION_MISSING_DATA_INACTIVE\", \"EVALUATION_MISSING_DATA_ACTIVE\", \"EVALUATION_MISSING_DATA_NO_OP\"]"
                   },
                   "filter": {
                     "Type": "String",
@@ -53565,7 +54011,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "The name specified for the Notebook instance."
+        "Description": "The name specified for the Notebook runtime."
       },
       "project": {
         "Type": "String",
@@ -53901,6 +54347,11 @@
                     "Type": "String",
                     "Optional": true,
                     "Description": "The type of vNIC to be used on this interface. This may be gVNIC\nor VirtioNet. Possible values: [\"UNSPECIFIED_NIC_TYPE\", \"VIRTIO_NET\", \"GVNIC\"]"
+                  },
+                  "reserved_ip_range": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Reserved IP Range name is used for VPC Peering. The\nsubnetwork allocation will use the range *name* if it's assigned."
                   },
                   "shielded_instance_config": {
                     "Type": "List",
@@ -67480,6 +67931,23 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "bypass_cache_on_request_headers": {
+              "Type": "List",
+              "Description": "Bypass the cache when the specified request headers are matched - e.g. Pragma or Authorization headers. Up to 5 headers can be specified. The cache is bypassed for all cdnPolicy.cacheMode settings.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "header_name": {
+                    "Type": "String",
+                    "Description": "The header field name to match on when bypassing cache. Values are case-insensitive.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "cache_key_policy": {
               "Type": "List",
               "Description": "The CacheKeyPolicy for this CdnPolicy.",
@@ -67558,6 +68026,11 @@
                   }
                 }
               }
+            },
+            "request_coalescing": {
+              "Type": "Bool",
+              "Description": "If true then Cloud CDN will combine multiple concurrent cache fill requests into a small number of requests to the origin.",
+              "Computed": true
             },
             "serve_while_stale": {
               "Type": "Int",
@@ -69692,6 +70165,11 @@
               "Description": "Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user).",
               "Computed": true
             },
+            "instance_termination_action": {
+              "Type": "String",
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
+              "Computed": true
+            },
             "min_node_cpus": {
               "Type": "Int",
               "Computed": true
@@ -70373,6 +70851,11 @@
             "automatic_restart": {
               "Type": "Bool",
               "Description": "Specifies whether the instance should be automatically restarted if it is terminated by Compute Engine (not terminated by a user). This defaults to true.",
+              "Computed": true
+            },
+            "instance_termination_action": {
+              "Type": "String",
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
               "Computed": true
             },
             "min_node_cpus": {
@@ -74195,7 +74678,7 @@
             },
             "protection_level": {
               "Type": "String",
-              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\". Defaults to \"SOFTWARE\".",
+              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\", \"EXTERNAL_VPC\". Defaults to \"SOFTWARE\".",
               "Computed": true
             }
           }
@@ -76207,6 +76690,30 @@
       "target_service_account": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "google_service_account_jwt": {
+      "delegates": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "jwt": {
+        "Type": "String",
+        "Computed": true
+      },
+      "payload": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A JSON-encoded JWT claims set that will be included in the signed JWT."
+      },
+      "target_service_account": {
+        "Type": "String",
+        "Required": true
       }
     },
     "google_service_account_key": {

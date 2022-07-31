@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.29.0",
+  "version": "v4.30.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -4133,6 +4133,11 @@
             }
           }
         }
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "Output only. Unique id in UUID4 format.",
+        "Computed": true
       }
     },
     "google_app_engine_application": {
@@ -9451,6 +9456,7 @@
               "Type": "List",
               "Optional": true,
               "Description": "The full resource name of a monitoring notification\nchannel in the form\nprojects/{project_id}/notificationChannels/{channel_id}.\nA maximum of 5 channels are allowed.",
+              "MaxItems": 5,
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -9689,7 +9695,7 @@
       },
       "threshold_rules": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "Rules that trigger alerts (notifications of thresholds being\ncrossed) when spend exceeds the specified percentages of the\nbudget.",
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -10166,6 +10172,171 @@
             }
           }
         }
+      }
+    },
+    "google_certificate_manager_certificate_map": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Creation timestamp of a Certificate Map. Timestamp is in RFC3339 UTC \"Zulu\" format,\naccurate to nanoseconds with up to nine fractional digits.\nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "One or more paragraphs of text description of a certificate map entry."
+      },
+      "gclb_targets": {
+        "Type": "List",
+        "Description": "A list of target proxies that use this Certificate Map",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_configs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "An IP configuration where this Certificate Map is serving",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip_address": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "An external IP address"
+                  },
+                  "ports": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "A list of ports",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "Int"
+                    }
+                  }
+                }
+              }
+            },
+            "target_https_proxy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Proxy name must be in the format projects/*/locations/*/targetHttpsProxies/*.\nThis field is part of a union field 'target_proxy': Only one of 'targetHttpsProxy' or\n'targetSslProxy' may be set."
+            },
+            "target_ssl_proxy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Proxy name must be in the format projects/*/locations/*/targetSslProxies/*.\nThis field is part of a union field 'target_proxy': Only one of 'targetHttpsProxy' or\n'targetSslProxy' may be set."
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Set of labels associated with a Certificate Map resource.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A user-defined name of the Certificate Map. Certificate Map names must be unique\nglobally and match the pattern 'projects/*/locations/*/certificateMaps/*'."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Update timestamp of a Certificate Map. Timestamp is in RFC3339 UTC \"Zulu\" format,\naccurate to nanoseconds with up to nine fractional digits.\nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      }
+    },
+    "google_certificate_manager_certificate_map_entry": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "certificates": {
+        "Type": "List",
+        "Required": true,
+        "Description": "A set of Certificates defines for the given hostname.\nThere can be defined up to fifteen certificates in each Certificate Map Entry.\nEach certificate must match pattern projects/*/locations/*/certificates/*.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "Creation timestamp of a Certificate Map Entry. Timestamp in RFC3339 UTC \"Zulu\" format, \nwith nanosecond resolution and up to nine fractional digits. \nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "CertificateMapEntry is a list of certificate configurations,\nthat have been issued for a particular hostname"
+      },
+      "hostname": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A Hostname (FQDN, e.g. example.com) or a wildcard hostname expression (*.example.com)\nfor a set of hostnames with common suffix. Used as Server Name Indication (SNI) for\nselecting a proper certificate."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Set of labels associated with a Certificate Map Entry.\nAn object containing a list of \"key\": value pairs.\nExample: { \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }.",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "map": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A map entry that is inputted into the cetrificate map"
+      },
+      "matcher": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A predefined matcher for particular cases, other than SNI selection Possible values: [\"MATCHER_UNSPECIFIED\", \"PRIMARY\"]"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A user-defined name of the Certificate Map Entry. Certificate Map Entry \nnames must be unique globally and match pattern \n'projects/*/locations/*/certificateMaps/*/certificateMapEntries/*'"
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "A serving state of this Certificate Map Entry.\n\nThe status is undefined.\n\nThe configuration is serving.\n\nUpdate is in progress. Some frontends may serve this configuration.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Update timestamp of a Certificate Map Entry. Timestamp in RFC3339 UTC \"Zulu\" format, \nwith nanosecond resolution and up to nine fractional digits. \nExamples: \"2014-10-02T15:01:23Z\" and \"2014-10-02T15:01:23.045123456Z\".",
+        "Computed": true
       }
     },
     "google_certificate_manager_dns_authorization": {
@@ -16076,6 +16247,24 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "bypass_cache_on_request_headers": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Bypass the cache when the specified request headers are matched - e.g. Pragma or Authorization headers. Up to 5 headers can be specified. The cache is bypassed for all cdnPolicy.cacheMode settings.",
+              "MaxItems": 5,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "header_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The header field name to match on when bypassing cache. Values are case-insensitive."
+                  }
+                }
+              }
+            },
             "cache_key_policy": {
               "Type": "List",
               "Optional": true,
@@ -16161,6 +16350,11 @@
                 }
               }
             },
+            "request_coalescing": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "If true then Cloud CDN will combine multiple concurrent cache fill requests into a small number of requests to the origin."
+            },
             "serve_while_stale": {
               "Type": "Int",
               "Optional": true,
@@ -16217,6 +16411,124 @@
       },
       "self_link": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_compute_backend_bucket_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_backend_bucket_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_compute_backend_bucket_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
@@ -17749,8 +18061,8 @@
         "Optional": true,
         "Description": "If source tags are specified, the firewall will apply only to traffic\nwith source IP that belongs to a tag listed in source tags. Source\ntags cannot be used to control traffic to an instance's external IP\naddress. Because tags are associated with an instance, not an IP\naddress. One or both of sourceRanges and sourceTags may be set. If\nboth properties are set, the firewall will apply to traffic that has\nsource IP address within sourceRanges OR the source IP that belongs to\na tag listed in the sourceTags property. The connection does not need\nto match both properties for the firewall to apply. For INGRESS traffic,\none of 'source_ranges', 'source_tags' or 'source_service_accounts' is required.",
         "ConflictsWith": [
-          "destination_ranges",
           "source_service_accounts",
+          "destination_ranges",
           "target_service_accounts"
         ],
         "ConfigImplicitMode": "Attr",
@@ -19935,6 +20247,11 @@
                 "Value": "true"
               }
             },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted."
+            },
             "min_node_cpus": {
               "Type": "Int",
               "Optional": true
@@ -20679,6 +20996,12 @@
               "Type": "Bool",
               "Optional": true,
               "Description": "Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user).",
+              "Computed": true
+            },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
               "Computed": true
             },
             "min_node_cpus": {
@@ -21434,6 +21757,12 @@
               "Description": "Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user).",
               "Computed": true
             },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
+              "Computed": true
+            },
             "min_node_cpus": {
               "Type": "Int",
               "Optional": true,
@@ -21685,6 +22014,39 @@
         "update",
         "delete"
       ],
+      "all_instances_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies configuration that overrides the instance template configuration for the group.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "labels": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "The label key-value pairs that you want to patch onto the instance,",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "metadata": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "The metadata key-value pairs that you want to patch onto the instance. For more information, see Project and instance metadata,",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "auto_healing_policies": {
         "Type": "List",
         "Optional": true,
@@ -21805,6 +22167,23 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "all_instances_config": {
+              "Type": "List",
+              "Description": "Status of all-instances configuration on the group.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "effective": {
+                    "Type": "Bool",
+                    "Description": "A bit indicating whether this configuration has been applied to all managed instances in the group.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "is_stable": {
               "Type": "Bool",
               "Description": "A bit indicating whether the managed instance group is in a stable state. A stable state means that: none of the instances in the managed instance group is currently undergoing any type of change (for example, creation, restart, or deletion); no future changes are scheduled for instances in the managed instance group; and the managed instance group itself is not being modified.",
@@ -22010,7 +22389,7 @@
       "wait_for_instances_status": {
         "Type": "String",
         "Optional": true,
-        "Description": "When used with wait_for_instances specifies the status to wait for. When STABLE is specified this resource will wait until the instances are stable before returning. When UPDATED is set, it will wait for the version target to be reached and any per instance configs to be effective as well as all instances to be stable before returning.",
+        "Description": "When used with wait_for_instances specifies the status to wait for. When STABLE is specified this resource will wait until the instances are stable before returning. When UPDATED is set, it will wait for the version target to be reached and any per instance configs to be effective and all instances configs to be effective as well as all instances to be stable before returning.",
         "Default": {
           "Type": "string",
           "Value": "STABLE"
@@ -22692,6 +23071,11 @@
                 "Type": "bool",
                 "Value": "true"
               }
+            },
+            "instance_termination_action": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted."
             },
             "min_node_cpus": {
               "Type": "Int",
@@ -24048,7 +24432,7 @@
             "ip_protocols": {
               "Type": "List",
               "Optional": true,
-              "Description": "Protocols that apply as a filter on mirrored traffic. Possible values: [\"tcp\", \"udp\", \"icmp\"]",
+              "Description": "Possible IP protocols including tcp, udp, icmp and esp",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -26266,6 +26650,39 @@
         "update",
         "delete"
       ],
+      "all_instances_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Specifies configuration that overrides the instance template configuration for the group.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "labels": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "The label key-value pairs that you want to patch onto the instance,",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "metadata": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "The metadata key-value pairs that you want to patch onto the instance. For more information, see Project and instance metadata,",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
       "auto_healing_policies": {
         "Type": "List",
         "Optional": true,
@@ -26405,6 +26822,23 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "all_instances_config": {
+              "Type": "List",
+              "Description": "Status of all-instances configuration on the group.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "effective": {
+                    "Type": "Bool",
+                    "Description": "A bit indicating whether this configuration has been applied to all managed instances in the group.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "is_stable": {
               "Type": "Bool",
               "Description": "A bit indicating whether the managed instance group is in a stable state. A stable state means that: none of the instances in the managed instance group is currently undergoing any type of change (for example, creation, restart, or deletion); no future changes are scheduled for instances in the managed instance group; and the managed instance group itself is not being modified.",
@@ -26615,7 +27049,7 @@
       "wait_for_instances_status": {
         "Type": "String",
         "Optional": true,
-        "Description": "When used with wait_for_instances specifies the status to wait for. When STABLE is specified this resource will wait until the instances are stable before returning. When UPDATED is set, it will wait for the version target to be reached and any per instance configs to be effective as well as all instances to be stable before returning.",
+        "Description": "When used with wait_for_instances specifies the status to wait for. When STABLE is specified this resource will wait until the instances are stable before returning. When UPDATED is set, it will wait for the version target to be reached and any per instance configs to be effective and all instances configs to be effective as well as all instances to be stable before returning.",
         "Default": {
           "Type": "string",
           "Value": "STABLE"
@@ -26694,8 +27128,8 @@
         "Description": "Only valid when networkEndpointType is \"SERVERLESS\".\nOnly one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.",
         "MaxItems": 1,
         "ConflictsWith": [
-          "app_engine",
           "cloud_function",
+          "app_engine",
           "serverless_deployment"
         ],
         "IsBlock": true,
@@ -26766,8 +27200,8 @@
         "MaxItems": 1,
         "ConflictsWith": [
           "cloud_run",
-          "app_engine",
-          "cloud_function"
+          "cloud_function",
+          "app_engine"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -28819,8 +29253,8 @@
         "Description": "Resource policy for instances used for placement configuration.",
         "MaxItems": 1,
         "ConflictsWith": [
-          "snapshot_schedule_policy",
-          "instance_schedule_policy"
+          "instance_schedule_policy",
+          "snapshot_schedule_policy"
         ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
@@ -43843,6 +44277,227 @@
         "Computed": true
       }
     },
+    "google_dataproc_metastore_federation": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "backend_metastores": {
+        "Type": "Set",
+        "Required": true,
+        "Description": "A map from BackendMetastore rank to BackendMetastores from which the federation service serves metadata at query time. The map key represents the order in which BackendMetastores should be evaluated to resolve database names at query time and should be greater than or equal to zero. A BackendMetastore with a lower number will be evaluated before a BackendMetastore with a higher number.",
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "metastore_type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The type of the backend metastore. Possible values: [\"METASTORE_TYPE_UNSPECIFIED\", \"DATAPROC_METASTORE\"]"
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The relative resource name of the metastore that is being federated."
+            },
+            "rank": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "endpoint_uri": {
+        "Type": "String",
+        "Description": "The URI of the endpoint used to access the metastore federation.",
+        "Computed": true
+      },
+      "federation_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the metastore federation. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),\nand hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between\n3 and 63 characters."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "User-defined labels for the metastore federation.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The location where the metastore federation should reside."
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The relative resource name of the metastore federation.",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The current state of the metastore federation.",
+        "Computed": true
+      },
+      "state_message": {
+        "Type": "String",
+        "Description": "Additional information about the current state of the metastore federation, if available.",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "The globally unique resource identifier of the metastore federation.",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Apache Hive metastore version of the federation. All backend metastore versions must be compatible with the federation version."
+      }
+    },
+    "google_dataproc_metastore_federation_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "federation_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_dataproc_metastore_federation_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "federation_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_dataproc_metastore_federation_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "federation_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_dataproc_metastore_service": {
       "__timeouts__": [
         "create",
@@ -50515,7 +51170,7 @@
                         "secret_type": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Type of secret configured for access to the Git repo."
+                          "Description": "Type of secret configured for access to the Git repo. Must be one of ssh, cookiefile, gcenode, token, gcpserviceaccount or none. The validation of this is case-sensitive."
                         },
                         "sync_branch": {
                           "Type": "String",
@@ -50616,6 +51271,36 @@
                     "Type": "Bool",
                     "Optional": true,
                     "Description": "Logs all denies and dry run failures."
+                  },
+                  "monitoring": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "Specifies the backends Policy Controller should export metrics to. For example, to specify metrics should be exported to Cloud Monitoring and Prometheus, specify backends: [\"cloudmonitoring\", \"prometheus\"]. Default: [\"cloudmonitoring\", \"prometheus\"]",
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "backends": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Description": " Specifies the list of backends Policy Controller will export to. Specifying an empty value `[]` disables metrics export.",
+                          "Computed": true,
+                          "ConfigImplicitMode": "Attr",
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "mutation_enabled": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Enable or disable mutation in policy controller. If true, mutation CRDs, webhook and controller deployment will be deployed to the cluster."
                   },
                   "referential_rules_enabled": {
                     "Type": "Bool",
@@ -53488,7 +54173,7 @@
             "protection_level": {
               "Type": "String",
               "Optional": true,
-              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\". Defaults to \"SOFTWARE\".",
+              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\", \"EXTERNAL_VPC\". Defaults to \"SOFTWARE\".",
               "Default": {
                 "Type": "string",
                 "Value": "SOFTWARE"
@@ -55286,6 +55971,11 @@
                     "Required": true,
                     "Description": "The amount of time that a time series must\nviolate the threshold to be considered\nfailing. Currently, only values that are a\nmultiple of a minute--e.g., 0, 60, 120, or\n300 seconds--are supported. If an invalid\nvalue is given, an error will be returned.\nWhen choosing a duration, it is useful to\nkeep in mind the frequency of the underlying\ntime series data (which may also be affected\nby any alignments specified in the\naggregations field); a good duration is long\nenough so that a single outlier does not\ngenerate spurious alerts, but short enough\nthat unhealthy states are detected and\nalerted on quickly."
                   },
+                  "evaluation_missing_data": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A condition control that determines how\nmetric-threshold conditions are evaluated when\ndata stops arriving. Possible values: [\"EVALUATION_MISSING_DATA_INACTIVE\", \"EVALUATION_MISSING_DATA_ACTIVE\", \"EVALUATION_MISSING_DATA_NO_OP\"]"
+                  },
                   "query": {
                     "Type": "String",
                     "Required": true,
@@ -55415,6 +56105,11 @@
                     "Type": "String",
                     "Required": true,
                     "Description": "The amount of time that a time series must\nviolate the threshold to be considered\nfailing. Currently, only values that are a\nmultiple of a minute--e.g., 0, 60, 120, or\n300 seconds--are supported. If an invalid\nvalue is given, an error will be returned.\nWhen choosing a duration, it is useful to\nkeep in mind the frequency of the underlying\ntime series data (which may also be affected\nby any alignments specified in the\naggregations field); a good duration is long\nenough so that a single outlier does not\ngenerate spurious alerts, but short enough\nthat unhealthy states are detected and\nalerted on quickly."
+                  },
+                  "evaluation_missing_data": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A condition control that determines how\nmetric-threshold conditions are evaluated when\ndata stops arriving. Possible values: [\"EVALUATION_MISSING_DATA_INACTIVE\", \"EVALUATION_MISSING_DATA_ACTIVE\", \"EVALUATION_MISSING_DATA_NO_OP\"]"
                   },
                   "filter": {
                     "Type": "String",
@@ -58594,7 +59289,7 @@
       "name": {
         "Type": "String",
         "Required": true,
-        "Description": "The name specified for the Notebook instance."
+        "Description": "The name specified for the Notebook runtime."
       },
       "project": {
         "Type": "String",
@@ -58930,6 +59625,11 @@
                     "Type": "String",
                     "Optional": true,
                     "Description": "The type of vNIC to be used on this interface. This may be gVNIC\nor VirtioNet. Possible values: [\"UNSPECIFIED_NIC_TYPE\", \"VIRTIO_NET\", \"GVNIC\"]"
+                  },
+                  "reserved_ip_range": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Reserved IP Range name is used for VPC Peering. The\nsubnetwork allocation will use the range *name* if it's assigned."
                   },
                   "shielded_instance_config": {
                     "Type": "List",
@@ -74438,6 +75138,23 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "bypass_cache_on_request_headers": {
+              "Type": "List",
+              "Description": "Bypass the cache when the specified request headers are matched - e.g. Pragma or Authorization headers. Up to 5 headers can be specified. The cache is bypassed for all cdnPolicy.cacheMode settings.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "header_name": {
+                    "Type": "String",
+                    "Description": "The header field name to match on when bypassing cache. Values are case-insensitive.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "cache_key_policy": {
               "Type": "List",
               "Description": "The CacheKeyPolicy for this CdnPolicy.",
@@ -74516,6 +75233,11 @@
                   }
                 }
               }
+            },
+            "request_coalescing": {
+              "Type": "Bool",
+              "Description": "If true then Cloud CDN will combine multiple concurrent cache fill requests into a small number of requests to the origin.",
+              "Computed": true
             },
             "serve_while_stale": {
               "Type": "Int",
@@ -76709,6 +77431,11 @@
               "Description": "Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user).",
               "Computed": true
             },
+            "instance_termination_action": {
+              "Type": "String",
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
+              "Computed": true
+            },
             "min_node_cpus": {
               "Type": "Int",
               "Computed": true
@@ -77412,6 +78139,11 @@
             "automatic_restart": {
               "Type": "Bool",
               "Description": "Specifies whether the instance should be automatically restarted if it is terminated by Compute Engine (not terminated by a user). This defaults to true.",
+              "Computed": true
+            },
+            "instance_termination_action": {
+              "Type": "String",
+              "Description": "Specifies the action GCE should take when SPOT VM is preempted.",
               "Computed": true
             },
             "min_node_cpus": {
@@ -81833,7 +82565,7 @@
             },
             "protection_level": {
               "Type": "String",
-              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\". Defaults to \"SOFTWARE\".",
+              "Description": "The protection level to use when creating a version based on this template. Possible values include \"SOFTWARE\", \"HSM\", \"EXTERNAL\", \"EXTERNAL_VPC\". Defaults to \"SOFTWARE\".",
               "Computed": true
             }
           }
@@ -83913,6 +84645,30 @@
       "target_service_account": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "google_service_account_jwt": {
+      "delegates": {
+        "Type": "Set",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "jwt": {
+        "Type": "String",
+        "Computed": true
+      },
+      "payload": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A JSON-encoded JWT claims set that will be included in the signed JWT."
+      },
+      "target_service_account": {
+        "Type": "String",
+        "Required": true
       }
     },
     "google_service_account_key": {
