@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.16.0",
+  "version": "v3.17.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -30568,12 +30568,25 @@
           }
         }
       },
+      "local_authentication_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "location": {
         "Type": "String",
         "Required": true
       },
       "maximum_throughput_units": {
         "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "minimum_tls_version": {
+        "Type": "String",
         "Optional": true,
         "Computed": true
       },
@@ -30641,6 +30654,14 @@
               }
             }
           }
+        }
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
         }
       },
       "resource_group_name": {
@@ -49478,7 +49499,11 @@
       },
       "instances": {
         "Type": "Int",
-        "Required": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "location": {
         "Type": "String",

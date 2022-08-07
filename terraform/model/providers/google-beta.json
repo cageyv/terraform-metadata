@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.30.0",
+  "version": "v4.31.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -27165,6 +27165,11 @@
         "Required": true,
         "Description": "Name of the resource; provided by the client when the resource is\ncreated. The name must be 1-63 characters long, and comply with\nRFC1035. Specifically, the name must be 1-63 characters long and match\nthe regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the\nfirst character must be a lowercase letter, and all following\ncharacters must be a dash, lowercase letter, or digit, except the last\ncharacter, which cannot be a dash."
       },
+      "network": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "This field is only used for PSC.\nThe URL of the network to which all network endpoints in the NEG belong. Uses\n\"default\" project network if unspecified."
+      },
       "network_endpoint_type": {
         "Type": "String",
         "Optional": true,
@@ -27230,6 +27235,11 @@
             }
           }
         }
+      },
+      "subnetwork": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "This field is only used for PSC.\nOptional URL of the subnetwork to which all network endpoints in the NEG belong."
       }
     },
     "google_compute_region_per_instance_config": {
@@ -36406,6 +36416,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "boot_disk_kms_key": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool."
+                  },
                   "image_type": {
                     "Type": "String",
                     "Optional": true,
@@ -38146,12 +38161,12 @@
             "enable_private_endpoint": {
               "Type": "Bool",
               "Required": true,
-              "Description": "Enables the private cluster feature, creating a private endpoint on the cluster. In a private cluster, nodes only have RFC 1918 private addresses and communicate with the master's private endpoint via private networking."
+              "Description": "When true, the cluster's private endpoint is used as the cluster endpoint and access through the public endpoint is disabled. When false, either endpoint can be used. This field only applies to private clusters, when enable_private_nodes is true."
             },
             "enable_private_nodes": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "When true, the cluster's private endpoint is used as the cluster endpoint and access through the public endpoint is disabled. When false, either endpoint can be used. This field only applies to private clusters, when enable_private_nodes is true."
+              "Description": "Enables the private cluster feature, creating a private endpoint on the cluster. In a private cluster, nodes only have RFC 1918 private addresses and communicate with the master's private endpoint via private networking."
             },
             "master_global_access_config": {
               "Type": "List",
@@ -42180,6 +42195,224 @@
       "update_time": {
         "Type": "String",
         "Description": "Output only. The time when the lake was last updated.",
+        "Computed": true
+      }
+    },
+    "google_dataplex_zone": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "asset_status": {
+        "Type": "List",
+        "Description": "Output only. Aggregated status of the underlying assets of the zone.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "active_assets": {
+              "Type": "Int",
+              "Description": "Number of active assets.",
+              "Computed": true
+            },
+            "security_policy_applying_assets": {
+              "Type": "Int",
+              "Description": "Number of assets that are in process of updating the security policy on attached resources.",
+              "Computed": true
+            },
+            "update_time": {
+              "Type": "String",
+              "Description": "Last update time of the status.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. The time when the zone was created.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. Description of the zone."
+      },
+      "discovery_spec": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Required. Specification of the discovery feature applied to data in this zone.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "csv_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. Configuration for CSV data.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "delimiter": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The delimiter being used to separate values. This defaults to ','."
+                  },
+                  "disable_type_inference": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Optional. Whether to disable the inference of data type for CSV data. If true, all columns will be registered as strings."
+                  },
+                  "encoding": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The character encoding of the data. The default is UTF-8."
+                  },
+                  "header_rows": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Optional. The number of rows to interpret as header rows that should be skipped when reading data rows."
+                  }
+                }
+              }
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Required": true,
+              "Description": "Required. Whether discovery is enabled."
+            },
+            "exclude_patterns": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. The list of patterns to apply for selecting data to exclude during discovery. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "include_patterns": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. The list of patterns to apply for selecting data to include during discovery if only a subset of the data should considered. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "json_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. Configuration for Json data.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "disable_type_inference": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Optional. Whether to disable the inference of data type for Json data. If true, all columns will be registered as their primitive types (strings, number or boolean)."
+                  },
+                  "encoding": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The character encoding of the data. The default is UTF-8."
+                  }
+                }
+              }
+            },
+            "schedule": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. Cron schedule (https://en.wikipedia.org/wiki/Cron) for running discovery periodically. Successive discovery runs must be scheduled at least 60 minutes apart. The default value is to run discovery every 60 minutes. To explicitly set a timezone to the cron tab, apply a prefix in the cron tab: \"CRON_TZ=${IANA_TIME_ZONE}\" or TZ=${IANA_TIME_ZONE}\". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database. For example, \"CRON_TZ=America/New_York 1 * * * *\", or \"TZ=America/New_York 1 * * * *\".",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. User friendly display name."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Optional. User defined labels for the zone.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lake": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The lake for the resource"
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location for the resource"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the zone."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "resource_spec": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Required. Immutable. Specification of the resources that are referenced by the assets within this zone.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "location_type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Required. Immutable. The location type of the resources that are allowed to be attached to the assets within this zone. Possible values: LOCATION_TYPE_UNSPECIFIED, SINGLE_REGION, MULTI_REGION"
+            }
+          }
+        }
+      },
+      "state": {
+        "Type": "String",
+        "Description": "Output only. Current state of the zone. Possible values: STATE_UNSPECIFIED, ACTIVE, CREATING, DELETING, ACTION_REQUIRED",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Required. Immutable. The type of the zone. Possible values: TYPE_UNSPECIFIED, RAW, CURATED"
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "Output only. System generated globally unique ID for the zone. This ID will be different if the zone is deleted and re-created with the same name.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. The time when the zone was last updated.",
         "Computed": true
       }
     },
@@ -58776,7 +59009,7 @@
       "boot_disk_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "Possible disk types for notebook instances. Possible values: [\"DISK_TYPE_UNSPECIFIED\", \"PD_STANDARD\", \"PD_SSD\", \"PD_BALANCED\"]"
+        "Description": "Possible disk types for notebook instances. Possible values: [\"DISK_TYPE_UNSPECIFIED\", \"PD_STANDARD\", \"PD_SSD\", \"PD_BALANCED\", \"PD_EXTREME\"]"
       },
       "container_image": {
         "Type": "List",
@@ -58820,7 +59053,7 @@
       "data_disk_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "Possible disk types for notebook instances. Possible values: [\"DISK_TYPE_UNSPECIFIED\", \"PD_STANDARD\", \"PD_SSD\", \"PD_BALANCED\"]"
+        "Description": "Possible disk types for notebook instances. Possible values: [\"DISK_TYPE_UNSPECIFIED\", \"PD_STANDARD\", \"PD_SSD\", \"PD_BALANCED\", \"PD_EXTREME\"]"
       },
       "disk_encryption": {
         "Type": "String",
@@ -59340,6 +59573,28 @@
               "Optional": true,
               "Description": "Install Nvidia Driver automatically."
             },
+            "kernels": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Use a list of container images to use as Kernels in the notebook instance.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "repository": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The path to the container image repository.\nFor example: gcr.io/{project_id}/{imageName}"
+                  },
+                  "tag": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The tag of the container image. If not specified, this defaults to the latest tag."
+                  }
+                }
+              }
+            },
             "notebook_upgrade_schedule": {
               "Type": "String",
               "Optional": true,
@@ -59349,6 +59604,16 @@
               "Type": "String",
               "Optional": true,
               "Description": "Path to a Bash script that automatically runs after a notebook instance\nfully boots up. The path must be a URL or\nCloud Storage path (gs://path-to-file/file-name)."
+            },
+            "post_startup_script_behavior": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Behavior for the post startup script. Possible values: [\"POST_STARTUP_SCRIPT_BEHAVIOR_UNSPECIFIED\", \"RUN_EVERY_START\", \"DOWNLOAD_AND_RUN_EVERY_START\"]"
+            },
+            "upgradeable": {
+              "Type": "Bool",
+              "Description": "Bool indicating whether an newer image is available in an image family.",
+              "Computed": true
             }
           }
         }
@@ -71150,10 +71415,30 @@
                     "Optional": true,
                     "Description": "Number of days elapsed since the noncurrent timestamp of an object. This\n\t\t\t\t\t\t\t\t\t\tcondition is relevant only for versioned objects."
                   },
+                  "matches_prefix": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "One or more matching name prefixes to satisfy this condition.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
                   "matches_storage_class": {
                     "Type": "List",
                     "Optional": true,
                     "Description": "Storage Class of objects to satisfy this condition. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE, STANDARD, DURABLE_REDUCED_AVAILABILITY.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "matches_suffix": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "One or more matching name suffixes to satisfy this condition.",
                     "ConfigImplicitMode": "Attr",
                     "Elem": {
                       "Type": "SchemaElements",
@@ -79634,6 +79919,11 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "boot_disk_kms_key": {
+                    "Type": "String",
+                    "Description": "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.",
+                    "Computed": true
+                  },
                   "image_type": {
                     "Type": "String",
                     "Description": "The default image type used by NAP once a new node pool is being created.",
@@ -81121,12 +81411,12 @@
           "Info": {
             "enable_private_endpoint": {
               "Type": "Bool",
-              "Description": "Enables the private cluster feature, creating a private endpoint on the cluster. In a private cluster, nodes only have RFC 1918 private addresses and communicate with the master's private endpoint via private networking.",
+              "Description": "When true, the cluster's private endpoint is used as the cluster endpoint and access through the public endpoint is disabled. When false, either endpoint can be used. This field only applies to private clusters, when enable_private_nodes is true.",
               "Computed": true
             },
             "enable_private_nodes": {
               "Type": "Bool",
-              "Description": "When true, the cluster's private endpoint is used as the cluster endpoint and access through the public endpoint is disabled. When false, either endpoint can be used. This field only applies to private clusters, when enable_private_nodes is true.",
+              "Description": "Enables the private cluster feature, creating a private endpoint on the cluster. In a private cluster, nodes only have RFC 1918 private addresses and communicate with the master's private endpoint via private networking.",
               "Computed": true
             },
             "master_global_access_config": {
@@ -85640,9 +85930,29 @@
                     "Description": "Number of days elapsed since the noncurrent timestamp of an object. This\n\t\t\t\t\t\t\t\t\t\tcondition is relevant only for versioned objects.",
                     "Computed": true
                   },
+                  "matches_prefix": {
+                    "Type": "List",
+                    "Description": "One or more matching name prefixes to satisfy this condition.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
                   "matches_storage_class": {
                     "Type": "List",
                     "Description": "Storage Class of objects to satisfy this condition. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE, STANDARD, DURABLE_REDUCED_AVAILABILITY.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "matches_suffix": {
+                    "Type": "List",
+                    "Description": "One or more matching name suffixes to satisfy this condition.",
                     "Computed": true,
                     "ConfigImplicitMode": "Attr",
                     "Elem": {

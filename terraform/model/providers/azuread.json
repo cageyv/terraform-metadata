@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.26.1",
+  "version": "v2.27.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
