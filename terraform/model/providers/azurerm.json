@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.17.0",
+  "version": "v3.18.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -30985,6 +30985,18 @@
         "Type": "String",
         "Required": true
       },
+      "gateway_manager_etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv4_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "ipv6": {
         "Type": "List",
         "Optional": true,
@@ -30994,9 +31006,17 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
             "microsoft_peering": {
               "Type": "List",
-              "Required": true,
+              "Optional": true,
               "MaxItems": 1,
               "IsBlock": true,
               "ConfigImplicitMode": "Block",
@@ -31099,7 +31119,7 @@
       },
       "primary_peer_address_prefix": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
@@ -31115,7 +31135,7 @@
       },
       "secondary_peer_address_prefix": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "shared_key": {
         "Type": "String",
@@ -60150,6 +60170,51 @@
         "Required": true
       }
     },
+    "azurerm_monitor_data_collection_endpoint": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "kind": {
+        "Type": "String",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_network_access_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "azurerm_monitor_data_collection_rule": {
       "__timeouts__": [
         "create",
@@ -73089,6 +73154,42 @@
         "Optional": true,
         "Computed": true
       },
+      "client_scoped_subscription": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "is_client_scoped_subscription_durable": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "is_client_scoped_subscription_shareable": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            }
+          }
+        }
+      },
+      "client_scoped_subscription_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "dead_lettering_on_filter_evaluation_error": {
         "Type": "Bool",
         "Optional": true,
@@ -73226,6 +73327,10 @@
       "sql_filter": {
         "Type": "String",
         "Optional": true
+      },
+      "sql_filter_compatibility_level": {
+        "Type": "Int",
+        "Computed": true
       },
       "subscription_id": {
         "Type": "String",
@@ -74127,6 +74232,55 @@
             "staging_storage_account_id": {
               "Type": "String",
               "Required": true
+            },
+            "target_disk_encryption": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "ConfigExplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "disk_encryption_key": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "ConfigExplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "secret_url": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "vault_id": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "key_encryption_key": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "ConfigExplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "key_url": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "vault_id": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             },
             "target_disk_encryption_set_id": {
               "Type": "String",
@@ -80476,22 +80630,40 @@
       "enforce_private_link_endpoint_network_policies": {
         "Type": "Bool",
         "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Computed": true,
+        "ConflictsWith": [
+          "private_endpoint_network_policies_enabled"
+        ],
+        "Deprecated": "`enforce_private_link_endpoint_network_policies` will be removed in favour of the property `private_endpoint_network_policies_enabled` in version 4.0 of the AzureRM Provider"
       },
       "enforce_private_link_service_network_policies": {
         "Type": "Bool",
         "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Computed": true,
+        "ConflictsWith": [
+          "private_link_service_network_policies_enabled"
+        ],
+        "Deprecated": "`enforce_private_link_service_network_policies` will be removed in favour of the property `private_link_service_network_policies_enabled` in version 4.0 of the AzureRM Provider"
       },
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "private_endpoint_network_policies_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "enforce_private_link_endpoint_network_policies"
+        ]
+      },
+      "private_link_service_network_policies_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "enforce_private_link_service_network_policies"
+        ]
       },
       "resource_group_name": {
         "Type": "String",
@@ -114119,6 +114291,14 @@
       },
       "network_security_group_id": {
         "Type": "String",
+        "Computed": true
+      },
+      "private_endpoint_network_policies_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "private_link_service_network_policies_enabled": {
+        "Type": "Bool",
         "Computed": true
       },
       "resource_group_name": {
