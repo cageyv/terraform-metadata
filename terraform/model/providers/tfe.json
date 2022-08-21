@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.35.0",
+  "version": "v0.36.0",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -240,6 +240,10 @@
           "Type": "string",
           "Value": "task"
         }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
       },
       "enabled": {
         "Type": "Bool",
@@ -1012,6 +1016,14 @@
             "oauth_token_id": {
               "Type": "String",
               "Required": true
+            },
+            "tags_regex": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "trigger_patterns",
+                "trigger_prefixes"
+              ]
             }
           }
         }
@@ -1166,6 +1178,10 @@
     },
     "tfe_organization_run_task": {
       "category": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
         "Type": "String",
         "Optional": true
       },
@@ -1568,6 +1584,10 @@
               "Computed": true
             },
             "oauth_token_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tags_regex": {
               "Type": "String",
               "Computed": true
             }
