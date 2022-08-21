@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.28.0",
+  "version": "v4.29.0",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -2041,6 +2041,31 @@
       "repository": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "github_external_groups": {
+      "external_groups": {
+        "Type": "List",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "group_id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "group_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "updated_at": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       }
     },
     "github_ip_ranges": {

@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.31.0",
+  "version": "v4.32.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -2875,6 +2875,57 @@
         "Type": "String",
         "Required": true,
         "Description": "The type of trust represented by the trust resource. Possible values: [\"FOREST\", \"EXTERNAL\"]"
+      }
+    },
+    "google_active_directory_peering": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "authorized_network": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The full names of the Google Compute Engine networks to which the instance is connected. Caller needs to make sure that CIDR subnets do not overlap between networks, else peering creation will fail."
+      },
+      "domain_resource": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Full domain resource path for the Managed AD Domain involved in peering. The resource path should be in the form projects/{projectId}/locations/global/domains/{domainName}"
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Resource labels that can contain user-provided metadata",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Description": "Unique name of the peering in this scope including projects and location using the form: projects/{projectId}/locations/global/peerings/{peeringId}.",
+        "Computed": true
+      },
+      "peering_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The current state of this Peering."
+      },
+      "status_message": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Additional information about the current status of this peering, if available."
       }
     },
     "google_api_gateway_api": {
@@ -10086,7 +10137,7 @@
       "labels": {
         "Type": "Map",
         "Optional": true,
-        "Description": "Set of label tags associated with the EdgeCache resource.",
+        "Description": "Set of label tags associated with the Certificate resource.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -10103,6 +10154,38 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "authorization_attempt_info": {
+              "Type": "List",
+              "Description": "Detailed state of the latest authorization attempt for each domain\nspecified for this Managed Certificate.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "details": {
+                    "Type": "String",
+                    "Description": "Human readable explanation for reaching the state. Provided to help\naddress the configuration issues.\nNot guaranteed to be stable. For programmatic access use 'failure_reason' field.",
+                    "Computed": true
+                  },
+                  "domain": {
+                    "Type": "String",
+                    "Description": "Domain name of the authorization attempt.",
+                    "Computed": true
+                  },
+                  "failure_reason": {
+                    "Type": "String",
+                    "Description": "Reason for failure of the authorization attempt for the domain.",
+                    "Computed": true
+                  },
+                  "state": {
+                    "Type": "String",
+                    "Description": "State of the domain for managed certificate issuance.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "dns_authorizations": {
               "Type": "List",
               "Optional": true,
@@ -10123,9 +10206,31 @@
                 "ElementsType": "String"
               }
             },
+            "provisioning_issue": {
+              "Type": "List",
+              "Description": "Information about issues with provisioning this Managed Certificate.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "details": {
+                    "Type": "String",
+                    "Description": "Human readable explanation about the issue. Provided to help address\nthe configuration issues.\nNot guaranteed to be stable. For programmatic access use 'reason' field.",
+                    "Computed": true
+                  },
+                  "reason": {
+                    "Type": "String",
+                    "Description": "Reason for provisioning failures.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "state": {
               "Type": "String",
-              "Description": "State of the managed certificate resource.",
+              "Description": "A state of this Managed Certificate.",
               "Computed": true
             }
           }
@@ -10144,7 +10249,7 @@
       "scope": {
         "Type": "String",
         "Optional": true,
-        "Description": "The scope of the certificate.\n\nCertificates with default scope are served from core Google data centers.\nIf unsure, choose this option.\n\nCertificates with scope EDGE_CACHE are special-purposed certificates,\nserved from non-core Google data centers.\nCurrently allowed only for managed certificates. Default value: \"DEFAULT\" Possible values: [\"DEFAULT\", \"EDGE_CACHE\"]",
+        "Description": "The scope of the certificate.\n\nDEFAULT: Certificates with default scope are served from core Google data centers.\nIf unsure, choose this option.\n\nEDGE_CACHE: Certificates with scope EDGE_CACHE are special-purposed certificates,\nserved from non-core Google data centers.\nCurrently allowed only for managed certificates.",
         "Default": {
           "Type": "string",
           "Value": "DEFAULT"
@@ -10188,7 +10293,7 @@
       "description": {
         "Type": "String",
         "Optional": true,
-        "Description": "One or more paragraphs of text description of a certificate map entry."
+        "Description": "A human-readable description of the resource."
       },
       "gclb_targets": {
         "Type": "List",
@@ -10290,7 +10395,7 @@
       "description": {
         "Type": "String",
         "Optional": true,
-        "Description": "CertificateMapEntry is a list of certificate configurations,\nthat have been issued for a particular hostname"
+        "Description": "A human-readable description of the resource."
       },
       "hostname": {
         "Type": "String",
@@ -10316,7 +10421,7 @@
       "matcher": {
         "Type": "String",
         "Optional": true,
-        "Description": "A predefined matcher for particular cases, other than SNI selection Possible values: [\"MATCHER_UNSPECIFIED\", \"PRIMARY\"]"
+        "Description": "A predefined matcher for particular cases, other than SNI selection"
       },
       "name": {
         "Type": "String",
@@ -10330,7 +10435,7 @@
       },
       "state": {
         "Type": "String",
-        "Description": "A serving state of this Certificate Map Entry.\n\nThe status is undefined.\n\nThe configuration is serving.\n\nUpdate is in progress. Some frontends may serve this configuration.",
+        "Description": "A serving state of this Certificate Map Entry.",
         "Computed": true
       },
       "update_time": {
@@ -10366,7 +10471,7 @@
             },
             "name": {
               "Type": "String",
-              "Description": "Fully qualified name of the DNS Resource Record.",
+              "Description": "Fully qualified name of the DNS Resource Record.\nE.g. '_acme-challenge.example.com'.",
               "Computed": true
             },
             "type": {
@@ -10385,7 +10490,7 @@
       "labels": {
         "Type": "Map",
         "Optional": true,
-        "Description": "Set of label tags associated with the EdgeCache resource.",
+        "Description": "Set of label tags associated with the DNS Authorization resource.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -12091,6 +12196,12 @@
         "Required": true,
         "Description": "The name of the job."
       },
+      "paused": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Sets the job to a paused state. Jobs default to being enabled when this property is not set.",
+        "Computed": true
+      },
       "project": {
         "Type": "String",
         "Optional": true,
@@ -12182,6 +12293,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "Describes the schedule on which the job will be executed."
+      },
+      "state": {
+        "Type": "String",
+        "Description": "State of the job.",
+        "Computed": true
       },
       "time_zone": {
         "Type": "String",
@@ -13968,6 +14084,33 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "event_filters": {
+              "Type": "Set",
+              "Optional": true,
+              "Description": "Criteria used to filter events.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "attribute": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "'Required. The name of a CloudEvents attribute.\nCurrently, only a subset of attributes are supported for filtering. Use the 'gcloud eventarc providers describe' command to learn more about events and their attributes.\nDo not filter for the 'type' attribute here, as this is already achieved by the resource's 'event_type' attribute."
+                  },
+                  "operator": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The operator used for matching the events with the value of\nthe filter. If not specified, only events that have an exact key-value\npair specified in the filter are matched.\nThe only allowed value is 'match-path-pattern'.\n[See documentation on path patterns here](https://cloud.google.com/eventarc/docs/path-patterns)'"
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. The value for the attribute.\nIf the operator field is set as 'match-path-pattern', this value can be a path pattern instead of an exact value."
+                  }
+                }
+              }
+            },
             "event_type": {
               "Type": "String",
               "Optional": true,
@@ -13976,7 +14119,8 @@
             "pubsub_topic": {
               "Type": "String",
               "Optional": true,
-              "Description": "The name of a Pub/Sub topic in the same project that will be used\nas the transport topic for the event delivery."
+              "Description": "The name of a Pub/Sub topic in the same project that will be used\nas the transport topic for the event delivery.",
+              "Computed": true
             },
             "retry_policy": {
               "Type": "String",
@@ -23761,7 +23905,7 @@
       },
       "port": {
         "Type": "Int",
-        "Required": true,
+        "Optional": true,
         "Description": "Port number of network endpoint."
       },
       "project": {
@@ -31455,6 +31599,11 @@
         "update",
         "delete"
       ],
+      "certificate_map": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A reference to the CertificateMap resource uri that identifies a certificate map \nassociated with the given target proxy. This field can only be set for global target proxies.\nAccepted format is '//certificatemanager.googleapis.com/projects/{project}/locations/{location}/certificateMaps/{resourceName}'."
+      },
       "creation_timestamp": {
         "Type": "String",
         "Description": "Creation timestamp in RFC3339 text format.",
@@ -31501,7 +31650,7 @@
       },
       "ssl_certificates": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "Description": "A list of SslCertificate resources that are used to authenticate\nconnections between users and the load balancer. At least one SSL\ncertificate must be specified.",
         "ConfigImplicitMode": "Attr",
         "Elem": {
@@ -35216,7 +35365,7 @@
             "labels": {
               "Type": "Map",
               "Optional": true,
-              "Description": "Optional. The initial labels assigned to nodes of this node pool. An object containing a list of \"key\": value pairs. Example: { \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }.",
+              "Description": "Optional. The initial labels assigned to nodes of this node pool. An object containing a list of \"key\": value pairs. Example { \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }.",
               "ConfigImplicitMode": "Attr",
               "Elem": {
                 "Type": "SchemaElements",
@@ -37043,6 +37192,25 @@
         "Description": "The current version of the master in the cluster. This may be different than the min_master_version set in the config if the master has been updated by GKE.",
         "Computed": true
       },
+      "mesh_certificates": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "If set, and enable_certificates=true, the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster.",
+        "Computed": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enable_certificates": {
+              "Type": "Bool",
+              "Required": true,
+              "Description": "When enabled the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster."
+            }
+          }
+        }
+      },
       "min_master_version": {
         "Type": "String",
         "Optional": true,
@@ -37062,7 +37230,7 @@
             "enable_components": {
               "Type": "List",
               "Optional": true,
-              "Description": "GKE components exposing metrics. Valid values include SYSTEM_COMPONENTS and WORKLOADS.",
+              "Description": "GKE components exposing metrics. Valid values include SYSTEM_COMPONENTS, APISERVER, CONTROLLER_MANAGER, SCHEDULER, and WORKLOADS.",
               "Computed": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
@@ -41927,6 +42095,7 @@
         "Type": "Set",
         "Optional": true,
         "Description": "List of experiments that should be used by the job. An example value is [\"enable_stackdriver_agent_metrics\"].",
+        "Computed": true,
         "ConfigImplicitMode": "Attr",
         "Elem": {
           "Type": "SchemaElements",
@@ -42051,6 +42220,324 @@
         "Type": "String",
         "Optional": true,
         "Description": "The zone in which the created job should run. If it is not provided, the provider zone is used."
+      }
+    },
+    "google_dataplex_asset": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Description": "Output only. The time when the asset was created.",
+        "Computed": true
+      },
+      "dataplex_zone": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The zone for the resource"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. Description of the asset."
+      },
+      "discovery_spec": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Required. Specification of the discovery feature applied to data referenced by this asset. When this spec is left unset, the asset will use the spec set on the parent zone.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "csv_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. Configuration for CSV data.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "delimiter": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The delimiter being used to separate values. This defaults to ','."
+                  },
+                  "disable_type_inference": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Optional. Whether to disable the inference of data type for CSV data. If true, all columns will be registered as strings."
+                  },
+                  "encoding": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The character encoding of the data. The default is UTF-8."
+                  },
+                  "header_rows": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Optional. The number of rows to interpret as header rows that should be skipped when reading data rows."
+                  }
+                }
+              }
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Required": true,
+              "Description": "Required. Whether discovery is enabled."
+            },
+            "exclude_patterns": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. The list of patterns to apply for selecting data to exclude during discovery. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "include_patterns": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. The list of patterns to apply for selecting data to include during discovery if only a subset of the data should considered. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "json_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional. Configuration for Json data.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "disable_type_inference": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Optional. Whether to disable the inference of data type for Json data. If true, all columns will be registered as their primitive types (strings, number or boolean)."
+                  },
+                  "encoding": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The character encoding of the data. The default is UTF-8."
+                  }
+                }
+              }
+            },
+            "schedule": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional. Cron schedule (https://en.wikipedia.org/wiki/Cron) for running discovery periodically. Successive discovery runs must be scheduled at least 60 minutes apart. The default value is to run discovery every 60 minutes. To explicitly set a timezone to the cron tab, apply a prefix in the cron tab: \"CRON_TZ=${IANA_TIME_ZONE}\" or TZ=${IANA_TIME_ZONE}\". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database. For example, \"CRON_TZ=America/New_York 1 * * * *\", or \"TZ=America/New_York 1 * * * *\"."
+            }
+          }
+        }
+      },
+      "discovery_status": {
+        "Type": "List",
+        "Description": "Output only. Status of the discovery feature applied to data referenced by this asset.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "last_run_duration": {
+              "Type": "String",
+              "Description": "The duration of the last discovery run.",
+              "Computed": true
+            },
+            "last_run_time": {
+              "Type": "String",
+              "Description": "The start time of the last discovery run.",
+              "Computed": true
+            },
+            "message": {
+              "Type": "String",
+              "Description": "Additional information about the current state.",
+              "Computed": true
+            },
+            "state": {
+              "Type": "String",
+              "Description": "The current status of the discovery feature. Possible values: STATE_UNSPECIFIED, SCHEDULED, IN_PROGRESS, PAUSED, DISABLED",
+              "Computed": true
+            },
+            "stats": {
+              "Type": "List",
+              "Description": "Data Stats of the asset reported by discovery.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "data_items": {
+                    "Type": "Int",
+                    "Description": "The count of data items within the referenced resource.",
+                    "Computed": true
+                  },
+                  "data_size": {
+                    "Type": "Int",
+                    "Description": "The number of stored data bytes within the referenced resource.",
+                    "Computed": true
+                  },
+                  "filesets": {
+                    "Type": "Int",
+                    "Description": "The count of fileset entities within the referenced resource.",
+                    "Computed": true
+                  },
+                  "tables": {
+                    "Type": "Int",
+                    "Description": "The count of table entities within the referenced resource.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "update_time": {
+              "Type": "String",
+              "Description": "Last update time of the status.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional. User friendly display name."
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Optional. User defined labels for the asset.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lake": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The lake for the resource"
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The location for the resource"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the asset."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The project for the resource",
+        "Computed": true
+      },
+      "resource_spec": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Required. Immutable. Specification of the resource that is referenced by this asset.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Immutable. Relative name of the cloud resource that contains the data that is being managed within a lake. For example: `projects/{project_number}/buckets/{bucket_id}` `projects/{project_number}/datasets/{dataset_id}`"
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Required. Immutable. Type of resource. Possible values: STORAGE_BUCKET, BIGQUERY_DATASET"
+            }
+          }
+        }
+      },
+      "resource_status": {
+        "Type": "List",
+        "Description": "Output only. Status of the resource referenced by this asset.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "message": {
+              "Type": "String",
+              "Description": "Additional information about the current state.",
+              "Computed": true
+            },
+            "state": {
+              "Type": "String",
+              "Description": "The current state of the managed resource. Possible values: STATE_UNSPECIFIED, READY, ERROR",
+              "Computed": true
+            },
+            "update_time": {
+              "Type": "String",
+              "Description": "Last update time of the status.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "security_status": {
+        "Type": "List",
+        "Description": "Output only. Status of the security policy applied to resource referenced by this asset.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "message": {
+              "Type": "String",
+              "Description": "Additional information about the current state.",
+              "Computed": true
+            },
+            "state": {
+              "Type": "String",
+              "Description": "The current state of the security policy applied to the attached resource. Possible values: STATE_UNSPECIFIED, READY, APPLYING, ERROR",
+              "Computed": true
+            },
+            "update_time": {
+              "Type": "String",
+              "Description": "Last update time of the status.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "state": {
+        "Type": "String",
+        "Description": "Output only. Current state of the asset. Possible values: STATE_UNSPECIFIED, ACTIVE, CREATING, DELETING, ACTION_REQUIRED",
+        "Computed": true
+      },
+      "uid": {
+        "Type": "String",
+        "Description": "Output only. System generated globally unique ID for the asset. This ID will be different if the asset is deleted and re-created with the same name.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "Output only. The time when the asset was last updated.",
+        "Computed": true
       }
     },
     "google_dataplex_lake": {
@@ -45259,7 +45746,7 @@
                         "queries": {
                           "Type": "List",
                           "Required": true,
-                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\": { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
+                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\" { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
                           "ConfigImplicitMode": "Attr",
                           "Elem": {
                             "Type": "SchemaElements",
@@ -45368,7 +45855,7 @@
                         "queries": {
                           "Type": "List",
                           "Required": true,
-                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\": { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
+                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\" { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
                           "ConfigImplicitMode": "Attr",
                           "Elem": {
                             "Type": "SchemaElements",
@@ -45482,7 +45969,7 @@
                         "queries": {
                           "Type": "List",
                           "Required": true,
-                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\": { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
+                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\" { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
                           "ConfigImplicitMode": "Attr",
                           "Elem": {
                             "Type": "SchemaElements",
@@ -45867,7 +46354,7 @@
                         "queries": {
                           "Type": "List",
                           "Required": true,
-                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\": { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
+                          "Description": "Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: \"hiveJob\" { \"queryList\": { \"queries\": [ \"query1\", \"query2\", \"query3;query4\", ] } }",
                           "ConfigImplicitMode": "Attr",
                           "Elem": {
                             "Type": "SchemaElements",
@@ -51659,6 +52146,124 @@
         "Type": "String",
         "Description": "The unique identifier of the membership.",
         "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "google_gke_hub_membership_iam_binding": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "membership_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_gke_hub_membership_iam_member": {
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "membership_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_gke_hub_membership_iam_policy": {
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "membership_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
       },
       "project": {
         "Type": "String",
@@ -67357,6 +67962,42 @@
         "Description": "This value is the maximum time after a subscriber receives a message\nbefore the subscriber should acknowledge the message. After message\ndelivery but before the ack deadline expires and before the message is\nacknowledged, it is an outstanding message and will not be delivered\nagain during that time (on a best-effort basis).\n\nFor pull subscriptions, this value is used as the initial value for\nthe ack deadline. To override this value for a given message, call\nsubscriptions.modifyAckDeadline with the corresponding ackId if using\npull. The minimum custom deadline you can specify is 10 seconds. The\nmaximum custom deadline you can specify is 600 seconds (10 minutes).\nIf this parameter is 0, a default value of 10 seconds is used.\n\nFor push delivery, this value is also used to set the request timeout\nfor the call to the push endpoint.\n\nIf the subscriber never acknowledges the message, the Pub/Sub system\nwill eventually redeliver the message.",
         "Computed": true
       },
+      "bigquery_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "If delivery to BigQuery is used with this subscription, this field is used to configure it.\nEither pushConfig or bigQueryConfig can be set, but not both.\nIf both are empty, then the subscriber will pull and ack messages using API methods.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "push_config"
+        ],
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "drop_unknown_fields": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "When true and useTopicSchema is true, any fields that are a part of the topic schema that are not part of the BigQuery table schema are dropped when writing to BigQuery.\nOtherwise, the schemas must be kept in sync and any messages with extra fields are not written and remain in the subscription's backlog."
+            },
+            "table": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The name of the table to which to write data, of the form {projectId}.{datasetId}.{tableId}"
+            },
+            "use_topic_schema": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "When true, use the topic's schema as the columns to write to in BigQuery, if it exists."
+            },
+            "write_metadata": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "When true, write the subscription name, messageId, publishTime, attributes, and orderingKey to additional columns in the table.\nThe subscription name, messageId, and publishTime fields are put in their own columns while all other message properties (other than data) are written to a JSON object in the attributes column."
+            }
+          }
+        }
+      },
       "dead_letter_policy": {
         "Type": "List",
         "Optional": true,
@@ -67448,6 +68089,9 @@
         "Optional": true,
         "Description": "If push delivery is used with this subscription, this field is used to\nconfigure it. An empty pushConfig signifies that the subscriber will\npull and ack messages using API methods.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "bigquery_config"
+        ],
         "IsBlock": true,
         "ConfigImplicitMode": "Block",
         "Elem": {
@@ -80428,6 +81072,23 @@
         "Description": "The current version of the master in the cluster. This may be different than the min_master_version set in the config if the master has been updated by GKE.",
         "Computed": true
       },
+      "mesh_certificates": {
+        "Type": "List",
+        "Description": "If set, and enable_certificates=true, the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enable_certificates": {
+              "Type": "Bool",
+              "Description": "When enabled the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster.",
+              "Computed": true
+            }
+          }
+        }
+      },
       "min_master_version": {
         "Type": "String",
         "Description": "The minimum version of the master. GKE will auto-update the master to new versions, so this does not guarantee the current master version--use the read-only master_version field to obtain that. If unset, the cluster's version will be set by GKE to the version of the most recent official release (which is not necessarily the latest version).",
@@ -80444,7 +81105,7 @@
           "Info": {
             "enable_components": {
               "Type": "List",
-              "Description": "GKE components exposing metrics. Valid values include SYSTEM_COMPONENTS and WORKLOADS.",
+              "Description": "GKE components exposing metrics. Valid values include SYSTEM_COMPONENTS, APISERVER, CONTROLLER_MANAGER, SCHEDULER, and WORKLOADS.",
               "Computed": true,
               "ConfigImplicitMode": "Attr",
               "Elem": {
