@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azuread",
   "type": "provider",
-  "version": "v2.27.0",
+  "version": "v2.28.0",
   "provider": {
     "client_certificate": {
       "Type": "String",
@@ -64,6 +64,12 @@
       "Optional": true,
       "Description": "The URL for the OIDC provider from which to request an ID token. For use when authenticating as a Service Principal using OpenID Connect.",
       "DefaultFunc": "MENV(ARM_OIDC_REQUEST_URL,ACTIONS_ID_TOKEN_REQUEST_URL)"
+    },
+    "oidc_token": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The ID token for use when authenticating as a Service Principal using OpenID Connect.",
+      "DefaultFunc": "ENV(ARM_OIDC_TOKEN)"
     },
     "partner_id": {
       "Type": "String",
@@ -3445,6 +3451,21 @@
       "tenant_id": {
         "Type": "String",
         "Description": "The tenant ID of the authenticated principal",
+        "Computed": true
+      }
+    },
+    "azuread_directory_object": {
+      "__timeouts__": [
+        "read"
+      ],
+      "object_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The object ID of the principal"
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The OData type of the principal",
         "Computed": true
       }
     },

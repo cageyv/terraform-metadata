@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "azurerm",
   "type": "provider",
-  "version": "v3.19.1",
+  "version": "v3.20.0",
   "provider": {
     "auxiliary_tenant_ids": {
       "Type": "List",
@@ -386,14 +386,20 @@
     "oidc_request_token": {
       "Type": "String",
       "Optional": true,
-      "Description": "The bearer token for the request to the OIDC provider. For use When authenticating as a Service Principal using OpenID Connect.",
+      "Description": "The bearer token for the request to the OIDC provider. For use when authenticating as a Service Principal using OpenID Connect.",
       "DefaultFunc": "MENV(ARM_OIDC_REQUEST_TOKEN,ACTIONS_ID_TOKEN_REQUEST_TOKEN)"
     },
     "oidc_request_url": {
       "Type": "String",
       "Optional": true,
-      "Description": "The URL for the OIDC provider from which to request an ID token. For use When authenticating as a Service Principal using OpenID Connect.",
+      "Description": "The URL for the OIDC provider from which to request an ID token. For use when authenticating as a Service Principal using OpenID Connect.",
       "DefaultFunc": "MENV(ARM_OIDC_REQUEST_URL,ACTIONS_ID_TOKEN_REQUEST_URL)"
+    },
+    "oidc_token": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The OIDC ID token for use when authenticating as a Service Principal using OpenID Connect.",
+      "DefaultFunc": "ENV(ARM_OIDC_TOKEN)"
     },
     "partner_id": {
       "Type": "String",
@@ -11844,6 +11850,262 @@
           "Type": "string",
           "Value": "UTC"
         }
+      }
+    },
+    "azurerm_backup_policy_vm_workload": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "protection_policy": {
+        "Type": "Set",
+        "Required": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "backup": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "frequency": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "frequency_in_minutes": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "time": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "weekdays": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "policy_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "retention_daily": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "retention_monthly": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "format_type": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "monthdays": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "Int"
+                    }
+                  },
+                  "weekdays": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "weeks": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "retention_weekly": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "weekdays": {
+                    "Type": "Set",
+                    "Required": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "retention_yearly": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "format_type": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "monthdays": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "Int"
+                    }
+                  },
+                  "months": {
+                    "Type": "Set",
+                    "Required": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "weekdays": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "weeks": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "simple_retention": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "recovery_vault_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "settings": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "compression_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "time_zone": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "workload_type": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_backup_protected_file_share": {
@@ -62265,6 +62527,237 @@
               "Required": true
             }
           }
+        }
+      }
+    },
+    "azurerm_monitor_scheduled_query_rules_alert_v2": {
+      "__timeouts__": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "action": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action_groups": {
+              "Type": "List",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "custom_properties": {
+              "Type": "Map",
+              "Optional": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "auto_mitigation_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "created_with_api_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "criteria": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dimension": {
+              "Type": "List",
+              "Optional": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "operator": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Required": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "failing_periods": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "minimum_failing_periods_to_trigger_alert": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "number_of_evaluation_periods": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "metric_measure_column": {
+              "Type": "String",
+              "Optional": true
+            },
+            "operator": {
+              "Type": "String",
+              "Required": true
+            },
+            "query": {
+              "Type": "String",
+              "Required": true
+            },
+            "resource_id_column": {
+              "Type": "String",
+              "Optional": true
+            },
+            "threshold": {
+              "Type": "Float",
+              "Required": true
+            },
+            "time_aggregation_method": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "evaluation_frequency": {
+        "Type": "String",
+        "Optional": true
+      },
+      "is_a_legacy_log_analytics_rule": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "is_workspace_alerts_storage_configured": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "mute_actions_after_alert_duration": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "query_time_range_override": {
+        "Type": "String",
+        "Optional": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "scopes": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "MinItems": 1,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "severity": {
+        "Type": "Int",
+        "Required": true
+      },
+      "skip_query_validation": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "target_resource_types": {
+        "Type": "List",
+        "Optional": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "window_duration": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_alerts_storage_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
         }
       }
     },

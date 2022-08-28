@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google",
   "type": "provider",
-  "version": "v4.32.0",
+  "version": "v4.33.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -184,6 +184,11 @@
       "Type": "String",
       "Optional": true,
       "DefaultFunc": "MENV(GOOGLE_CLOUDDEPLOY_CUSTOM_ENDPOINT)"
+    },
+    "cloudfunctions2_custom_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_CLOUDFUNCTIONS2_CUSTOM_ENDPOINT)"
     },
     "composer_custom_endpoint": {
       "Type": "String",
@@ -13110,6 +13115,494 @@
       "update_time": {
         "Type": "String",
         "Description": "Output only. Most recent time at which the `Target` was updated.",
+        "Computed": true
+      }
+    },
+    "google_cloudfunctions2_function": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "build_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Describes the Build step of the function that builds a container\nfrom the given source.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "build": {
+              "Type": "String",
+              "Description": "The Cloud Build name of the latest successful\ndeployment of the function.",
+              "Computed": true
+            },
+            "docker_repository": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "User managed repository created in Artifact Registry optionally with a customer managed encryption key."
+            },
+            "entry_point": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The name of the function (as defined in source code) that will be executed.\nDefaults to the resource name suffix, if not specified. For backward\ncompatibility, if function with given name is not found, then the system\nwill try to use function named \"function\". For Node.js this is name of a\nfunction exported by the module specified in source_location."
+            },
+            "environment_variables": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "User-provided build-time environment variables for the function.",
+              "Computed": true,
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "runtime": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The runtime in which to run the function. Required when deploying a new\nfunction, optional when updating an existing function."
+            },
+            "source": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The location of the function source code.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "repo_source": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "If provided, get the source from this location in a Cloud Source Repository.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "branch_name": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Regex matching branches to build."
+                        },
+                        "commit_sha": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Regex matching tags to build."
+                        },
+                        "dir": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Directory, relative to the source root, in which to run the build."
+                        },
+                        "invert_regex": {
+                          "Type": "Bool",
+                          "Optional": true,
+                          "Description": "Only trigger a build if the revision regex does \nNOT match the revision regex."
+                        },
+                        "project_id": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "ID of the project that owns the Cloud Source Repository. If omitted, the \nproject ID requesting the build is assumed."
+                        },
+                        "repo_name": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Name of the Cloud Source Repository."
+                        },
+                        "tag_name": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Regex matching tags to build."
+                        }
+                      }
+                    }
+                  },
+                  "storage_source": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Description": "If provided, get the source from this location in Google Cloud Storage.",
+                    "MaxItems": 1,
+                    "IsBlock": true,
+                    "ConfigImplicitMode": "Block",
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "bucket": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Google Cloud Storage bucket containing the source"
+                        },
+                        "generation": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Google Cloud Storage generation for the object. If the generation \nis omitted, the latest generation will be used."
+                        },
+                        "object": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "Google Cloud Storage object containing the source."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "worker_pool": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of the Cloud Build Custom Worker Pool that should be used to build the function."
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "User-provided description of a function."
+      },
+      "environment": {
+        "Type": "String",
+        "Description": "The environment the function is hosted on.",
+        "Computed": true
+      },
+      "event_trigger": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "An Eventarc trigger managed by Google Cloud Functions that fires events in\nresponse to a condition in another service.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "event_filters": {
+              "Type": "Set",
+              "Optional": true,
+              "Description": "Criteria used to filter events.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "attribute": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "'Required. The name of a CloudEvents attribute.\nCurrently, only a subset of attributes are supported for filtering. Use the 'gcloud eventarc providers describe' command to learn more about events and their attributes.\nDo not filter for the 'type' attribute here, as this is already achieved by the resource's 'event_type' attribute."
+                  },
+                  "operator": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Optional. The operator used for matching the events with the value of\nthe filter. If not specified, only events that have an exact key-value\npair specified in the filter are matched.\nThe only allowed value is 'match-path-pattern'.\n[See documentation on path patterns here](https://cloud.google.com/eventarc/docs/path-patterns)'"
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Required. The value for the attribute.\nIf the operator field is set as 'match-path-pattern', this value can be a path pattern instead of an exact value."
+                  }
+                }
+              }
+            },
+            "event_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Required. The type of event to observe."
+            },
+            "pubsub_topic": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The name of a Pub/Sub topic in the same project that will be used\nas the transport topic for the event delivery.",
+              "Computed": true
+            },
+            "retry_policy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Describes the retry policy in case of function's execution failure.\nRetried execution is charged as any other execution. Possible values: [\"RETRY_POLICY_UNSPECIFIED\", \"RETRY_POLICY_DO_NOT_RETRY\", \"RETRY_POLICY_RETRY\"]"
+            },
+            "service_account_email": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The email of the service account for this function.",
+              "Computed": true
+            },
+            "trigger": {
+              "Type": "String",
+              "Description": "The resource name of the Eventarc trigger.",
+              "Computed": true
+            },
+            "trigger_region": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The region that the trigger will be in. The trigger will only receive\nevents originating in this region. It can be the same\nregion as the function, a different region or multi-region, or the global\nregion. If not provided, defaults to the same region as the function."
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "A set of key/value label pairs associated with this Cloud Function.",
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The location of this cloud function."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A user-defined name of the function. Function names must\nbe unique globally and match pattern 'projects/*/locations/*/functions/*'."
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Describes the Service being deployed.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "all_traffic_on_latest_revision": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether 100% of traffic is routed to the latest revision. Defaults to true.",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "available_memory": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The amount of memory available for a function.\nDefaults to 256M. Supported units are k, M, G, Mi, Gi. If no unit is\nsupplied the value is interpreted as bytes."
+            },
+            "environment_variables": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "Environment variables that shall be available during function execution.",
+              "ConfigImplicitMode": "Attr",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "gcf_uri": {
+              "Type": "String",
+              "Description": "URIs of the Service deployed",
+              "Computed": true
+            },
+            "ingress_settings": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Available ingress settings. Defaults to \"ALLOW_ALL\" if unspecified. Default value: \"ALLOW_ALL\" Possible values: [\"ALLOW_ALL\", \"ALLOW_INTERNAL_ONLY\", \"ALLOW_INTERNAL_AND_GCLB\"]",
+              "Default": {
+                "Type": "string",
+                "Value": "ALLOW_ALL"
+              }
+            },
+            "max_instance_count": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The limit on the maximum number of function instances that may coexist at a\ngiven time."
+            },
+            "min_instance_count": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The limit on the minimum number of function instances that may coexist at a\ngiven time."
+            },
+            "service": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of the service associated with a Function.",
+              "Computed": true
+            },
+            "service_account_email": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The email of the service account for this function.",
+              "Computed": true
+            },
+            "timeout_seconds": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The function execution timeout. Execution is considered failed and\ncan be terminated if the function is not completed at the end of the\ntimeout period. Defaults to 60 seconds."
+            },
+            "uri": {
+              "Type": "String",
+              "Description": "URI of the Service deployed.",
+              "Computed": true
+            },
+            "vpc_connector": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The Serverless VPC Access connector that this cloud function can connect to."
+            },
+            "vpc_connector_egress_settings": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Available egress settings. Possible values: [\"VPC_CONNECTOR_EGRESS_SETTINGS_UNSPECIFIED\", \"PRIVATE_RANGES_ONLY\", \"ALL_TRAFFIC\"]"
+            }
+          }
+        }
+      },
+      "state": {
+        "Type": "String",
+        "Description": "Describes the current state of the function.",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Description": "The last update timestamp of a Cloud Function.",
+        "Computed": true
+      }
+    },
+    "google_cloudfunctions2_function_iam_binding": {
+      "cloud_function": {
+        "Type": "String",
+        "Required": true
+      },
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_cloudfunctions2_function_iam_member": {
+      "cloud_function": {
+        "Type": "String",
+        "Required": true
+      },
+      "condition": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "expression": {
+              "Type": "String",
+              "Required": true
+            },
+            "title": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_cloudfunctions2_function_iam_policy": {
+      "cloud_function": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
@@ -52706,6 +53199,28 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "accepted_response_status_codes": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "If present, the check will only pass if the HTTP response status code is in this set of status codes. If empty, the HTTP status code will only pass if the HTTP status code is 200-299.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "status_class": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A class of status codes to accept. Possible values: [\"STATUS_CLASS_1XX\", \"STATUS_CLASS_2XX\", \"STATUS_CLASS_3XX\", \"STATUS_CLASS_4XX\", \"STATUS_CLASS_5XX\", \"STATUS_CLASS_ANY\"]"
+                  },
+                  "status_value": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "A status code to accept."
+                  }
+                }
+              }
+            },
             "auth_info": {
               "Type": "List",
               "Optional": true,
@@ -64341,7 +64856,7 @@
       "root_password": {
         "Type": "String",
         "Optional": true,
-        "Description": "Initial root password. Required for MS SQL Server, ignored by MySQL and PostgreSQL."
+        "Description": "Initial root password. Required for MS SQL Server."
       },
       "self_link": {
         "Type": "String",
@@ -64714,6 +65229,48 @@
                     "Type": "String",
                     "Optional": true,
                     "Description": "Receive updates earlier (canary) or later (stable)"
+                  }
+                }
+              }
+            },
+            "password_validation_policy": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "complexity": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Password complexity."
+                  },
+                  "disallow_username_substring": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Disallow username as a part of the password."
+                  },
+                  "enable_password_policy": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "Whether the password policy is enabled or not."
+                  },
+                  "min_length": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Minimum number of characters allowed."
+                  },
+                  "password_change_interval": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Minimum interval after which the password can be changed. This flag is only supported for PostgresSQL."
+                  },
+                  "reuse_interval": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Number of previous passwords that cannot be reused."
                   }
                 }
               }
@@ -74993,6 +75550,11 @@
         "Type": "String",
         "Computed": true
       },
+      "managed_zone_id": {
+        "Type": "Int",
+        "Description": "Unique identifier for the resource; defined by the server.",
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -78060,7 +78622,7 @@
       },
       "root_password": {
         "Type": "String",
-        "Description": "Initial root password. Required for MS SQL Server, ignored by MySQL and PostgreSQL.",
+        "Description": "Initial root password. Required for MS SQL Server.",
         "Computed": true
       },
       "self_link": {
@@ -78385,6 +78947,47 @@
                   "update_track": {
                     "Type": "String",
                     "Description": "Receive updates earlier (canary) or later (stable)",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "password_validation_policy": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "complexity": {
+                    "Type": "String",
+                    "Description": "Password complexity.",
+                    "Computed": true
+                  },
+                  "disallow_username_substring": {
+                    "Type": "Bool",
+                    "Description": "Disallow username as a part of the password.",
+                    "Computed": true
+                  },
+                  "enable_password_policy": {
+                    "Type": "Bool",
+                    "Description": "Whether the password policy is enabled or not.",
+                    "Computed": true
+                  },
+                  "min_length": {
+                    "Type": "Int",
+                    "Description": "Minimum number of characters allowed.",
+                    "Computed": true
+                  },
+                  "password_change_interval": {
+                    "Type": "String",
+                    "Description": "Minimum interval after which the password can be changed. This flag is only supported for PostgresSQL.",
+                    "Computed": true
+                  },
+                  "reuse_interval": {
+                    "Type": "Int",
+                    "Description": "Number of previous passwords that cannot be reused.",
                     "Computed": true
                   }
                 }
