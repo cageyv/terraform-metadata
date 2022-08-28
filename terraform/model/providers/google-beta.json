@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v2",
   "name": "google-beta",
   "type": "provider",
-  "version": "v4.32.0",
+  "version": "v4.33.0",
   "provider": {
     "access_approval_custom_endpoint": {
       "Type": "String",
@@ -45271,6 +45271,37 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "auxiliary_versions": {
+              "Type": "Set",
+              "Optional": true,
+              "Description": "A mapping of Hive metastore version to the auxiliary version configuration.\nWhen specified, a secondary Hive metastore service is created along with the primary service.\nAll auxiliary versions must be less than the service's primary version.\nThe key is the auxiliary service name and it must match the regular expression a-z?.\nThis means that the first character must be a lowercase letter, and all the following characters must be hyphens, lowercase letters, or digits, except the last character, which cannot be a hyphen.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "config_overrides": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Description": "A mapping of Hive metastore configuration key-value pairs to apply to the auxiliary Hive metastore (configured in hive-site.xml) in addition to the primary version's overrides.\nIf keys are present in both the auxiliary version's overrides and the primary version's overrides, the value from the auxiliary version's overrides takes precedence.",
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "key": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "version": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "The Hive metastore version of the auxiliary service. It must be less than the primary Hive metastore service's version."
+                  }
+                }
+              }
+            },
             "config_overrides": {
               "Type": "Map",
               "Optional": true,
@@ -45378,6 +45409,37 @@
               "Type": "Int",
               "Required": true,
               "Description": "The hour of day (0-23) when the window starts."
+            }
+          }
+        }
+      },
+      "metadata_integration": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The setting that defines how metastore metadata should be integrated with external services and systems.",
+        "MaxItems": 1,
+        "IsBlock": true,
+        "ConfigImplicitMode": "Block",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "data_catalog_config": {
+              "Type": "List",
+              "Required": true,
+              "Description": "The integration config for the Data Catalog service.",
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "Defines whether the metastore metadata should be synced to Data Catalog. The default value is to disable syncing metastore metadata to Data Catalog."
+                  }
+                }
+              }
             }
           }
         }
@@ -58025,6 +58087,28 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "accepted_response_status_codes": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "If present, the check will only pass if the HTTP response status code is in this set of status codes. If empty, the HTTP status code will only pass if the HTTP status code is 200-299.",
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "status_class": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A class of status codes to accept. Possible values: [\"STATUS_CLASS_1XX\", \"STATUS_CLASS_2XX\", \"STATUS_CLASS_3XX\", \"STATUS_CLASS_4XX\", \"STATUS_CLASS_5XX\", \"STATUS_CLASS_ANY\"]"
+                  },
+                  "status_value": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "A status code to accept."
+                  }
+                }
+              }
+            },
             "auth_info": {
               "Type": "List",
               "Optional": true,
@@ -70440,7 +70524,7 @@
       "limit": {
         "Type": "String",
         "Required": true,
-        "Description": "The limit on the metric, e.g. '/project/region'."
+        "Description": "The limit on the metric, e.g. '/project/region'.\n\n~\u003e Make sure that 'limit' is in a format that doesn't start with '1/' or contain curly braces.\nE.g. use '/project/user' instead of '1/{project}/{user}'."
       },
       "metric": {
         "Type": "String",
@@ -71283,7 +71367,7 @@
       "root_password": {
         "Type": "String",
         "Optional": true,
-        "Description": "Initial root password. Required for MS SQL Server, ignored by MySQL and PostgreSQL."
+        "Description": "Initial root password. Required for MS SQL Server."
       },
       "self_link": {
         "Type": "String",
@@ -71656,6 +71740,48 @@
                     "Type": "String",
                     "Optional": true,
                     "Description": "Receive updates earlier (canary) or later (stable)"
+                  }
+                }
+              }
+            },
+            "password_validation_policy": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "IsBlock": true,
+              "ConfigImplicitMode": "Block",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "complexity": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Password complexity."
+                  },
+                  "disallow_username_substring": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Disallow username as a part of the password."
+                  },
+                  "enable_password_policy": {
+                    "Type": "Bool",
+                    "Required": true,
+                    "Description": "Whether the password policy is enabled or not."
+                  },
+                  "min_length": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Minimum number of characters allowed."
+                  },
+                  "password_change_interval": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Minimum interval after which the password can be changed. This flag is only supported for PostgresSQL."
+                  },
+                  "reuse_interval": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "Number of previous passwords that cannot be reused."
                   }
                 }
               }
@@ -82420,6 +82546,37 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "auxiliary_versions": {
+              "Type": "Set",
+              "Description": "A mapping of Hive metastore version to the auxiliary version configuration.\nWhen specified, a secondary Hive metastore service is created along with the primary service.\nAll auxiliary versions must be less than the service's primary version.\nThe key is the auxiliary service name and it must match the regular expression a-z?.\nThis means that the first character must be a lowercase letter, and all the following characters must be hyphens, lowercase letters, or digits, except the last character, which cannot be a hyphen.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "config_overrides": {
+                    "Type": "Map",
+                    "Description": "A mapping of Hive metastore configuration key-value pairs to apply to the auxiliary Hive metastore (configured in hive-site.xml) in addition to the primary version's overrides.\nIf keys are present in both the auxiliary version's overrides and the primary version's overrides, the value from the auxiliary version's overrides takes precedence.",
+                    "Computed": true,
+                    "ConfigImplicitMode": "Attr",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "key": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "version": {
+                    "Type": "String",
+                    "Description": "The Hive metastore version of the auxiliary service. It must be less than the primary Hive metastore service's version.",
+                    "Computed": true
+                  }
+                }
+              }
+            },
             "config_overrides": {
               "Type": "Map",
               "Description": "A mapping of Hive metastore configuration key-value pairs to apply to the Hive metastore (configured in hive-site.xml).\nThe mappings override system defaults (some keys cannot be overridden)",
@@ -82515,6 +82672,35 @@
               "Type": "Int",
               "Description": "The hour of day (0-23) when the window starts.",
               "Computed": true
+            }
+          }
+        }
+      },
+      "metadata_integration": {
+        "Type": "List",
+        "Description": "The setting that defines how metastore metadata should be integrated with external services and systems.",
+        "Computed": true,
+        "IsBlock": true,
+        "ConfigImplicitMode": "ComputedBlock",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "data_catalog_config": {
+              "Type": "List",
+              "Description": "The integration config for the Data Catalog service.",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Description": "Defines whether the metastore metadata should be synced to Data Catalog. The default value is to disable syncing metastore metadata to Data Catalog.",
+                    "Computed": true
+                  }
+                }
+              }
             }
           }
         }
@@ -82715,6 +82901,11 @@
       },
       "dns_name": {
         "Type": "String",
+        "Computed": true
+      },
+      "managed_zone_id": {
+        "Type": "Int",
+        "Description": "Unique identifier for the resource; defined by the server.",
         "Computed": true
       },
       "name": {
@@ -86056,7 +86247,7 @@
       },
       "root_password": {
         "Type": "String",
-        "Description": "Initial root password. Required for MS SQL Server, ignored by MySQL and PostgreSQL.",
+        "Description": "Initial root password. Required for MS SQL Server.",
         "Computed": true
       },
       "self_link": {
@@ -86381,6 +86572,47 @@
                   "update_track": {
                     "Type": "String",
                     "Description": "Receive updates earlier (canary) or later (stable)",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "password_validation_policy": {
+              "Type": "List",
+              "Computed": true,
+              "IsBlock": true,
+              "ConfigImplicitMode": "ComputedBlock",
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "complexity": {
+                    "Type": "String",
+                    "Description": "Password complexity.",
+                    "Computed": true
+                  },
+                  "disallow_username_substring": {
+                    "Type": "Bool",
+                    "Description": "Disallow username as a part of the password.",
+                    "Computed": true
+                  },
+                  "enable_password_policy": {
+                    "Type": "Bool",
+                    "Description": "Whether the password policy is enabled or not.",
+                    "Computed": true
+                  },
+                  "min_length": {
+                    "Type": "Int",
+                    "Description": "Minimum number of characters allowed.",
+                    "Computed": true
+                  },
+                  "password_change_interval": {
+                    "Type": "String",
+                    "Description": "Minimum interval after which the password can be changed. This flag is only supported for PostgresSQL.",
+                    "Computed": true
+                  },
+                  "reuse_interval": {
+                    "Type": "Int",
+                    "Description": "Number of previous passwords that cannot be reused.",
                     "Computed": true
                   }
                 }
