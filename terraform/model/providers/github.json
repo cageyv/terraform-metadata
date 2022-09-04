@@ -3,7 +3,7 @@
   ".sdk_type": "terraform-plugin-sdk-v1",
   "name": "github",
   "type": "provider",
-  "version": "v4.30.0",
+  "version": "v4.31.0",
   "provider": {
     "app_auth": {
       "Type": "List",
@@ -1173,6 +1173,22 @@
         "Type": "String",
         "Optional": true
       },
+      "merge_commit_message": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "PR_TITLE"
+        }
+      },
+      "merge_commit_title": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "MERGE_MESSAGE"
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -1249,6 +1265,22 @@
       "repo_id": {
         "Type": "Int",
         "Computed": true
+      },
+      "squash_merge_commit_message": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "COMMIT_MESSAGES"
+        }
+      },
+      "squash_merge_commit_title": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "COMMIT_OR_PR_TITLE"
+        }
       },
       "ssh_clone_url": {
         "Type": "String",
@@ -2096,6 +2128,33 @@
           "ElementsType": "String"
         }
       },
+      "api": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "api_ipv4": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "api_ipv6": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "dependabot": {
         "Type": "List",
         "Computed": true,
@@ -2223,6 +2282,33 @@
         }
       },
       "pages_ipv6": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "web": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "web_ipv4": {
+        "Type": "List",
+        "Computed": true,
+        "ConfigImplicitMode": "Attr",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "web_ipv6": {
         "Type": "List",
         "Computed": true,
         "ConfigImplicitMode": "Attr",
@@ -2597,6 +2683,14 @@
         "Type": "String",
         "Computed": true
       },
+      "merge_commit_message": {
+        "Type": "String",
+        "Computed": true
+      },
+      "merge_commit_title": {
+        "Type": "String",
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Optional": true,
@@ -2673,6 +2767,14 @@
       },
       "repo_id": {
         "Type": "Int",
+        "Computed": true
+      },
+      "squash_merge_commit_message": {
+        "Type": "String",
+        "Computed": true
+      },
+      "squash_merge_commit_title": {
+        "Type": "String",
         "Computed": true
       },
       "ssh_clone_url": {
