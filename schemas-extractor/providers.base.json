@@ -16,20 +16,26 @@
   "aci": {},
   "acme": {},
   "akamai": {
-    "repository": "github.com/akamai/terraform-provider-akamai"
+    "repository": "github.com/akamai/terraform-provider-akamai",
+    "pkg_name": "v2/pkg/providers"
   },
   "alicloud": {
     "repository": "github.com/aliyun/terraform-provider-alicloud"
   },
   "archive": {
-    "repository": "github.com/terraform-providers/terraform-provider-__NAME__"
+    "pkg_name": "internal/provider"
   },
   "arukas": {},
-  "auth0": {},
+  "auth0": {
+    "repository": "github.com/auth0/terraform-provider-auth0"
+  },
   "avi": {},
-  "aviatrix": {},
+  "aviatrix": {
+    "repository": "github.com/AviatrixSystems/terraform-provider-aviatrix",
+    "pkg_name": "aviatrix"
+  },
   "aws": {
-    "repository": "github.com/terraform-providers/terraform-provider-__NAME__"
+    "pkg_name": "internal/provider"
   },
   "awscc": {},
   "azure": {
